@@ -1,0 +1,77 @@
+{
+  "base_url": "http://unu.edu", 
+  "start_url": "http://unu.edu/publications/books", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "315", 
+      "product_type_id": {
+        "python": "product_type_id('Book')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[@class='bookinfo']/following-sibling::p//text()[count(.|//div[@class='bookinfo']/following-sibling::h3[contains(.,'About')]/preceding-sibling::p//text())=count(//div[@class='bookinfo']/following-sibling::h3[contains(.,'About')]/preceding-sibling::p//text())]", 
+            "//div[@class='bookinfo']/following-sibling::p//text()"
+          ]
+        }, 
+        "python": "None if 'ull text online' in data else ' '.join(normalize_space(selector.extract()))"
+      }, 
+      "name": {
+        "xpath": "//section/h1//text()"
+      }, 
+      "toc": {
+        "xpath": "//h3[contains(./text(),'Table of Contents')]/following-sibling::*"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='page_contents']/div[@class='bookinfo']/img/@src"
+      }, 
+      "duration_display": {
+        "xpath": "//dt[contains(./text(),'PAGES:')]/following-sibling::dd[1]/text()", 
+        "re": "\\d+"
+      }, 
+      "published_date": {
+        "xpath": "//dt[contains(./text(),'PUBLISHED:')]/following-sibling::dd[1]/text()", 
+        "python": "convert_date(data)"
+      }, 
+      "authors": {
+        "xpath": "//div[@class='page_contents']/h4/a", 
+        "fields": {
+          "name": {
+            "xpath": "./text()"
+          }
+        }, 
+        "type": "[Author]"
+      }, 
+      "publisher": {
+        "xpath": "//dt[contains(./text(),'PUBLISHER:')]/following-sibling::dd[1]", 
+        "fields": {
+          "name": {
+            "xpath": "./text()"
+          }
+        }, 
+        "type": "Publisher"
+      }, 
+      "partner_prod_id": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "substring-after(//dt[contains(./text(),'PUBLICATION DATA:')]/following-sibling::dd[1]/text()[contains(.,'ISBN-13:')],': ')", 
+            "substring-after(//dt[contains(./text(),'PUBLICATION DATA:')]/following-sibling::dd[1]/text()[contains(.,'ISBN-10:')],': ')"
+          ]
+        }
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/books/page/\\d+',),restrict_xpaths=('//div[contains(@id,\\'wp_page_numbers\\')]//ul/li/a')),follow=True)", 
+        "Rule(lxml(allow=('/books/[\\d\\w+\\-]+.html$',),restrict_xpaths=('//article[contains(@class,\\'list-item\\')]/div/h4/a')),follow=True,callback='parse_product')"
+      ]
+    }
+  }
+}

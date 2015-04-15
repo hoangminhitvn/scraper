@@ -1,0 +1,21 @@
+{
+  "base_url": "http://www.knowledgecity.com", 
+  "start_url": "http://www.knowledgecity.com/jsonStrings/kcity/courses/courses.json?ver=88a", 
+  "levels": {
+    "0": {
+      "callback": "knowledgecity.get_link_course"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "212", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng"
+    }, 
+    "type": "Product"
+  }
+}

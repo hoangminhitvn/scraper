@@ -1,0 +1,102 @@
+{
+  "base_url": "http://www.citrix.com", 
+  "start_url": "http://www.citrix.com/events.html?posit=foot", 
+  "levels": {
+    "1": {
+      "xpath": "./td[1]/a/@href"
+    }, 
+    "1_1": {
+      "xpath": "//a[contains(.,'View on-demand')]/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "146", 
+      "product_type_id": {
+        "python": "product_type_id('webinars')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "N", 
+      "description": [
+        {
+          "xpath": "substring-before(//div[@class='parbase eventText textctrl']/div[@id],'Speaker')", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@class='parbase textctrl section'][contains(.//h2,'What you will learn')]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "substring-after(//div[@class='ctx-columns-wrap']//td[1]//text(),'View on-demand')", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@class='ctx-columns-wrap']//td[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data", 
+          "level": "1"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//h1)", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "duration_filter": [
+            {
+              "xpath": "./td[3]//text()", 
+              "re": "\\d+\\:\\d+", 
+              "python": "duration_filter(data.replace(':',' hours ') + ' minutes')"
+            }, 
+            {
+              "xpath": "./td[3]//text()", 
+              "re": "\\d+", 
+              "python": "duration_filter(data + ' minutes')"
+            }
+          ], 
+          "start_date_local": [
+            {
+              "xpath": "./td[4]/text()", 
+              "python": "convert_date(data) if '-' not in data else None"
+            }, 
+            {
+              "xpath": "./td[4]/text()", 
+              "python": "get_start_date(data)"
+            }
+          ], 
+          "end_date_local": {
+            "xpath": "./td[4]/text()", 
+            "python": "get_end_date(data) if '-'  in data else None"
+          }, 
+          "language": "eng", 
+          "duration_display": {
+            "xpath": "./td[3]//text()"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "product_video_url": {
+        "xpath": "//a[contains(.,'Watch now')]/@href", 
+        "type": "[str]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'taiwan.html' in response.url", 
+          "level": "1"
+        }, 
+        {
+          "python": "'tw.html' in response.url", 
+          "level": "1"
+        }
+      ]
+    }, 
+    "xpath": "//div[@class='parbase event-table ctx-events-webinars']/div[@class='ctx-table-styled']/table[@class='ctx-styled-table']/tbody/tr[position()>1]"
+  }
+}

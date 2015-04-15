@@ -1,0 +1,45 @@
+{
+  "base_url": "http://ocw.usu.edu/", 
+  "start_url": "http://ocw.usu.edu/courselist/index.html", 
+  "levels": {
+    "1": {
+      "xpath": "./a/@href", 
+      "python": "urljoin('http://ocw.usu.edu',data.replace('..',''))"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "382", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//*[@id='about']/h4[contains(.,'Description')]/following-sibling::*[1]//text()|//*[@id='about']/p[@id='caption']/following-sibling::p/text()", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//*[@id='parent-fieldname-title']/text()", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//*[@id='aboutPhoto']//img/@src", 
+        "python": "urljoin('http://ocw.usu.edu/Anthropology/Cultural_Anthropology/',data)", 
+        "level": "1"
+      }, 
+      "requirements": {
+        "xpath": "string(//*[@id='about']/h4[contains(.,'Requirements')]/following-sibling::*)", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "//*[@id='aboutInfo']/p[contains(.,'Prerequisites')]/text()", 
+        "python": "''.join(data)", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//*[@id='content']//p[contains(@class,'course-listing')]"
+  }
+}

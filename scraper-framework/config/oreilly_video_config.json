@@ -1,0 +1,135 @@
+{
+  "base_url": "http://shop.oreilly.com/", 
+  "start_url": [
+    "http://shop.oreilly.com/category/videos.do"
+  ], 
+  "levels": {
+    "1_1": {
+      "xpath": "//a[@class='authorname']/@href", 
+      "level": "1"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "192", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='detail-description-content']//text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//*[@class='detailheader']/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='toc-content']"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='video-preview']/iframe/@src", 
+        "re": "\\w.*"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[@id='largeImage']/@src", 
+        "python": "data.replace('cat.gif', 'lrg.jpg') if 'cat.gif' in data else data"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": [
+        {
+          "xpath": "substring-after(//div[contains(text(), 'Run time')]/text(), ':')", 
+          "python": "duration_filter(data)"
+        }, 
+        {
+          "xpath": "substring-after(//div[contains(text(), 'Run time')]/text(), 'time')", 
+          "python": "duration_filter(data)"
+        }
+      ], 
+      "price_display_float": {
+        "xpath": "substring-after(//span[@class='price']/text(), '$')", 
+        "python": "get_price_float(data)"
+      }, 
+      "duration_display": [
+        {
+          "xpath": "substring-after(//div[contains(text(), 'Run time')]/text(), ':')"
+        }, 
+        {
+          "xpath": "substring-after(//div[contains(text(), 'Run time')]/text(), 'time')"
+        }
+      ], 
+      "ProductRating": {
+        "xpath": "//div[@class='pr-review-wrap']", 
+        "fields": {
+          "username": {
+            "xpath": ".//*[@class='pr-review-author-name']/span/text()"
+          }, 
+          "rating_only": "0", 
+          "user_id": null, 
+          "review": {
+            "xpath": ".//*[@class='pr-review-main-wrapper']/div[not(contains(@class, 'pr-review-footer'))]//text()", 
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          }, 
+          "pub_status": "L", 
+          "overall_rating": [
+            {
+              "xpath": "substring-before(.//div[@class='pr-review-rating']//span[contains(@class, 'pr-rating')]/text(), '.')"
+            }, 
+            {
+              "xpath": ".//div[@class='pr-review-rating']//span[contains(@class, 'pr-rating')]/text()"
+            }
+          ]
+        }, 
+        "type": "[ProductRating]"
+      }, 
+      "published_date": [
+        {
+          "xpath": "substring-after(//div[contains(text(), 'Release Date')]/text(), ':')", 
+          "python": "convert_date(data)"
+        }, 
+        {
+          "xpath": "substring-after(//div[contains(text(), 'Release Date')]/text(), 'Date')", 
+          "python": "convert_date(data)"
+        }
+      ], 
+      "instructors": {
+        "xpath": "//div[@id='content-09']", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[@class='authorbio']//text()", 
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          }, 
+          "image": {
+            "xpath": ".//div[@id='photo']/img/@src", 
+            "python": "data if data else None"
+          }, 
+          "link": {
+            "xpath": ".//div[@class='sidebar-item'][2]/div[@class='sidebar-item-content']//a/@href", 
+            "python": "data if data else None"
+          }, 
+          "name": {
+            "xpath": ".//div[@id='contained']/h1/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }, 
+      "publisher": [
+        {
+          "xpath": "substring-after(//div[contains(text(), 'Publisher')]/text(), 'Publisher:')"
+        }, 
+        {
+          "xpath": "substring-after(//div[contains(text(), 'Publisher')]/text(), 'Publisher')"
+        }
+      ]
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/product/.*',), restrict_xpaths=('//div[@class=\\'thumbdiv\\']/a')), callback='parse_product')", 
+        "Rule(lxml(allow=('/category/videos/.*')), follow=True,  callback='passCat')"
+      ]
+    }
+  }
+}

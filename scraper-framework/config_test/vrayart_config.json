@@ -1,0 +1,66 @@
+{
+  "base_url": "https://www.vrayschool.com/",
+  "levels": {},
+  "start_url": "https://www.vrayschool.com/all-courses-masonry/",
+  "output_config": {
+    "fields": {
+      "provider_id": "319",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "name": {
+        "xpath": "//div[@class='course_title']/h1//text()"
+      },
+      "product_image_url": {
+        "xpath": "//div[@id='item-header-avatar']/a/img[@class='attachment-full wp-post-image']/@src"
+      },
+      "description": {
+        "python": "vrayart.description(response)"
+      },
+      "duration_display": {
+        "xpath": "//div[@class='widget pricing']/div[@class='course_details']/ul/li[2]/text()"
+      },
+      "duration_filter": {
+        "xpath": "//div[@class='widget pricing']/div[@class='course_details']/ul/li[2]/text()",
+        "python": "duration_filter(data)"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "//strong[@itemprop='price']/span//text()",
+        "re": "\\w.*"
+      },
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "./h5/a/text()"
+          },
+          "image": {
+            "xpath": "./div/img/@src"
+          },
+          "link": {
+            "xpath": "./h5/a/@href"
+          }
+        },
+        "type": "[Instructor]",
+        "xpath": "//div[@class='instructor_course']"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/course/\\w.*',),),callback='parse_product')"
+      ]
+    },
+    "pre_filters": {
+      "filters_not": [
+        {
+          "level": "1",
+          "python": "vrayart.not_in_english(response)"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "base_url": "http://www.vtc.com/", 
+  "start_url": "http://www.vtc.com/showall.htm", 
+  "levels": {
+    "1": "./p/a/@href", 
+    "1_1": {
+      "xpath": "//label[contains(.,'Author:')]/following::span[1]/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "314", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "string(//*[@id='courseDescription']/p[@class='courseDescription'])", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "string(//div[@id='cdesc-text'])", 
+          "level": "1"
+        }
+      ], 
+      "name": {
+        "xpath": "./p/a/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='detailsContent1']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "duration_filter": {
+            "xpath": "string(//li[contains(.,'Duration:')]/span)", 
+            "re": ".*hrs", 
+            "python": "duration_filter(data)"
+          }, 
+          "duration_display": {
+            "xpath": "string(//li[contains(.,'Duration:')]/span)", 
+            "re": ".*hrs"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "published_date": {
+        "xpath": "./a[@class='viewDemo']/text()", 
+        "python": "convert_date(str(data))"
+      }, 
+      "authors": {
+        "xpath": "//div[@id='detailsLeftCoursePage']", 
+        "fields": {
+          "bio": {
+            "xpath": "string(.//div[@id='courseContent']/div)"
+          }, 
+          "image": {
+            "xpath": ".//div[@class='authors']/div[@class='authorsImg']/img/@src"
+          }, 
+          "link": {
+            "xpath": ".//p[@class='website']/a/@href"
+          }, 
+          "name": {
+            "xpath": ".//div[@class='authors']/div[@class='authorsDetails']/h4/text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1_1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "string(//li[contains(.,'SKU:')])", 
+        "re": "\\d+", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='contentWrapper']/div[@id='detailsLeftCoursePage']/ul[@class='allCourses']/li"
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "substring-before(//table[@class='inner']/tr[1]/td[@class='upperLeft']/text()[1],'(')", 
+      "start_url": "http://www.vtc.com/modules/content/pricing.php"
+    }
+  }
+}

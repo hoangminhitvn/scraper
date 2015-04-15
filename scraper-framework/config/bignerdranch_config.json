@@ -1,0 +1,108 @@
+{
+  "base_url": "https://training.bignerdranch.com/",
+  "start_url": "https://training.bignerdranch.com",
+  "levels": {
+    "1_1": {
+      "xpath": "//a[@itemprop='performer']/@href",
+      "python": "bignerdranch.get_instructors_url(data)"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "422",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "Y",
+      "space_lock": "Y",
+      "language": "eng",
+      "description": [
+        {
+          "xpath": "substring-before(//div[@class='l-shift-grid'],'Sign up')",
+          "re": "\\w.*",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "//h1[@class='t-section-heading u-tac']/following-sibling::p//text()",
+          "re": "\\w.*",
+          "python": "html_to_text(data)"
+        }
+      ],
+      "name": {
+        "xpath": "//h1[@class='t-section-heading u-tac']//text()"
+      },
+      "toc": {
+        "xpath": "//div[@class='l-container'][contains(.//h2,'Syllabus')]"
+      },
+      "requirements": {
+        "xpath": "//h2[contains(.,'Requirements')]/following-sibling::*[1]//text()",
+        "re": "\\w.*",
+        "python": "html_to_text(data)"
+      },
+      "product_events": {
+        "fields": {
+          "language": "eng",
+          "start_date_local": {
+            "xpath": ".//span[@itemprop='startDate']/@content",
+            "python": "convert_date(data) if data else None"
+          },
+          "end_date_local": {
+            "xpath": ".//span[@itemprop='endDate']/@content",
+            "python": "convert_date(data) if data else None"
+          },
+          "price_currency": "USD",
+          "price_display_float": {
+            "xpath": ".//text()[contains(.,'$')]",
+            "re": "\\d.*",
+            "python": "get_price_float(data)"
+          },
+          "location_display": {
+            "xpath": ".//text()[contains(.,'Location')]/following-sibling::a//text()",
+            "re": "\\w.*"
+          },
+          "location_city": {
+            "xpath": ".//text()[contains(.,'Location')]/following-sibling::a//text()",
+            "re": "\\w.*",
+            "python": "data.split(', ')[1]"
+          },
+          "location_addr": {
+            "xpath": ".//text()[contains(.,'Location')]/following-sibling::a//text()",
+            "re": "\\w.*",
+            "python": "data.split(', ')[0]"
+          }
+        },
+        "type": "[ProductEvent]",
+        "xpath": "//ul[@class='schedule-skin']/li",
+        "level": "1"
+      },
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "//div[@class='bio-l-landing-text-container']/h1//text()"
+          },
+          "image": {
+            "xpath": "//img[@class='bio-l-landing-hobby-shot']/@src",
+            "python": "urljoin('http://www.bignerdranch.com/',data)"
+          },
+          "bio": {
+            "xpath": "//div[@class='bio-l-landing-text-container']/p//text()",
+            "python": "html_to_text(data)"
+          },
+          "link": {
+            "xpath": "//meta[@property='og:url']/@content"
+          }
+        },
+        "type": "[Instructor]",
+        "level": "1_1",
+        "python": "bignerdranch.set_instructors(data,source)"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/classes/.*',), ), callback='parse_product')",
+        "Rule(lxml(allow=('.*',), restrict_xpaths=('//ul[@class=\\'nav-subnav\\']/li/a')), follow=True)"
+      ]
+    }
+  }
+}

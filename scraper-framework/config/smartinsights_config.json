@@ -1,0 +1,67 @@
+{
+  "base_url": "http://www.smartinsights.com/", 
+  "start_url": "http://www.smartinsights.com/", 
+  "levels": {}, 
+  "selenium_config": {
+    "driver": "phantomjs", 
+    "click": {
+      "xpath": "//button[@id='load-more']", 
+      "repeat": -1, 
+      "sleep": 2
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "389", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//*[@id='product-benefits'])"
+      }, 
+      "name": {
+        "xpath": "//*[@id='single-guide']//h1/text()"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='product-includes']"
+      }, 
+      "formats": {
+        "xpath": "//li[contains(.,'Format')]/text()", 
+        "re": "PDF|Ebook|MP4|video"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[contains(@class,'banner-imgNew')]//img/@src"
+      }, 
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "string(//li[contains(.,'Presenter')])", 
+            "re": "re.compile('Presenter:(.*)',re.I|re.S)"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": "string(//li[contains(.,'Author')])", 
+            "re": "re.compile('Authors?:(.*)',re.I|re.S)"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('digital-marketing-advice/$')),callback=slm.click_and_follow)", 
+        "Rule(lxml(allow=('.*'),restrict_xpaths='//a[contains(./div,\\'View Details\\')]'), callback='parse_product',follow=True)"
+      ]
+    }
+  }
+}

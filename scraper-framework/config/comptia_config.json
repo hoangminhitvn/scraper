@@ -1,0 +1,70 @@
+{
+  "base_url": "http://www.comptia.org", 
+  "start_url": "https://www.comptia.org/events/webinars", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "78", 
+      "product_type_id": {
+        "python": "product_type_id('webinnar')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "description": [
+        {
+          "xpath": "//strong[contains(.,'Hosted by Verizon')]/following-sibling::text()[1]", 
+          "python": "html_to_text(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//p[contains(./strong,'EST')]/following-sibling::p[1]//text()", 
+          "python": "html_to_text(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='content'],'EST'),'Earn CE Credit Toward')", 
+          "python": "html_to_text(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='content'],'EST'),'Speaker: Eric Walton, President, PL Coaches, LLC')", 
+          "python": "html_to_text(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@id='content']/p/span//text()", 
+          "python": "html_to_text(data)", 
+          "level": "1"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//h1)", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "tz": "CST", 
+          "language": "eng", 
+          "start_date_local": {
+            "xpath": "//span[@id='LeftColumn_C002_lblEventDate']//text()", 
+            "python": "convert_date(data) if data else None"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'404 - File or directory not found.' in response.body", 
+          "level": "1"
+        }
+      ]
+    }, 
+    "xpath": "//a[contains(.,'More Info')]"
+  }
+}

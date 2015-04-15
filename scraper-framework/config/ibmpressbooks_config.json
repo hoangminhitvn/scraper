@@ -1,0 +1,99 @@
+{
+    "base_url": "http://www.ibmpressbooks.com/",
+    "start_url": "http://www.ibmpressbooks.com/store/browse.asp",
+    "levels": {
+        "1": "./td[@class='txt']/a/@href",
+        "1_1": "//*[@id='metaInformation']//li/a[@rel='author']/@href"
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "185",
+            "product_type_id": {
+                "python": "product_type_id('Books')"
+            },
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//div[span[@id='bssMetaInformation']]/span[@id]/following-sibling::*//text()",
+                    "python": "html_to_text(data)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "string(//*[@id='bssContent']/div[contains(.,'Description')])",
+                    "re": "re.compile('Description(.*)About the Instructor',re.S|re.I)",
+                    "python": "html_to_text(data)",
+                    "level": "1"
+                }
+            ],
+            "toc": {
+                "xpath": "//*[@id='bssContent']/div[contains(.,'Description')]",
+                "re": "re.compile('What You Will Learn</b></p>(.*)<p><b>Who Should Take This Course',re.S|re.I)",
+                "level": "1"
+            },
+            "requirements": {
+                "xpath": "string(//*[@id='bssContent']/div[contains(.,'Description')])",
+                "re": "re.compile('Course Requirements(.*)Table of Contents',re.S|re.I)",
+                "level": "1"
+            },
+            "name": {
+                "xpath": "//h1/text()",
+                "level": "1"
+            },
+            "product_image_url": {
+                "xpath": "//*[@id='cover']/a/img/@src",
+                "python": "urljoin('http://www.ibmpressbooks.com/',data)",
+                "level": "1"
+            },
+            "published_date": {
+                "python": "convert_date(selector.re('Published (.*)by')[0])",
+                "level": "1"
+            },
+            "authors": {
+                "fields": {
+                    "name": {
+                        "xpath": ".//h1/text()"
+                    },
+                    "bio": {
+                        "xpath": "./p//text()",
+                        "python": "html_to_text(data)"
+                    },
+                    "image": {
+                        "xpath": "./img/@src"
+                    }
+                },
+                "type": "[Instructor]",
+                "level": "1_1",
+                "xpath": "//*[@id='contentAuthors']/div[@class='clearfix']"
+            },
+            "price_currency": {
+                "xpath": [
+                    "string(//div[contains(@class,'uppBundle')]//li[contains(.,'Your Price')])",
+                    "string(//*[@id='childContainer']//li[contains(.,'Your Price')])"
+                ],
+                "python": "get_price_currency(data.replace('Your Price:',''))",
+                "level": "1"
+            },
+            "price_display_float": {
+                "xpath": [
+                    "string(//div[contains(@class,'uppBundle')]//li[contains(.,'Your Price')])",
+                    "string(//*[@id='childContainer']//li[contains(.,'Your Price')])"
+                ],
+                "python": "get_price_float(data.replace('Your Price:',''))",
+                "level": "1"
+            },
+            "formats": {
+                "xpath": [
+                    "string(//*[@id='childContainer']//div[contains(@class,'uppBundle')]//li[contains(.,'Includes')])",
+                    "string(//*[@id='childContainer']//li[contains(.,'Includes')])"
+                ],
+                "re": "MP3|PDF|Kindle|iPad|Nook|PDF|EPUB|MOBI",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "xpath": "//*[@id='allProdlist']//tr",
+        "extractor_rules": {
+            "rules": "[Rule(lxml(allow=('/store/browse.asp|/store/browse.asp\\?page=\\d+',)),callback='parse',follow=True)]"
+        }
+    }
+}

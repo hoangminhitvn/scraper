@@ -1,0 +1,161 @@
+{
+    "base_url": "http://oreilly.com",
+    "start_url": "http://oreilly.com",
+    "settings": {
+        "handle_httpstatus_list": [301]
+    },
+    "levels": {
+        "1_1": "//tr/td//a[contains(@about,'oreilly')]/@href"
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "348",
+            "product_type_id": {
+                "xpath": {
+                    "operator": "and",
+                    "value": [
+                        "string(//a[@id='availableFormats'])",
+                        "string(//dt[contains(.,'Formats')]/following-sibling::dd[1])"
+                    ]
+                },
+                "python": "product_type_id('Courses' if selector.re('Video') else 'Books')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": {
+                "xpath": "//div[@class='detail-description-content']//p//text()",
+                "python": "html_to_text(data)"
+            },
+            "name": {
+                "xpath": "//div[contains(@class, 'detailheader')]/text()"
+            },
+            "toc": {
+                "xpath": "//div[@id='toc-content']"
+            },
+            "product_video_url": {
+                "xpath": "//div[@id='video-preview']//iframe/@src"
+            },
+            "formats": [
+                {
+                    "xpath": "string(//a[@id='availableFormats'])",
+                    "type": "[str]"
+                },
+                {
+                    "xpath": "string(//dt[contains(.,'Formats')]/following-sibling::dd[1])",
+                    "type": "[str]"
+                }
+            ],
+            "product_image_url": {
+                "xpath": "//div[@class='detailimgcontainer']//img/@src",
+                "python": "re.sub('cat.gif','lrg.jpg',data)"
+            },
+            "price_currency": "USD",
+            "duration_filter": {
+                "xpath": "//div[contains(@class,'AuthorName')]/following-sibling::div[contains(.,'Run time')]/text()",
+                "re": ":(.*)",
+                "python": "duration_filter(data)"
+            },
+            "price_display_float": {
+                "xpath": "//div[@id='buyingOptionTable']//span[@class='price']/text()",
+                "python": "get_price_float(min_price(normalize_space(selector.extract())))"
+            },
+            "duration_display": [
+                {
+                    "xpath": "//div[contains(@class,'AuthorName')]/following-sibling::div[contains(.,'Pages')]/text()",
+                    "re": ":(.*)"
+                },
+                {
+                    "xpath": "//div[contains(@class,'AuthorName')]/following-sibling::div[contains(.,'Run time')]/text()",
+                    "re": ":(.*)"
+                }
+            ],
+            "published_date": {
+                "xpath": "//div[contains(@class,'AuthorName')]/following-sibling::div[contains(.,'Release Date')]/text()",
+                "re": "Date(.*\\d+)",
+                "python": "convert_date('1 '+normalize_space(data))"
+            },
+            "authors": [
+                {
+                    "xpath": "//tr[contains(@valign,'top')]",
+                    "fields": {
+                        "bio": {
+                            "xpath": "string(.//div[@class='authorbio'])"
+                        },
+                        "name": {
+                            "xpath": ".//h1/text()"
+                        },
+                        "image": {
+                            "xpath": ".//div[@id='photo']/img/@src"
+                        }
+                    },
+                    "type": "[Author]",
+                    "level": "1_1"
+                },
+                {
+                    "xpath": "//li[@class='author-bio']",
+                    "fields": {
+                        "bio": {
+                            "xpath": "string(./div/p)"
+                        },
+                        "name": {
+                            "xpath": "./h3/text()"
+                        }
+                    },
+                    "type": "[Author]"
+                },
+                {
+                    "xpath": "//div[contains(@class,'AuthorName')]",
+                    "fields": {
+                        "name": {
+                            "xpath": "./span/text()"
+                        }
+                    },
+                    "type": "[Author]"
+                }
+            ],
+            "publisher": {
+                "xpath": "normalize-space(//span[@property='dc:publisher'])"
+            },
+            "ProductRating": {
+                "xpath": "//div[@class='pr-review-wrap']",
+                "fields": {
+                    "rating_only": "0",
+                    "pub_status": "L",
+                    "user_id": null,
+                    "username": {
+                        "xpath": ".//*[@class='pr-review-author-name']/span/text()"
+                    },
+                    "review": {
+                        "xpath": "string(.//div[@class='pr-review-text']/p[@class='pr-comments'])",
+                        "python": "html_to_text(data) if data else None"
+                    },
+                    "overall_rating": [
+                        {
+                            "xpath": "substring-before(.//div[@class='pr-review-rating']//span[contains(@class, 'pr-rating')]/text(), '.')"
+                        },
+                        {
+                            "xpath": ".//div[@class='pr-review-rating']//span[contains(@class, 'pr-rating')]/text()"
+                        }
+                    ]
+                },
+                "type": "[ProductRating]"
+            }
+        },
+        "type": "Product",
+        "pre_filters": {
+            "filters_not": {
+                "python": "'/product/' not in response.url",
+                "level": "1"
+            }
+        },
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('/category/.*'), restrict_xpaths=(\"//ul[@id='contextual-nav']/li/a\")), follow=True)",
+                "Rule(lxml(allow=('/category/.*'), restrict_xpaths=(\"//div[@class='navLeft1On']/following-sibling::div/a\")), follow=True)",
+                "Rule(lxml(allow=('/category/.*'), restrict_xpaths=(\"//tr[last()]//table[@class='pagination']//td/a\")), follow=True)",
+                "Rule(lxml(allow=('/product/.\\d+.do$'), restrict_xpaths=(\"//td[@class='thumbtext']//div[@class='thumbheader']/a\")), callback='parse_product')"
+            ]
+        }
+    }
+}

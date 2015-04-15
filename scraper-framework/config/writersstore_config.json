@@ -1,0 +1,195 @@
+{
+  "base_url": "http://www.writersstore.com", 
+  "start_url": [
+    "http://www.writersstore.com/", 
+    "http://www.writersstore.com/basics-and-beyond-tutorial-final-draft-9/"
+  ], 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "325", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "Y", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "string(//*[@id='product_description'])", 
+          "re": "re.compile('(?:ABOUT THE WEBINAR|ABOUT THIS WEBINAR)?(.*)(?:WHAT YOU|Pitch Slam Testimonials|YOU WILL LEARN:)',re.I|re.S)", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "string(//*[@id='product_description'])"
+        }
+      ], 
+      "name": {
+        "xpath": "//*[@id='product']/h1/text()", 
+        "level": "1"
+      }, 
+      "toc": [
+        {
+          "xpath": [
+            "//div[@id='product_description']//*[contains(.,'Course Outline')]/following-sibling::*"
+          ]
+        }, 
+        {
+          "xpath": "//div[@id='product_description']", 
+          "re": "WHAT YOU.*LL LEARN:(.*)WHO SHOULD"
+        }, 
+        {
+          "xpath": "//div[@id='product_description']", 
+          "re": "What you.*ll learn:(.*)"
+        }
+      ], 
+      "product_events": {
+        "xpath": "//*[@id='product_options']/table//tr", 
+        "fields": {
+          "location_city": {
+            "xpath": "//p[contains(.,'Location')]/text()[3]|//h3[contains(.,'LOCATION')]/following-sibling::p/text()[3]", 
+            "python": "re.search('(.*),',data).group(1)", 
+            "level": "1"
+          }, 
+          "price_currency": "USD", 
+          "location_state": {
+            "xpath": "substring-after(//p[contains(.,'Location')]/text()[3],', ')|substring-after(//h3[contains(.,'LOCATION')]/following-sibling::p/text()[3],', ')", 
+            "level": "1"
+          }, 
+          "end_date_local": [
+            {
+              "xpath": "./td", 
+              "python": "get_end_date(re.sub('[^\\d,],|PT','',html_to_text(data)) )"
+            }
+          ], 
+          "language": "eng", 
+          "start_date_local": [
+            {
+              "xpath": "./td", 
+              "python": "get_start_date(re.sub('[^\\d,],|PT','',html_to_text(data)) )"
+            }, 
+            {
+              "xpath": "./td", 
+              "python": "convert_date(re.sub('.*-|\\$.*\\d+','',html_to_text(data)))"
+            }
+          ], 
+          "duration_filter": [
+            {
+              "xpath": "./td", 
+              "python": "duration_filter(html_to_text(data))"
+            }, 
+            {
+              "python": "duration_filter(re.findall('(\\d+:\\d+(?:AM|PM) - \\d+:\\d+(?:AM|PM))',response.body))", 
+              "level": "1"
+            }
+          ], 
+          "price_display_float": {
+            "xpath": "./td", 
+            "python": "get_price_float(re.search('\\$\\d+\\.?\\d*',html_to_text(data)).group(0))"
+          }, 
+          "location_display": {
+            "xpath": "//p[contains(.,'Location')]/text()|//h3[contains(.,'LOCATION')]/following-sibling::p/text()", 
+            "python": "' '.join(data)", 
+            "level": "1"
+          }, 
+          "location_name": {
+            "xpath": "//p[contains(.,'Location')]/text()[1]|//h3[contains(.,'LOCATION')]/following-sibling::p[1]/text()[1]", 
+            "level": "1"
+          }, 
+          "location_addr": {
+            "xpath": "//p[contains(.,'Location')]/text()[2]|//h3[contains(.,'LOCATION')]/following-sibling::p/text()[2]", 
+            "level": "1"
+          }, 
+          "duration_display": [
+            {
+              "xpath": "//p[contains(.,'Hours')]", 
+              "python": "re.sub('\\*','',html_to_text(data))", 
+              "level": "1"
+            }, 
+            {
+              "xpath": "//h3[contains(.,'LOCATION')]/following-sibling::p[@class='text_bottom_border']/text()[1]", 
+              "level": "1"
+            }
+          ]
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "product_video_url": {
+        "xpath": "//*[@id='product_description']//iframe/@src", 
+        "python": "data.replace('//','')", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//*[@id='product_image']/a/@href", 
+            "//*[@id='product_contest_header']/img/@src"
+          ]
+        }
+      }, 
+      "requirements": {
+        "python": "html_to_text(selector.re('System Requirements(.*)'))"
+      }, 
+      "published_date": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "substring-after(//li[contains(.,'Publication date:')]/text(),'Publication date: ')", 
+            "substring-after(//li[contains(.,'Date available:')]/text(),'Date available: ')"
+          ]
+        }
+      }, 
+      "instructors": {
+        "xpath": "//*[@class='creator'][contains(.,'Instructor')]", 
+        "fields": {
+          "bio": {
+            "xpath": "string(//*[@class='creator']/table)"
+          }, 
+          "image": {
+            "xpath": ".//td[@class='creator_image']/img/@src"
+          }, 
+          "link": {
+            "xpath": "./h2/a/@href", 
+            "python": "urljoin('http://www.writersstore.com/',data) if data else None"
+          }, 
+          "name": {
+            "xpath": "./h2/a/text()"
+          }
+        }, 
+        "type": "[Instructor]"
+      }, 
+      "audience": {
+        "xpath": "string(//p[contains(.,'WHO SHOULD')]/following-sibling::*[1])", 
+        "python": "data if data else None", 
+        "level": "1"
+      }, 
+      "authors": {
+        "xpath": "//*[@class='creator'][contains(.,'Author')]", 
+        "fields": {
+          "bio": {
+            "xpath": "string(//*[@class='creator']/table)"
+          }, 
+          "image": {
+            "xpath": ".//td[@class='creator_image']/img/@src"
+          }, 
+          "link": {
+            "xpath": "./h2/a/@href", 
+            "python": "urljoin('http://www.writersstore.com/',data) if data else None"
+          }, 
+          "name": {
+            "xpath": "./h2/a/text()"
+          }
+        }, 
+        "type": "[Author]"
+      }, 
+      "publisher": {
+        "xpath": "//li[contains(.,'Publisher:')]/a/text()"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('http://www.writersstore.com/[^/]+/$',), deny=('/services/|/writing-contests/|/books|/software|/supplies|/dvds-audio|/courses')), callback='parse_product'),Rule(lxml(allow=('/books/$|/books\\?order=popularity&page=\\d+|/software/$|/software\\?order=popularity&page=\\d+|/supplies/$|/supplies\\?order=popularity&page=\\d+|/dvds-audio/$|/dvds-audio\\?order=popularity&page=\\d+|/courses/$|/courses\\?order=popularity&page=\\d+|/services/',)), follow=True)]"
+    }
+  }
+}

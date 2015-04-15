@@ -1,0 +1,77 @@
+{
+  "base_url": "http://02geek.com", 
+  "start_url": "http://02geek.com/catalog", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "10",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "substring-before(substring-after(//div[@class='main-content'],'When should you use sharedObjects?'),'<!--')", 
+          "re": "\\w.*", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='smallVideo']/following-sibling::p//text()[count(.|//div[@class='smallVideo']/following-sibling::div[@class='top visiter']/preceding-sibling::p//text()) = count(//div[@class='smallVideo']/following-sibling::div[@class='top visiter']/preceding-sibling::p//text())]", 
+          "re": "\\w.*", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//div[@class='courseTitle']/following-sibling::text()[count(.|//div[@class='courseTitle']/following-sibling::div[@class='top visiter']/preceding-sibling::text()) = count(//div[@class='courseTitle']/following-sibling::div[@class='top visiter']/preceding-sibling::text())]", 
+          "re": "\\w.*", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//div[@class='smallVideo']/following-sibling::text()", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//div[@class='courseTitle']/following-sibling::p[1]//text()", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }
+      ], 
+      "name": {
+        "xpath": "//div[@class='courseTitle']/h3//text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='topic topicLRG']"
+      }, 
+      "product_video_url": [
+        {
+          "xpath": "//div[@class='courseTitle']/following-sibling::iframe/@src"
+        }, 
+        {
+          "xpath": "//div[@class='smallVideo']//a/@href"
+        }
+      ], 
+      "product_image_url": {
+        "xpath": "//img[@class='thumb']/@src"
+      }, 
+      "duration_filter": {
+        "xpath": "//span[@class='course-time']//text()", 
+        "re": "\\d.*", 
+        "python": "duration_filter(data)"
+      }, 
+      "duration_display": {
+        "xpath": "//span[@class='course-time']//text()", 
+        "re": "\\d.*"
+      }, 
+      "prerequisites": {
+        "xpath": "//h4[contains(.,'Prerequisite:')]/following-sibling::span[1]/a//text()"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/.*\\.html',),restrict_xpaths=('//div[@class=\\'course-title\\']/a'),deny=('/marketing/seo/the-tags\\.html')),callback='parse_product')", 
+        "Rule(lxml(allow=('.*',), restrict_xpaths=('//li[@class=\\'title\\']/a')),follow=True,)"
+      ]
+    }
+  }
+}

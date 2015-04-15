@@ -1,0 +1,94 @@
+{
+  "base_url": "http://www.macprovideo.com", 
+  "start_url": "http://www.macprovideo.com/tutorials/all-tutorials", 
+  "levels": {
+    "1": "./div/a/@href", 
+    "1_1": {
+      "xpath": "substring-after(//div[@id='content']//h3/a/@href,'..')"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "284", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(substring-after(string(//div[@id='tutorial_content_1']),'2014'),substring-after(string(//div[@id='tutorial_content_1']),'2013'),substring-after(string(//div[@id='tutorial_content_1']),'2012'),substring-after(string(//div[@id='tutorial_content_1']),'2011'),substring-after(string(//div[@id='tutorial_content_1']),'2010'),substring-after(string(//div[@id='tutorial_content_1']),'2009'),substring-after(string(//div[@id='tutorial_content_1']),'2008'),substring-after(string(//div[@id='tutorial_content_1']),'2007'),substring-after(string(//div[@id='tutorial_content_1']),'2006'),substring-after(string(//div[@id='tutorial_content_1']),'2005'),substring-after(string(//div[@id='tutorial_content_1']),'2004'))", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[@id='content']//h2//text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='tutorial_content_2']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "duration_filter": {
+            "xpath": "//div[@id='content']//h3/text()", 
+            "re": "\\|(.*)\\|", 
+            "python": "duration_filter(data)"
+          }, 
+          "duration_display": {
+            "xpath": "//div[@id='content']//h3/text()", 
+            "re": "\\|(.*)\\|"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@class='right_col']/div[1]/div[@style='margin-bottom: 20px; text-align:center; padding: 3px 0']/a/@href", 
+        "type": "[str]", 
+        "level": "1"
+      }, 
+      "formats": [
+        "video"
+      ], 
+      "product_image_url": {
+        "xpath": "//div[@id='tutorial_content_1']/img/@src", 
+        "python": "urljoin('http://www.macprovideo.com/',data)", 
+        "level": "1"
+      }, 
+      "ProductRating": {
+        "xpath": "//div[@id='reviews']/div[@class='review']", 
+        "fields": {
+          "username": {
+            "xpath": "substring-after(string(./div[@class='review_name']),'-')"
+          }, 
+          "rating_only": "0", 
+          "user_id": null, 
+          "review": {
+            "xpath": "string(./div[@class='review_content'])"
+          }, 
+          "pub_status": "L", 
+          "overall_rating": {
+            "xpath": "./div[@class='review_rating']/img[contains(./@src,'star.png')]", 
+            "python": "len(data)"
+          }
+        }, 
+        "type": "[ProductRating]", 
+        "level": "1"
+      }, 
+      "published_date": {
+        "xpath": "string(//dt[contains(.,'Released')]/following-sibling::*)", 
+        "python": "convert_date(data)", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//tr[contains(.,'All  Tutorials')]/following-sibling::tr/td[2]"
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "concat(substring-before(//div[@id='perMonth']/span,' USD'),substring-after(//div[@id='perMonth']/span,'USD'))", 
+      "start_url": "http://www.macprovideo.com/plans/"
+    }
+  }
+}

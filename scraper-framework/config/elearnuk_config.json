@@ -1,0 +1,64 @@
+{
+  "base_url": "http://www.elearnuk.co.uk", 
+  "start_url": "http://www.elearnuk.co.uk/a-z", 
+  "levels": {
+    "1": "./@href", 
+    "1_3": "concat('http://www.elearnuk.co.uk',//ul[@id=\"tabsTop\"]/li[contains(.,'Study Options')]/a/@href)", 
+    "1_2": "concat('http://www.elearnuk.co.uk',//ul[@id=\"tabsTop\"]/li[contains(.,'Qualifications')]/a/@href)", 
+    "1_1": "concat('http://www.elearnuk.co.uk',//ul[@id=\"tabsTop\"]/li[contains(.,'Syllabus')]/a/@href)"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "154", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='content_main'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": ".//text()"
+      }, 
+      "toc": {
+        "xpath": "//body", 
+        "level": "1_1"
+      }, 
+      "price_currency": "GBP", 
+      "duration_filter": {
+        "xpath": "substring-after(//p[contains(.,'time required to complete')],':')", 
+        "python": "duration_filter(data[0:data.rfind('.')] if data[len(data)-1]=='.' else data)", 
+        "level": "1_3"
+      }, 
+      "price_display_float": [
+        {
+          "xpath": "substring-after(string(//div[@id='content_top']//h2[contains(.,'NEW PRICE')]),'\u00a3')", 
+          "python": "get_price_float(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "substring-after(string(//div[@id='content_top']//h2),'\u00a3')", 
+          "python": "get_price_float(data)", 
+          "level": "1"
+        }
+      ], 
+      "duration_display": {
+        "xpath": "substring-after(//p[contains(.,'time required to complete')],':')", 
+        "level": "1_3"
+      }, 
+      "requirements": {
+        "xpath": "//h2[contains(./text(),'Requirements')]/following-sibling::p//text()", 
+        "level": "1_2"
+      }, 
+      "certificates": {
+        "xpath": "//h2[contains(./text(),'Certificate')]/following-sibling::p[1]//text()", 
+        "level": "1_2"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='tabs']/div[@id='tabs-2']/div[@class='prepend-bottom']/ul/li/a"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "base_url": "http://www.cfpa.com/", 
+  "start_url": "http://www.cfpa.com/UpcomingCourses/UpcomingCourse/CourseType/Region/MonthNo/Industry/CourseID/AllCourses", 
+  "levels": {
+    "1": "./td[2]/a/@href", 
+    "0": {
+      "selenium_function": "slm.get(response.url)"
+    }
+  }, 
+  "selenium_config": {
+    "driver": "phantomjs"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "46", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": {
+        "xpath": "./td[1]/text()", 
+        "python": "'N' if 'Online' in data else 'Y'"
+      }, 
+      "space_lock": {
+        "xpath": "./td[1]/text()", 
+        "python": "'N' if 'Online' in data else 'Y'"
+      }, 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='comment more'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h1[@class='page-title']/text()", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "location_city": {
+            "xpath": "./td[4]/text()", 
+            "python": "re.search('(.*),',data).group(1)"
+          }, 
+          "location_state": {
+            "xpath": "./td[4]/text()", 
+            "python": "re.search(', (.*)',data).group(1)"
+          }, 
+          "end_date_local": {
+            "xpath": "./td[1]/text()", 
+            "python": "get_end_date(data)"
+          }, 
+          "price_currency": {
+            "xpath": "//*[@id='right-column']//tr[contains(.,'Regular Rate')]//strong/text()", 
+            "python": "get_price_currency(data)", 
+            "level": "1"
+          }, 
+          "start_date_local": [
+            {
+              "xpath": "./td[1]/text()", 
+              "python": "get_start_date(data)"
+            }, 
+            {
+              "xpath": "./td[1]/text()", 
+              "python": "convert_date(data)"
+            }
+          ], 
+          "price_display_float": {
+            "xpath": "//*[@id='right-column']//tr[contains(.,'Regular Rate')]//strong/text()", 
+            "python": "get_price_float(data)", 
+            "level": "1"
+          }, 
+          "location_display": {
+            "xpath": "./td[4]/text()"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "audience": {
+        "xpath": "string(//article/p[contains(.,'Who Should Attend')])", 
+        "python": "data.replace('Who Should Attend?','')", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "string(//*[@id='course-id'])", 
+        "re": "re.compile('Course ID(.*)',re.S|re.I)", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//*[@id='CFPAGrid']/table//tr"
+  }
+}

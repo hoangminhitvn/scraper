@@ -1,0 +1,60 @@
+{
+    "baseUrl": "http://filmmakeriq.com/",
+    "levels": {},
+    "start_url": "http://filmmakeriq.com/courses",
+    "output_config": {
+        "fields": {
+            "provider_name": "FilmMaker IQ",
+            "provider_id": "193",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//h1[@class='entry-title']/a/text()"
+            },
+            "prod_image": {
+                "xpath": "//a[@class='featured-image']/img/@src"
+            },
+            "preview_video": {
+                "xpath": "//div[@class='post-content']//iframe/@src"
+            },
+            "description": [
+                {
+                    "xpath": "//div[@class='entry-text']",
+                    "re": "re.compile('(.*)<h2>Course Material',re.S)",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+                },
+                {
+                    "xpath": "//div[@class='entry-text']",
+                    "re": "re.compile('(.*)<b>Lessons',re.S)",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+                },
+                {
+                    "xpath": "//div[@class='entry-text']//text()",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+                }
+            ],
+            "toc":
+                {
+                    "xpath": "//div[@class='entry-text']//p[@id='learndash_lessons']/following-sibling::*",
+                    "python": "' '.join(data)"
+                },
+            "prod_keywords": {
+                "xpath": "//span[@class='tags']/following-sibling::a/text()"
+            },
+            "published_date": {
+                "xpath": "//div[@class='date-meta']/a/text()",
+                "python": "convert_date(data)"
+            }
+        },
+        "type": "Product",
+        "extractorRules": {
+            "rules": [
+                "Rule(lxml(allow=('.*'), restrict_xpaths=('//h2[@class=\\'entry-title\\']/a')), callback='parse_product')",
+                "Rule(lxml(allow=('page/\\d+/$'), restrict_xpaths=('//div[contains(@class,\\'post-nav\\')]//a')), follow=True)",
+                "Rule(lxml(allow=('articles/$')), follow=True)"
+            ]
+        }
+    }
+}

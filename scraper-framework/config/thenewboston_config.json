@@ -1,0 +1,38 @@
+{
+  "base_url": "https://buckysroom.org/", 
+  "start_url": "https://buckysroom.org/videos.php", 
+  "levels": {
+    "1_1": {
+      "python": "getLinkYoutube(response.xpath('//iframe/@src').extract()[0]) if not response.xpath(\"//section[@id='right_side']/span/text()\") else None"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "362", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "name": [
+        {
+          "xpath": "//section[@id='right_side']/span/text()", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//span[contains(@id,'eow-title')]/text()", 
+          "level": "1_1"
+        }
+      ], 
+      "product_video_url": {
+        "xpath": "//div[@id='youtube_video']/iframe/@src", 
+        "python": "data.replace('//','')", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('videos\\.php\\?cat=\\d+&video=\\d+',)), callback='parse_product'),Rule(lxml(allow=('videos\\.php\\?cat=\\d+$|videos\\.php$', )), follow=True),]"
+    }
+  }
+}

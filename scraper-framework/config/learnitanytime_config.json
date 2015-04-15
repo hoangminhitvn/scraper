@@ -1,0 +1,44 @@
+{
+  "base_url": "http://www.learnitanytime.com", 
+  "start_url": "http://www.learnitanytime.com/courses/?tab=All-Courses", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "138", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='zero']/div[@class='new-course-descript']/p//text()", 
+        "python": "''.join(data)"
+      }, 
+      "name": {
+        "xpath": "string(//h1)"
+      }, 
+      "toc": {
+        "xpath": "//table[@id='courseOutline']"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='side-monitor']/a/@href"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='new-course-descript']/img/@src", 
+        "python": "urljoin('http://www.learnitanytime.com/',data)"
+      }, 
+      "difficulty": {
+        "xpath": "string(//div[@class='course-menu'])", 
+        "python": "difficulty(data)"
+      }, 
+      "audience": {
+        "xpath": "substring-after(string(//div[@id='zero']/div[@class='new-course-descript']/p[1]),':')"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('/courses/web-graphics-courses/\\w.*/','/courses/desktop-courses/\\w.*/','/courses/office-courses/\\w.*/',),), callback='parse_product'),]"
+    }
+  }
+}

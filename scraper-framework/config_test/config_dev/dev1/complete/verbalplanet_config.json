@@ -1,0 +1,72 @@
+{
+  "baseUrl": "http://www.verbalplanet.com/",
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='bluelink']/a/@href",
+      "dont_filter": true
+    }
+  },
+  "start_url": ["http://www.verbalplanet.com/"],
+  "output_config": {
+    "fields": {
+      "provider_name": "Verbal Planet",
+      "provider_id": "318",
+      "product_type_name": "Courses",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "name": {
+        "xpath": "//div[@class='topboxcontent']//h2/text()"
+      },
+      "prod_image": {
+        "xpath": "//div[@class='topbox']//script[contains(.,'Slideshow')]",
+        "re": "Slideshow/\\w+\\.jpg|Slideshow/\\w+\\.png",
+        "python": "urljoin('http://www.verbalplanet.com/',data[0])"
+      },
+      "short_desc": {
+        "xpath": "//form[@id='marketplace']/p[@class='standardtext']//text()",
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      },
+      "description": {
+        "xpath": "//div[@class='TabbedPanelsContentGroup']/div[1]/table//text()",
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      },
+      "product_events": {
+        "fields": {
+          "instructors": {
+            "fields": {
+              "name": {
+                "xpath": "substring-before(.//div[@class='topboxcontent']/table//td[2]/p[1]/text(), ':')"
+              },
+              "image": [
+                {
+                  "xpath": ".//div[@class='picturediv']/img/@src",
+                  "python": "urljoin('http://www.verbalplanet.com/', data) if data else None"
+                },
+                {
+                  "xpath": ".//div[@class='portraitpicturediv']/img/@src",
+                  "python": "urljoin('http://www.verbalplanet.com/', data) if data else None"
+                }
+              ],
+              "bio": {
+                "xpath": ".//div[@class='topboxcontent']//tr[2]/td[1]//text()",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+              }
+            },
+            "type": "[Instructor]"
+          }
+        },
+        "type": "[ProductEvent]",
+        "xpath": "//div[@class='wrapper']",
+        "level": "1_1"
+      }
+    },
+    "type": "Product",
+    "extractorRules": {
+      "rules": ["Rule(lxml(allow=('.*'), restrict_xpaths=('//a[contains(., \\'Pick a Language\\')]/following-sibling::ul/li/ul/li/a')), callback='parse_product')"]
+    },
+    "preFilters": {
+      "filtersNot": {}
+    }
+  }
+}

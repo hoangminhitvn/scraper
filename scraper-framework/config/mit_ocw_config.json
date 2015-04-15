@@ -1,0 +1,62 @@
+{
+    "base_url": "http://ocw.mit.edu",
+    "start_url": "http://ocw.mit.edu/courses/",
+    "levels": {
+        "1_1": {
+            "xpath": "//div[@id='course_nav']/ul/li[contains(position()>1,position()<5)]//@href",
+            "python": "[\"%s/\"i for i in data]"
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "159",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": {
+                "xpath": "concat(string(//div[@id='description']/div/p[1]),string(//div[@id='description']/div/p[2]),string(//div[@id='description']/div/ol))"
+            },
+            "name": {
+                "xpath": "//h1/text()"
+            },
+            "toc": {
+                "xpath": "//div[@class='maintabletemplate']",
+                "level": "1_1"
+            },
+            "product_image_url": {
+                "xpath": "//div[@id='chpImage']/div[@class='image']/img/@src",
+                "python": "urljoin('http://ocw.mit.edu/',data)"
+            },
+            "difficulty": {
+                "xpath": "string(//h3[contains(.,'Level')]/following-sibling::p[1])",
+                "re": "difficulty(data)"
+            },
+            "instructors": {
+                "fields": {
+                    "name": {
+                        "xpath": "//h3[contains(.,'Instructor')]/following-sibling::p[@itemprop='author']//text()"
+                    }
+                },
+                "type": "[Instructor]",
+                "level": "1"
+            },
+            "prerequisites": {
+                "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::p//text()[count(.|//h2[contains(.,'Prerequisites')]/following-sibling::h2[1]/preceding-sibling::p//text()) = count(//h2[contains(.,'Prerequisites')]/following-sibling::h2[1]/preceding-sibling::p//text())]",
+                "python": "''.join(data)",
+                "level": "1_1"
+            },
+            "partner_prod_id": {
+                "xpath": "string(//h3[contains(.,'Course Number')]/following-sibling::p[1])"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('courses',),allow_domains=('ocw.mit.edu'),restrict_xpaths=('//table[@class=\\'courseList\\']//tr/td[2]/a')), callback='parse_product')"
+            ]
+        }
+    }
+}

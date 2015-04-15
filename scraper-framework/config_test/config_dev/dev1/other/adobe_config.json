@@ -1,0 +1,117 @@
+{
+    "baseUrl": "http://training.adobe.com/training/",
+    "levels": {
+        "1": {
+            "selenium_function": "slm.wait_until_available_and_get_response(data,request)"
+        }
+    },
+    "start_url": "http://training.adobe.com/ats/course-catalog.json",
+    "selenium_config": {
+        "driver": "chrome",
+        "wait_until_available": {
+            "xpath": "//table[@id='dates-loc-table']",
+            "sleep": 1
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_name": "Adobe Systems Incorporated",
+            "provider_id": "42",
+            "product_type_name": "Courses",
+            "space_lock": "B",
+            "time_lock": "B",
+            "name": {
+                "xpath": "//h1//text()"
+            },
+            "audience": {
+                "xpath": "//div[@class='content-left']/div[contains(.,'Audience')]/text()",
+                "python": "html_to_text(data)"
+            },
+            "prerequisites": {
+                "xpath": "//h4[contains(.,'Prerequisites')]/following-sibling::*[1]//text()",
+                "python": "html_to_text(data)"
+            },
+            "toc": {
+                "xpath": "//div[@class='title-wrapper section'][contains(.,'Course Outline')]/following-sibling::*"
+            },
+            "description": {
+                "xpath": "//div[@class='text courseDescription parbase markdown-text']/div//text()",
+                "python": "html_to_text(data)"
+            },
+            "product_events": [
+                {
+                    "fields": {
+                        "price_currency": "USD",
+                        "price_display_float": {
+                            "xpath": "./td[4]//text()",
+                            "re": "\\d.*",
+                            "python": "get_price_float(data) if data else '0'"
+                        },
+                        "price_filter": {
+                            "xpath": "./td[4]//text()",
+                            "re": "\\d.*",
+                            "python": "get_price_float(data) if data else '0'"
+                        },
+                        "location_display": {
+                            "xpath": "./td[1]//text()",
+                            "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                        },
+                        "location_city": {
+                            "xpath": "substring-before(./td[1]//text(),',')"
+                        },
+                        "start_date_local": {
+                            "xpath": "./td[2]//text()",
+                            "python": "convert_date(data) if data else None"
+                        },
+                        "duration_display": {
+                            "xpath": "//div[@class='content-left']/div[contains(.,'Duration')]/p/text()"
+                        },
+                        "duration_filter": {
+                            "xpath": "//div[@class='content-left']/div[contains(.,'Duration')]/p/text()",
+                            "re": "\\d+\\sdays|\\d+\\sday|\\d+\\sminutes|\\d+\\shour|\\d+\\shours",
+                            "python": "duration_filter(data)"
+                        },
+                        "language": {
+                            "xpath": "./td[7]//text()",
+                            "python": "language(data)"
+                        }
+                    },
+                    "type": "[ProductEvent]",
+                    "xpath": "//table[@id='dates-loc-table']/tbody/tr"
+                },
+                {
+
+                    "fields": {
+                        "duration_display": {
+                            "xpath": "//div[@class='content-left']/div[contains(.,'Duration')]/p/text()"
+                        },
+                        "duration_filter": {
+                            "xpath": "//div[@class='content-left']/div[contains(.,'Duration')]/p/text()",
+                            "python": "duration_filter(data)"
+                        },
+                        "language": {
+                            "xpath": "./td[7]//text()",
+                            "python": "language(data)"
+                        }
+                    },
+                    "type": "[ProductEvent]"
+
+                }
+            ]
+        },
+        "type": "Product",
+        "preFilters": {
+            "filtersNot": [
+                {
+                    "level": "1",
+                    "python": "'Sorry, that page was not trained properly' in response.body"
+                }
+            ]
+        },
+        "extractorRules": {
+            "rules": [
+                "Rule(lrgl(allow=('(courses/[^/]+.html)',)),callback='parse_product')"
+            ]
+        }
+    }
+}

@@ -1,0 +1,68 @@
+{
+  "baseUrl": "http://bigthink.com",
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='author']/a/@href",
+      "dont_filter": true
+    }
+  },
+  "start_url": "http://bigthink.com/blogs/big-think-mentor",
+  "output_config": {
+    "fields": {
+      "provider_name": "Big Think Mentor",
+      "provider_id": "29",
+      "product_type_name": "talks",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "name": {
+        "xpath": "//div[@id='post']/header/h1//text()"
+      },
+      "description": {
+        "xpath": "//div[@id='post']/div[@class='content text-idea']//text()",
+        "re": "\\w.*",
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      },
+      "published_date": {
+        "xpath": "string(//div[@class='meta']/div[@class='created_at'])"
+      },
+      "prod_image": {
+        "xpath": "//div[@id='post']/div[@class='content text-idea']/div[@class='image']/img/@src"
+      },
+      "preview_video": [
+        {
+          "xpath": "//div[@id='post']//iframe/@src[contains(.,'youtube')]",
+          "re": "http.*"
+        },
+        {
+          "xpath": "//div[@id='post']//iframe/@src[contains(.,'youtube')]",
+          "python": "urljoin('https:',data) if data else None"
+        }
+      ],
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "//section[@id='main_column']/header/h1//text()"
+          },
+          "bio": {
+            "xpath": "//section[@class='user_information']//div[@class='description']/p//text()",
+            "re": "\\w.*",
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          },
+          "image": {
+            "xpath": "//section[@class='user_information']//img/@src"
+          }
+        },
+        "type": "[Instructor]",
+        "level": "1_1"
+      }
+    },
+    "type": "Product",
+    "extractorRules": {
+      "rules": [
+        "Rule(lxml(allow=('/big-think-mentor/\\w.*',),restrict_xpaths=('//article[@class=\\'post\\']/header/h1/a'),),callback='parse_product')",
+        "Rule(lxml(allow=('/blogs/big-think-mentor\\?page.*',), restrict_xpaths=('//div[@class=\\'pages\\']/a')),follow=True,)"
+      ]
+    }
+  }
+}

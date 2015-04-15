@@ -1,0 +1,80 @@
+{
+  "base_url": "http://aws.amazon.com",
+  "levels": {
+    "1": "./a/@href",
+    "1_1": {
+      "xpath": "//div[@class='parbase aws-button section']/a/@href"
+    },
+    "1_1_1": {
+      "python": "aws.create_request(response)"
+    }
+  },
+  "settings": {
+    "handle_httpstatus_list": [500]
+  },
+  "start_url": "http://aws.amazon.com/training/course-descriptions/",
+  "output_config": {
+    "fields": {
+      "provider_id": "12",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "space_lock": "B",
+      "time_lock": "Y",
+      "name": {
+        "xpath": "./a/text()"
+      },
+      "audience": {
+        "xpath": "//div[@class='title-wrapper section'][contains(.,'Audience')]/following-sibling::div[1]//text()",
+        "python": "html_to_text(data)",
+        "level": "1"
+      },
+      "prerequisites": {
+        "xpath": "//div[@class='title-wrapper section'][contains(.,'Prerequisites')]/following-sibling::div[1]//text()",
+        "python": "html_to_text(data)",
+        "level": "1"
+      },
+      "toc": {
+        "xpath": "//div[@class='title-wrapper section'][contains(.,'Course Outline')]/following-sibling::*",
+        "level": "1"
+      },
+      "description": {
+        "xpath": "//div[@class='title-wrapper section'][contains(.,'Description')]/following-sibling::div[1]//text()",
+        "python": "html_to_text(data)",
+        "level": "1"
+      },
+      "product_events": {
+        "python": "aws.create_events(response)",
+        "level": "1_1_1"
+      },
+      "language": "eng",
+      "duration_display": {
+        "xpath": "//div[contains(.//h3,'Duration')]/following-sibling::div[1]//text()",
+        "re": "\\w.*",
+        "level": "1"
+      },
+      "duration_filter": {
+        "xpath": "//div[contains(.//h3,'Duration')]/following-sibling::div[1]//text()",
+        "re": "\\w.*",
+        "python": "duration_filter(data)",
+        "level": "1"
+      },
+      "certificates": {
+        "fields": {
+          "name": {
+            "xpath": "//h4[@id='Get_AWS_Certified']/a//text()",
+            "re": "AWS.*"
+          },
+          "link": {
+            "xpath": "//figure[@class='image-box ']/figcaption//a/@href",
+            "python": "urljoin('http://aws.amazon.com/',data)"
+          }
+        },
+        "type": "[Certificate]",
+        "level": "1"
+      }
+    },
+    "type": "Product",
+    "xpath": "//ul[@class='side-navbar nav']/li[3]/ul/li"
+  }
+}

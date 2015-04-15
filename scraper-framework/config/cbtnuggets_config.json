@@ -1,0 +1,84 @@
+{
+    "base_url": "http://www.cbtnuggets.com",
+    "start_url": "http://www.cbtnuggets.com/all-courses",
+    "levels": {
+        "1": "./@href",
+        "1_1": "//a[contains(.,'Read the full bio')]/@href"
+
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "39",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": {
+                "xpath": "//div[@id='fullCourseDescription']//text()",
+                "python": "html_to_text(data)",
+                "level": "1"
+            },
+            "name": {
+                "xpath": "./text()"
+            },
+            "toc": {
+                "xpath": "//table[@id='libraryseries']",
+                "level": "1"
+            },
+            "duration_filter": {
+                "xpath": "normalize-space(//div[@class='text-center tertiary uppercase'])",
+                "python": "duration_filter(data)",
+                "level": "1"
+            },
+            "duration_display": {
+                "xpath": "normalize-space(//div[@class='text-center tertiary uppercase'])",
+                "level": "1"
+            },
+            "instructors": {
+                "fields": {
+                    "bio": {
+                        "xpath": "//p[@id='ctl00_PageContentPlaceHolder_trainerbio']//text()"
+                    },
+                    "name": {
+                        "xpath": "//h1/span[1]//text()"
+                    },
+                    "link": {
+                        "xpath": "//a[contains(.,'Read the full bio')]/@href",
+                        "python": "urljoin('http://www.cbtnuggets.com/',data) if data else None",
+                        "level": "1"
+                    }
+                },
+                "type": "[Instructor]",
+                "level": "1_1"
+            },
+            "ProductRating": {
+                "fields": {
+                    "pub_status": "L",
+                    "rating_only": "1",
+                    "overall_rating": {
+                        "xpath": "//text()[contains(.,'COURSE RATING')]/following-sibling::i[@class='glyphicon glyphicon-star']",
+                        "python": "str(len(data))"
+                    },
+                    "review": null,
+                    "user_id": "0",
+                    "username": null
+                },
+                "type": "[ProductRating]",
+                "level": "1"
+
+            }
+        },
+        "pre_filters": {
+            "filters_not": [
+                {
+                    "python": "'http://bitcoin.cbtnuggets.com/' in response.url",
+                    "level": "1"
+                }
+            ]
+        },
+        "type": "Product",
+        "xpath": "//table[@id='grid-tableview']//tr/td[1]/a"
+    }
+}

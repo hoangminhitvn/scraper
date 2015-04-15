@@ -1,0 +1,67 @@
+{
+    "base_url": "https://www.coursecatalog.com/onlinesearch/",
+    "levels": {
+        "0": {
+            "selenium_function": "jer_online.click_and_get_response(response.url)"
+        },
+        "1": {
+            "xpath":"./td[2]/a/@href",
+            "python":"\"%s/%s\"%('http://www.coursecatalog.com/onlinesearch',data)"
+        }
+    },
+    "start_url": "https://www.coursecatalog.com/onlinesearch/",
+    "selenium_config": {
+        "driver": "phantomjs",
+        "click": {
+            "xpath": "//a[contains(.,'Next')]",
+            "sleep": 4,
+            "repeat": -1
+        }
+    },
+    "settings": {
+        "DOWNLOADER_MIDDLEWARES": {
+            "scrapy_balloons.useragent.RandomUserAgentMiddleware":500
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "81",
+            "product_type_id": {
+                "python": "product_type_id('courses')"
+            },
+            "language": "eng",
+            "name": {
+                "xpath": [
+                    "string(//*[@id='tblcoursename']//tr[contains(.,'Course Name')]/following-sibling::tr[1])",
+                    "string(//table[contains(.,'Full Description')]/preceding-sibling::table)"
+                ],
+                "level": "1"
+            },
+            "description": {
+                "xpath": [
+                    "//*[@id='tbldescription']//tr[contains(.,'Course Description')]/following-sibling::tr[1]",
+                    "string(//table[contains(.,'Full Description')]/following-sibling::table[1])"
+                ],
+                "python": "html_to_text(data)",
+                "level": "1"
+            },
+            "toc": {
+                "xpath": [
+                    "//*[@id='tbloutline']//tr[contains(.,'Outline')]/following-sibling::tr[1]",
+                    "//table[contains(.,'Out')]/following-sibling::table[1]"
+                ],
+                "level": "1"
+            },
+            "price_currency": {
+                "xpath": "./td[4]/text()",
+                "python": "get_price_currency(data)"
+            },
+            "price_display_float": {
+                "xpath": "./td[4]/text()",
+                "python": "get_price_float(data)"
+            }
+        },
+        "type": "Product",
+        "xpath":"//*[@id='pnltables']//tr[contains(./td[4],'$')]"
+    }
+}

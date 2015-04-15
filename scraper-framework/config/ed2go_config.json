@@ -1,0 +1,90 @@
+{
+  "base_url": "http://www.ed2go.com/", 
+  "start_url": "http://www.ed2go.com/CourseCatalog.aspx", 
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='subNav']//li[contains(.,'REQUIREMENTS')]/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "108", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "Y", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[contains(.,'About This Course')][@class='section']", 
+        "python": "html_to_text(data.replace('About This Course',''))"
+      }, 
+      "name": {
+        "xpath": "//div[@class='detailsPic']/preceding-sibling::h1/text()"
+      }, 
+      "product_events": {
+        "xpath": "//div[@class='detailsInfo']", 
+        "fields": {
+          "price_display_float": {
+            "xpath": "./ancestor::div//div[@class='ilcDetailsCta']//p/span[@class='price']/text()", 
+            "python": "get_price_float(data)"
+          }, 
+          "price_currency": {
+            "xpath": "./ancestor::div//div[@class='ilcDetailsCta']//p/span[@class='price']/text()", 
+            "python": "get_price_currency(data)"
+          }, 
+          "duration_filter": {
+            "xpath": "./div[contains(.,'Duration of Access')]/strong/text()", 
+            "python": "duration_filter(data)"
+          }, 
+          "start_date_local": {
+            "xpath": "./div[contains(.,'Start Dates:')]/strong/text()"
+          }, 
+          "duration_display": {
+            "xpath": "./div[contains(.,'Duration of Access')]", 
+            "python": "html_to_text(data)"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "python": "ed2go.set_start_date(data, field, selector, response,source)"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='detailsPic']/img/@src"
+      }, 
+      "requirements": {
+        "xpath": "//div[contains(.,'Requirements')][@class='section']", 
+        "python": "html_to_text(data.replace('Requirements',''))", 
+        "level": "1_1"
+      }, 
+      "instructors": {
+        "xpath": "//div[contains(.,'About The Instructor')][@class='section']/table//tr", 
+        "fields": {
+          "bio": {
+            "xpath": ".//td[2]", 
+            "python": "html_to_text(data)"
+          }, 
+          "image": {
+            "xpath": "./td[1]/img/@src"
+          }, 
+          "name": {
+            "xpath": ".//td[2]", 
+            "python": "html_to_text(data)", 
+            "re": "re.recompile('(.*) is',re.I|re.S)"
+          }
+        }, 
+        "type": "[Instructor]"
+      }, 
+      "product_url": {
+        "python": "(response.url).split('?')[0]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/online-courses/',)), callback='parse_product')", 
+        "Rule(lxml(allow=('.*', ), restrict_xpaths=\"//*[@id='catalog']/div[@class='category']//a\"), follow=True)"
+      ]
+    }
+  }
+}

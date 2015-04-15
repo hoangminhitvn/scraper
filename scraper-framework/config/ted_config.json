@@ -1,0 +1,61 @@
+{
+  "base_url": "http://www.ted.com/", 
+  "start_url": "http://www.ted.com/talks", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "358", 
+      "product_type_id": {
+        "python": "product_type_id('Talk')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//p[@class='talk-description']", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "string(//h1[@class='player-hero__header']/div[@class='player-hero__title'])"
+      }, 
+      "product_image_url": {
+        "xpath": "//*[@id='player-hero-poster']/img/@src"
+      }, 
+      "duration_filter": {
+        "xpath": "//div[@class='player-hero__meta']/span[1]/text()", 
+        "python": "str(duration_filter(data))"
+      }, 
+      "duration_display": {
+        "xpath": "//div[@class='player-hero__meta']/span[1]/text()"
+      },
+      "price_display_float": "0",
+      "instructors": {
+        "xpath": "//div[@class='talk-speakers']", 
+        "fields": {
+          "bio": {
+            "xpath": "//div[@class='talk-speakers']//div[@class='talk-speaker__bio']", 
+            "python": "html_to_text(data)"
+          }, 
+          "image": {
+            "xpath": ".//img/@src"
+          }, 
+          "link": {
+            "xpath": "//div[contains(@class,'talk-speaker__name')]/a/@href", 
+            "python": "urljoin('http://www.ted.com',data)"
+          }, 
+          "name": {
+            "xpath": ".//div[contains(@class,'talk-speaker__name')]/a/text()"
+          }
+        }, 
+        "type": "[Instructor]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/talks/'),deny=('/talks$|/talks\\?page=\\d+')), callback='parse_product')", 
+        "Rule(lxml(allow=('/talks$|/talks\\?page=\\d+')),follow=True)"
+      ]
+    }
+  }
+}

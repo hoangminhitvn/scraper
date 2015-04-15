@@ -1,0 +1,202 @@
+{
+    "base_url": "http://dmaeducation.org",
+    "start_url": "http://dmaeducation.org/courses/",
+    "levels": {},
+    "output_config": {
+        "fields": {
+            "provider_id": "93",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "B",
+            "space_lock": "B",
+            "description": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "//div[contains(@class, 'rtbs_content')][1]//p[not(contains(., 'Topics'))][not(contains(., 'Duration'))][not(contains(./a/text(), 'Register'))]//text()",
+                        "//div[contains(@class, 'rtbs_content')][1]//h6/text()",
+                        "//h6[1]//text()"
+                    ]
+                },
+                "python": "html_to_text(data)"
+            },
+            "name": {
+                "xpath": "//h1[contains(@class, 'page-title')]/text()"
+            },
+            "toc": {
+                "xpath": "//div[contains(@class, 'rtbs_content')][2]//*[not(contains(./img/@alt, 'download-outline'))]"
+            },
+            "product_events": {
+                "fields": {
+                    "location_display": {
+                        "xpath": "string(./td[2][contains(.,',')])",
+                        "re": "\\w.*"
+                    },
+                    "location_city": {
+                        "xpath": "substring-before(./td[2],',')",
+                        "re": "\\w.*"
+                    },
+                    "location_state": {
+                        "xpath": "substring-after(./td[2],',')",
+                        "re": "[A-Z]{2}"
+                    },
+                    "duration_display": [
+                        {
+                            "xpath": "//p[contains(./strong,'Duration')]/text()[1]",
+                            "re": "\\d.*ay|\\d.*ays|\\d.*eeks|\\d.*minutes|\\d.*hrs",
+                            "python": "data[0] if isinstance(data, list) else data"
+                        },
+                        {
+                            "xpath": "string(//p[contains(.,'Duration')]/following-sibling::p[1])",
+                            "re": "\\d.*ay|\\d.*ays|\\d.*eeks|\\d.*minutes|\\d.*hrs",
+                            "python": "data[0] if isinstance(data, list) else data"
+                        }
+                    ],
+                    "duration_filter": [
+                        {
+                            "xpath": "//p[contains(./strong,'Duration')]/text()[1]",
+                            "re": "\\d+.*ay|\\d+.*ays|\\d+.*eeks|\\d+.*minutes|\\d+\\shrs|\\d+\\sHours",
+                            "python": "duration_filter(data[0]) if isinstance(data, list) else duration_filter(data)"
+                        },
+                        {
+                            "xpath": "string(//p[contains(.,'Duration')]/following-sibling::p[1])",
+                            "re": "\\d+.*ay|\\d+.*ays|\\d+.*eeks|\\d+.*minutes|\\d+\\shrs|\\d+\\sHours",
+                            "python": "duration_filter(data[0]) if isinstance(data, list) else duration_filter(data)"
+                        }
+                    ],
+                    "start_date_local": [
+                        {
+                            "xpath": "substring-after(./td[1]//text(), '(')",
+                            "re": "\\w.*",
+                            "python": "get_start_date(data) if data else None"
+                        },
+                        {
+                            "xpath": "./td[1]//text()",
+                            "re": "\\w.*",
+                            "python": "get_start_date(data) if data else None"
+                        },
+                        {
+                            "xpath": "./td[1]//text()",
+                            "re": "\\w.*",
+                            "python": "convert_date(data) if data else None"
+                        }
+                    ],
+                    "end_date_local": [
+                        {
+                            "xpath": "substring-after(./td[1]//text(), '(')",
+                            "re": "\\w.*",
+                            "python": "get_end_date(data) if data else None"
+                        },
+                        {
+                            "xpath": "./td[1]//text()",
+                            "re": "\\w.*",
+                            "python": "get_end_date(data) if data else None"
+                        }
+                    ],
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": {
+                            "operator": "or",
+                            "value": [
+                                "substring-after(//*/text()[contains(., 'Non-member')], '$')"
+                            ]
+                        },
+                        "python": "get_price_float(data) if data else '0'"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "xpath": "//table[@class='coursetable'][contains(.,'Date')]//tr[1]/following-sibling::tr",
+                "python": "data if data else None"
+            },
+            "duration_display": {
+                "xpath": "//strong[contains(.,'Duration')]/following-sibling::text()[1]",
+                "re": "\\w.*",
+                "python": "data.replace('Approximately','')"
+            },
+            "duration_filter": {
+                "xpath": "//strong[contains(.,'Duration')]/following-sibling::text()[1]",
+                "re": "\\w.*",
+                "python": "duration_filter(data)"
+            },
+            "price_currency": "USD",
+            "price_display_float": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "substring-after(//*/text()[contains(., 'Non-member')], '$')"
+                    ]
+                },
+                "python": "get_price_float(data) if data else '0'"
+            },
+            "product_video_url": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "//iframe[contains(./@src, 'youtube')]/@src",
+                        "//center/iframe/@src",
+                        "//ul[@class='tabs-content']/li[@data-href='tab-0']/center/iframe/@src"
+                    ]
+                },
+                "re": "\\w.*",
+                "python": "data if data else None"
+            },
+            "instructors": [
+                {
+                    "fields": {
+                        "name": [
+                            {
+                                "xpath": ".//strong[1]/text()"
+                            },
+                            {
+                                "xpath": ".//h6/text()"
+                            }
+                        ],
+                        "bio": [
+                            {
+                                "xpath": ".//p[not(contains(./a/text(), 'Check out some of'))]//text()",
+                                "python": "html_to_text(data) if data else None"
+                            },
+                            {
+                                "xpath": ".//h6/text()",
+                                "python": "html_to_text(data)"
+                            }
+                        ],
+                        "image": {
+                            "xpath": ".//img/@src",
+                            "python": "data if data else None"
+                        },
+                        "link": {
+                            "xpath": ".//h6/a/@href"
+                        }
+                    },
+                    "type": "[Instructor]",
+                    "xpath": "//tr[contains(., 'Instructor')]/following-sibling::tr[1]"
+                },
+                {
+                    "fields": {
+                        "name": {
+                            "xpath": ".//strong[1]/text()"
+                        },
+                        "bio": {
+                            "xpath": ".//p[not(contains(./a/text(), 'Check out some of'))]//text()",
+                            "python": "html_to_text(data) if data else None"
+                        },
+                        "image": {
+                            "xpath": ".//img/@src",
+                            "python": "data if data else None"
+                        }
+                    },
+                    "type": "[Instructor]",
+                    "xpath": "//tr[contains(., 'Facilitator')]/following-sibling::tr[1]"
+                }
+            ]
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('.*'), restrict_xpaths=('//table[@class=\\'coursetable\\']//tr/td[1]/a')), callback='parse_product')"
+            ]
+        }
+    }
+}

@@ -1,0 +1,58 @@
+{
+  "base_url": "http://www.associationofmarketing.org/", 
+  "start_url": "http://www.associationofmarketing.org/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "6", 
+      "product_type_id": {
+        "python": "product_type_id('workshop')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(string(//div[@id='center_content']//div[@class='left-column']/p[1]),string(//div[@id='center_content']//div[@class='left-column']/ul[2]))"
+      }, 
+      "name": {
+        "xpath": "string(//h1)"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "substring-before(substring-after(//h1/following-sibling::div[1],'('),')')", 
+            "python": "duration_filter(data)"
+          }, 
+          "duration_display": {
+            "xpath": "substring-before(substring-after(//h1/following-sibling::div[1],'('),')')"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "formats": {
+        "xpath": "//h3[contains(.,'Formats')]/following-sibling::table/tr/td/text()", 
+        "type": "[str]"
+      }, 
+      "published_date": {
+        "xpath": "substring-after(//ul/li[contains(.,'Publication')],': ')", 
+        "python": "convert_date(data)"
+      }, 
+      "audience": {
+        "xpath": "string(//p[contains(.,'WHO SHOULD ATTEND')]/following-sibling::ul)"
+      }, 
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": "//h3[contains(.,'Authors')]/following-sibling::text()[1]"
+          }
+        }, 
+        "type": "[Author]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('/\\d+EAU',)), callback='parse_product'), Rule(lxml(allow=('/live-webinar/','/ondemand/','/index\\.php\\?page_number=d+', )), follow=True),]"
+    }
+  }
+}

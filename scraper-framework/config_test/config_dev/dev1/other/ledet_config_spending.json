@@ -1,0 +1,58 @@
+{
+    "baseUrl": "https://www.ledet.com/",
+    "levels": {
+        "1": {
+            "xpath": "/div[@class='title']/a[@class='name']/@href",
+            "dont_filter": true
+        }
+    },
+    "start_url": ["https://www.ledet.com/courses?sort=all"],
+    "output_config": {
+        "fields": {
+            "provider_name": "Ledet",
+            "provider_id": "141",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "name": {
+                "xpath": "//div[@class='course']/h1/text()",
+                "level": "1"
+            },
+            "product_type_name": "Courses",
+            "prod_image": {
+                "xpath": "//div[@class='course']/img/@src",
+                "level": "1",
+                "python": "urljoin('https://www.ledet.com/', data) if data else None"
+            },
+            "short_desc": {
+                "xpath": "string(//div[@id='courses_results']//div[@class='course']/div[@class='description'])"
+            },
+            "description": {
+                "xpath": "string(//div[@id='course_overview'])",
+                "level": "1",
+                "python": "normalize_space(data)"
+            },
+            "prerequisites": {
+                "xpath": "//h2[contains(., 'rerequisite')]/following-sibling::div[@class='description']",
+                "level": "1",
+                "python": "normalize_space(data)"
+            },
+            "toc": {
+                "xpath": "//div[@id='course_outline']",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "duration_filter": {},
+                    "duration_display": {},
+                    "price_currency": "USD",
+                    "price_display_float": {},
+                    "price_filter": {}
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "[Product]",
+        "xpath": "//div[@id='courses_results']//div[@class='course']"
+    }
+}

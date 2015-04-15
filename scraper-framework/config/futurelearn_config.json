@@ -1,0 +1,96 @@
+{
+  "base_url": "https://www.futurelearn.com/", 
+  "start_url": "https://www.futurelearn.com/courses/upcoming", 
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='educator']/a[contains(@class, 'avatar-link')]/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "110", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "Y", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[contains(@class, 'run-description')]/section//text()", 
+        "python": "html_to_text(data) if data else None"
+      }, 
+      "name": {
+        "xpath": "//h1/text()"
+      }, 
+      "product_events": {
+        "xpath": "//div[@class='run-dates']/ul/li", 
+        "fields": {
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "//p[@class='run-data'][contains(., 'Duration')]/text()", 
+            "re": "\\d+.*", 
+            "python": "duration_filter(data) if data else None"
+          }, 
+          "start_date_local": {
+            "xpath": ".//time[@itemprop='startDate']/@datetime"
+          }, 
+          "duration_display": {
+            "xpath": "//p[@class='run-data'][contains(., 'Duration')]/text()", 
+            "re": "\\d+.*"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "formats": "video", 
+      "product_image_url": {
+        "xpath": "//div[@class='hero']/img[not(contains(@class, 'ribbon'))]/@src"
+      }, 
+      "requirements": {
+        "xpath": "//section[contains(@class, 'run-requirements')]/*[not(contains(@class, 'header'))]//text()", 
+        "python": "html_to_text(data) if data else None"
+      }, 
+      "instructors": {
+        "xpath": "//div[contains(@class, 'centered profile')]", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[contains(@class, 'short_description')]//text()", 
+            "python": "html_to_text(data) if data else None"
+          }, 
+          "image": {
+            "xpath": "./img[@class='profile_image']/@src", 
+            "python": "data if data else None"
+          }, 
+          "name": [
+            {
+              "xpath": "substring-before(.//h1[contains(@class, 'full_name')]/text(), '(')"
+            }, 
+            {
+              "xpath": ".//h1[contains(@class, 'full_name')]/text()"
+            }
+          ]
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'/in-progress' in response.url", 
+          "level": "1"
+        }, 
+        {
+          "python": "'/upcoming' in response.url", 
+          "level": "1"
+        }
+      ]
+    }, 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/.*'), restrict_xpaths=(\"//ul[@class='run-list']/li/div/a\")), callback='parse_product')", 
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//ul[@class='tabnav_items']/li[not(contains(.//text(), 'Past'))]/a\")), follow=True)"
+      ]
+    }
+  }
+}

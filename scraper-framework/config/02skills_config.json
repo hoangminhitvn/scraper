@@ -1,0 +1,67 @@
+{
+  "base_url": "https://02skills.com/",
+  "start_url": "https://02skills.com/directory/",
+  "levels": {
+    "1": {
+      "xpath": "./@onclick",
+      "re": "http.*\\/"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "10",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": {
+        "xpath": "//div[@id='course_description_div']//p/text()",
+        "python": "html_to_text(data)",
+        "level": "1"
+      },
+      "name": {
+        "xpath": "string(//div[@id='coursetitle']/text())",
+        "level": "1"
+      },
+      "toc": {
+        "xpath": "//div[@class='container']//table[contains(@class, 'table-striped')]/..",
+        "level": "1"
+      },
+      "product_video_url": {
+        "xpath": "//div[@id='course-image']//video/source/@src",
+        "level": "1"
+      },
+      "formats": "video",
+      "product_image_url": [
+        {
+          "xpath": "//div[@id='course-image']/img/@src",
+          "level": "1"
+        },
+        {
+          "xpath": "//script[contains(., 'wistiaEmbed')]",
+          "re": "https.*\\.(?:jpg|png|jpeg)",
+          "level": "1"
+        },
+        {
+          "xpath": "./img/@src"
+        }
+      ],
+      "requirements": {
+        "xpath": "//strong[contains(.,'Requirements')]/following-sibling::text()",
+        "re": "\\w.*",
+        "python": "html_to_text(data)",
+        "level": "1"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "./div[@class='row']/div[contains(@class, 'col-lg-4')]/text()",
+        "re": "\\d+",
+        "python": "get_price_float(data) if data else '0'"
+      }
+    },
+    "type": "Product",
+    "xpath": "//div[@class='course_listing']"
+  }
+}

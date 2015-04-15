@@ -1,0 +1,51 @@
+{
+  "base_url": "http://www.psdbox.com/", 
+  "start_url": "http://www.psdbox.com/category/tutorials", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "273", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='entry']/p[not(contains(@style,'center'))]//text()", 
+        "python": "' '.join(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h1[contains(@class,'post-title')]//text()", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@class='entry']//iframe/@src", 
+        "python": "data.replace('//','')", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//*[contains(@id,'flexslider-post')]//img/@src|//div[@class='single-post-thumb']/img/@src", 
+        "level": "1"
+      }, 
+      "published_date": {
+        "xpath": "//p[@class='post-meta'][contains(.,'Posted by:')]/span[2]/text()", 
+        "level": "1"
+      }, 
+      "prod_keywords": {
+        "xpath": "//*[contains(@class,'post-tag')]/a/text()", 
+        "type": "[str]", 
+        "level": "1"
+      }, 
+      "publisher": {
+        "xpath": "//p[@class='post-meta']/*[contains(.,'Posted by:')]/a/text()", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('psdbox.com/tutorials/',),deny=('category/|pinterest.com/')), callback='parse_product'),Rule(lxml(allow=('/category/',)),follow=True)]"
+    }
+  }
+}

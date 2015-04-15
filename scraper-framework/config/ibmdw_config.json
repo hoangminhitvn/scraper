@@ -1,0 +1,109 @@
+{
+  "base_url": "http://www.ibm.com", 
+  "start_url": "http://www.ibm.com/developerworks/demos/", 
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@id='course_nav']/ul/li[contains(position()>1,position()<5)]//@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "174", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//p[contains(.,'Get the download')]/following-sibling::p//text()[count(.|//p[contains(.,'Get the download')]/following-sibling::h2[1]/preceding-sibling::p//text()) = count(//p[contains(.,'Get the download')]/following-sibling::h2[1]/preceding-sibling::p//text())]", 
+            "//p[contains(.,'Get the transcript')]/following-sibling::p//text()[count(.|//p[contains(.,'Get the transcript')]/following-sibling::h2[1]/preceding-sibling::p//text()) = count(//p[contains(.,'Get the transcript')]/following-sibling::h2[1]/preceding-sibling::p//text())]", 
+            "//p[contains(.,'Obter o download')]/following-sibling::p//text()[count(.|//p[contains(.,'Obter o download')]/following-sibling::h2[1]/preceding-sibling::p//text()) = count(//p[contains(.,'Obter o download')]/following-sibling::h2[1]/preceding-sibling::p//text())]", 
+            "//p[contains(.,'View the demo')]/following-sibling::p//text()[count(.|//p[contains(.,'View the demo')]/following-sibling::h2[1]/preceding-sibling::p//text()) = count(//p[contains(.,'View the demo')]/following-sibling::h2[1]/preceding-sibling::p//text())]", 
+            "//p[contains(.,'View the demo')]/following-sibling::p//text()[count(.|//p[contains(.,'View the demo')]/following-sibling::p[2]/preceding-sibling::p//text()) = count(//p[contains(.,'View the demo')]/following-sibling::p[2]/preceding-sibling::p//text())]"
+          ]
+        }, 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "name": {
+        "xpath": "string(//h1)"
+      }, 
+      "product_video_url": {
+        "xpath": "string(//p[contains(.,'demo')]/a/@href)", 
+        "re": ".*html|.*htm"
+      }, 
+      "formats": [
+        "video"
+      ], 
+      "duration_filter": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "string(//h2[contains(.,'Duration')]/following-sibling::p)", 
+            "string(//p[contains(.,'Duration')]/following-sibling::ul[contains(.,'minutes')])", 
+            "string(//p[contains(.,'Duration')]/following-sibling::p[contains(.,'minutes')])"
+          ]
+        }, 
+        "re": "\\d+:\\d+ |\\d+ minutes?", 
+        "python": "duration_filter(data) if data else None"
+      }, 
+      "duration_display": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "string(//h2[contains(.,'Duration')]/following-sibling::p)", 
+            "string(//p[contains(.,'Duration')]/following-sibling::ul[contains(.,'minutes')])", 
+            "string(//p[contains(.,'Duration')]/following-sibling::p[contains(.,'minutes')])"
+          ]
+        }, 
+        "re": "\\d+:\\d+ minutes?|\\d+ minutes?", 
+        "python": "data if data else None"
+      }, 
+      "requirements": {
+        "xpath": "//h2[contains(.,'requirements')]/following-sibling::*//text()[count(.|//h2[contains(.,'requirements')]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//h2[contains(.,'requirements')]/following-sibling::h2[1]/preceding-sibling::*//text())]", 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "published_date": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "substring-before(//p[@class='dw-summary-summary-area-6-2-date'],' (')", 
+            "string(//p[@class='dw-summary-summary-area-6-2-date'])", 
+            "//strong[contains(.,'Date:')]/following-sibling::text()[1]"
+          ]
+        }, 
+        "re": "\\d.*", 
+        "python": "convert_date(data)"
+      }, 
+      "instructors": {
+        "xpath": "//p[@class='dw-summary-author']", 
+        "fields": {
+          "bio": {
+            "xpath": ".//following-sibling::div[1]/div[@class='ibm-body']//p/text()", 
+            "re": "\\w.*", 
+            "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          }, 
+          "image": {
+            "xpath": "string(./following-sibling::div[1]/div[@class='ibm-body']//img/@src)", 
+            "python": "urljoin('http://www.ibm.com/',data) if data else None"
+          }, 
+          "link": {
+            "xpath": "./a[2]/text()", 
+            "re": ".*com"
+          }, 
+          "name": {
+            "xpath": ".//a[1]/text()"
+          }
+        }, 
+        "type": "[Instructor]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('/developerworks/offers/lp/demos/summary/.*\\.html',),allow_domains=('ibm.com'),deny=('/registerable/','/summary/r-rqmtour\\.html','/interactive/','/summary/r-jquerymobilewrad\\.html')), callback='parse_product'), Rule(lxml(allow=('/views/',),allow_domains=('ibm.com')), follow=True),]"
+    }
+  }
+}

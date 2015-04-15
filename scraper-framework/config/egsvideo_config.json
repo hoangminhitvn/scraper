@@ -1,0 +1,68 @@
+{
+  "base_url": "http://www.egs.edu/", 
+  "start_url": "http://www.egs.edu/faculty/video-lectures", 
+  "levels": {
+    "1_1": {
+      "xpath": "//a[contains(.,'Biography')]/@href", 
+      "level": "1"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "121", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='right_content']/div[@class='content_main']//tr[3]/td)", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//div[@class='content_main']//h1/text()"
+      }, 
+      "product_video_url": {
+        "xpath": "//embed[@id='youtube_embed']/@src"
+      }, 
+      "formats": "Video", 
+      "duration_filter": {
+        "xpath": "//td[contains(.,'Length')]/following-sibling::td[1]/text()", 
+        "python": "str(duration_filter(data))"
+      }, 
+      "duration_display": {
+        "xpath": "//td[contains(.,'Length')]/following-sibling::td[1]/text()"
+      }, 
+      "published_date": {
+        "xpath": "//div[@class='youtube_embed_meta']//tr[2]/td[@class='youtube_embed_meta_value'][1]//text()"
+      }, 
+      "instructors": {
+        "xpath": "//div[@class='content_main']", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[@class='middle_left']", 
+            "python": "html_to_text(data)"
+          }, 
+          "image": {
+            "xpath": ".//div[@class='middle_right']/div[@class='right_photo']//img/@src", 
+            "python": "urljoin('http://www.egs.edu/',data)"
+          }, 
+          "name": {
+            "xpath": ".//h1/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }, 
+      "pub_status": "L"
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/videos/')), callback='parse_product')", 
+        "Rule(lxml(allow=('/video-lectures/',), restrict_xpaths='//*[@class=\\'video_lecture_page_year_nav\\']//a[@class=\\'internal-link\\']'), follow=True)"
+      ]
+    }
+  }
+}

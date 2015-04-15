@@ -1,0 +1,63 @@
+{
+  "base_url": "http://www.stonebridge.uk.com", 
+  "start_url": "https://www.stonebridge.uk.com/a-z#tabs-2", 
+  "levels": {
+    "1": {
+      "xpath": "./@href", 
+      "python": "urljoin('https://www.stonebridge.uk.com',data)"
+    }, 
+    "1_4": "concat('https://www.stonebridge.uk.com',//ul[@id=\"tabsTop\"]/li[contains(.,'Fees')]/a/@href)", 
+    "1_3": "concat('https://www.stonebridge.uk.com',//ul[@id=\"tabsTop\"]/li[contains(.,'Study Options')]/a/@href)", 
+    "1_2": "concat('https://www.stonebridge.uk.com',//ul[@id=\"tabsTop\"]/li[contains(.,'Qualifications')]/a/@href)", 
+    "1_1": "concat('https://www.stonebridge.uk.com',//ul[@id=\"tabsTop\"]/li[contains(.,'Syllabus')]/a/@href)"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "340", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='content_main'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": ".//text()"
+      }, 
+      "toc": {
+        "xpath": "//body", 
+        "level": "1_1"
+      }, 
+      "price_currency": "GBP", 
+      "duration_filter": {
+        "xpath": "substring-after(//p[contains(.,'time required to complete')],':')", 
+        "python": "duration_filter(data[0:data.rfind('.')] if data[len(data)-1]=='.' else data)", 
+        "level": "1_3"
+      }, 
+      "price_display_float": {
+        "xpath": "//div[@class='fees_content'][1]//tr[contains(.,'Pay in full')]/td[2]/text()", 
+        "re": "\\d.*", 
+        "level": "1_4", 
+        "python": "get_price_float(data)"
+      }, 
+      "duration_display": {
+        "xpath": "substring-after(//p[contains(.,'time required to complete')],':')", 
+        "level": "1_3"
+      }, 
+      "requirements": {
+        "xpath": "//h2[contains(./text(),'Requirements')]/following-sibling::p//text()", 
+        "level": "1_2"
+      }, 
+      "certificates": {
+        "xpath": "//h2[contains(./text(),'Certificate')]//text()", 
+        "type": "[str]", 
+        "level": "1_2"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='tabs']/div[@id='tabs-2']/div[@class='prepend-bottom']/ul/li/a"
+  }
+}

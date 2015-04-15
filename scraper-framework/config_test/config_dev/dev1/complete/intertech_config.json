@@ -1,0 +1,75 @@
+{
+    "baseUrl": "http://www.intertech.com/",
+    "levels": {},
+    "start_url": "http://www.intertech.com/Training/",
+    "output_config": {
+        "fields": {
+            "provider_name": "Intertech",
+            "provider_id": "128",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "name": {
+                "xpath": "string(//div[@id='right-column']/parent::div/h1))"
+            },
+            "product_type_name": "Courses",
+            "difficulty": {
+                "xpath": "",
+                "re": "Beginner|Intermediate|Expert\\/?"
+            },
+            "description": {
+                "xpath": "string(//div[@id='right-column']/parent::div/h2[1]/preceding-sibling::p)"
+            },
+            "toc": {
+                "xpath": "//div[@id='Course-Overview']"
+            },
+            "partner_prod_id": {
+                "xpath": "//h2[contains(.,'ourse Number')]/following-sibling::p//text()[count(.|//h2[contains(.,'ourse Number')]/following-sibling::h2[1]/preceding-sibling::p//text()) = count(//h2[contains(.,'ourse Number')]/following-sibling::h2[1]/preceding-sibling::p//text())]",
+                "python": "''.join(data) if data else None"
+            },
+            "audience": {
+                "xpath": "//h2[contains(.,'udience')]/following-sibling::*//text()[count(.|//h2[contains(.,'udience')]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//h2[contains(.,'udience')]/following-sibling::h2[1]/preceding-sibling::*//text())]",
+                "python": "''.join(data) if data else None"
+            },
+            "prerequisites": {
+                "xpath": "//h2[contains(.,'rerequisite')]/following-sibling::*//text()[count(.|//h2[contains(.,'rerequisite')]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//h2[contains(.,'rerequisite')]/following-sibling::h2[1]/preceding-sibling::*//text())]",
+                "python": "''.join(data) if data else None"
+            },
+            "product_events": {
+                "fields": {
+                    "duration_filter": {
+                        "xpath": "string(//div[@id='right-column']//strong[contains(., 'Duration')]/following-sibling::text()[1])",
+                        "python": "duration_filter(data)"
+
+                    },
+                    "duration_display": {
+                        "xpath": "string(//div[@id='right-column']//strong[contains(., 'Duration')]/following-sibling::text()[1])"
+                    },
+                    "start_date_local": {
+                        "xpath": ".//time[@itemprop='startDate']/@datetime"
+                    },
+                    "end_date_local": {
+                        "xpath": ".//time[@itemprop='endDate']/@datetime"
+                    },
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": "string(//div[@id='right-column']//strong[contains(., 'Price')]/following-sibling::text()[1])",
+                        "re": "(\\d+)\\,(\\d+)",
+                        "python": "getPriceFloat(data)"
+                    },
+                    "price_filter": {
+                        "xpath": "string(//div[@id='right-column']//strong[contains(., 'Price')]/following-sibling::text()[1])",
+                        "re": "(\\d+)\\,(\\d+)",
+                        "python": "getPriceFloat(data)"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "xpath": "//div[@id='right-column']/parent::div/h2[contains(., 'Upcoming Classes')]/following-sibling::ul[1]/li[not(@class='empty')]"
+            }
+        },
+        "type": "[Product]",
+        "extractorRules": {
+            "rules": "[Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[@class=\\'exp\\']/li//ul/li[2]/a')), callback='parseItemExtractors'), Rule(lxml(allow=('/Training/.*')), follow=True)]"
+        }
+    }
+}

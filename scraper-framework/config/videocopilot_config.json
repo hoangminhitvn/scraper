@@ -1,0 +1,53 @@
+{
+  "base_url": "http://www.videocopilot.net", 
+  "start_url": "http://www.videocopilot.net/tutorials/",
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "394", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//meta[@property='og:description']/@content"
+      }, 
+      "name": {
+        "xpath": "//meta[@property='og:title']/@content"
+      }, 
+      "product_video_url": [
+        {
+          "xpath": "//video[@id]/source/@src"
+        }, 
+        {
+          "xpath": "//script[contains(.,'addVariable')]//text()", 
+          "re": "http.*flv|http.*mp4"
+        }
+      ], 
+      "product_image_url": {
+        "xpath": "//meta[@property='og:image']/@content", 
+        "type": "[str]"
+      }, 
+      "duration_filter": {
+        "xpath": "//meta[@property='video:duration']/@content", 
+        "python": "int(data)"
+      }, 
+      "duration_display": {
+        "xpath": "//meta[@property='video:duration']/@content", 
+        "python": "'%s:%s' % (divmod(int(data), 60))"
+      }, 
+      "published_date": {
+        "xpath": "//meta[@property='video:release_date']/@content", 
+        "python": "convert_date(data)"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lrgl(allow=('(http://www\\.videocopilot\\.net/tutorials/\\w+/)',)),callback='parse_product')"
+      ]
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "base_url": "http://training.adobe.com/training/", 
+  "start_url": "http://training.adobe.com/ats/course-catalog.json", 
+  "levels": {
+    "1_1_1": {
+      "python": "Selector(text=json.loads(response.body)['html'])"
+    }, 
+    "1_1": {
+      "python": "'http://training.adobe.com/ats/course-dates-and-locations.json?sku=%s'%(response.xpath(\"//input[@id='course-sku']/@value\").extract()[0])"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "42", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "description": [
+        {
+          "xpath": "substring-before(//div[@class='text courseDescription parbase markdown-text']/div,'Prerequisites')", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='text courseDescription parbase markdown-text']/div//text()", 
+          "python": "html_to_text(data)"
+        }
+      ], 
+      "name": {
+        "xpath": "//h1//text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='title-wrapper section'][contains(.,'Course Outline')]/following-sibling::*"
+      }, 
+      "product_events": [
+        {
+          "xpath": "//table[@id='dates-loc-table']//tr[contains(.//a,'Register')]", 
+          "fields": {
+            "location_city": {
+              "xpath": "substring-before(./td[1]//text(),',')", 
+              "re": "\\w.*"
+            }, 
+            "price_currency": "USD", 
+            "end_date_local": {
+              "xpath": "concat(substring(./td[2],1,3),' ',substring-after(./td[2],'-'))", 
+              "re": "\\w{3}\\s\\d+,\\s\\d{4}", 
+              "python": "convert_date(data.replace(',','')) if data else None"
+            }, 
+            "language": "eng", 
+            "start_date_local": [
+              {
+                "xpath": "concat(substring-before(./td[2]/text(),'-'),substring-after(./td[2]/text(),','))", 
+                "python": "convert_date(data) if len(data) > 6 else None"
+              }, 
+              {
+                "xpath": "concat(./td[2]/text(),' ',substring-before(substring-after(.//font/i//text(),'-'),')'))", 
+                "python": "convert_date(data) if data else None"
+              }, 
+              {
+                "xpath": "./td[2]//text()", 
+                "re": "\\w{3}\\s\\d+,\\s\\d{4}", 
+                "python": "convert_date(data) if data else None"
+              }
+            ], 
+            "duration_filter": {
+              "xpath": "//div[@class='content-left']/div[contains(.,'Duration')]/p/text()", 
+              "re": "\\d+\\sdays|\\d+\\sday|\\d+\\sminutes|\\d+\\shour|\\d+\\shours", 
+              "level": "1", 
+              "python": "duration_filter(data)"
+            }, 
+            "price_display_float": {
+              "xpath": "./td[contains(.,'$')]//text()", 
+              "re": "\\d.*"
+            }, 
+            "location_display": {
+              "xpath": "./td[1]//text()", 
+              "python": "html_to_text(data)"
+            }, 
+            "tz": {
+              "xpath": ".//font/i//text()", 
+              "re": "[A-Z]{3}"
+            }, 
+            "duration_display": {
+              "xpath": "//div[@class='content-left']/div[contains(.,'Duration')]/p/text()", 
+              "level": "1"
+            }
+          }, 
+          "type": "[ProductEvent]", 
+          "level": "1_1_1"
+        }, 
+        {
+          "fields": {
+            "duration_filter": {
+              "xpath": "//div[@class='content-left']/div[contains(.,'Duration')]/p/text()", 
+              "python": "duration_filter(data)", 
+              "level": "1"
+            }, 
+            "language": "eng", 
+            "duration_display": {
+              "xpath": "//div[@class='content-left']/div[contains(.,'Duration')]/p/text()", 
+              "level": "1"
+            }
+          }, 
+          "type": "[ProductEvent]"
+        }
+      ], 
+      "audience": {
+        "xpath": "//div[@class='content-left']/div[contains(.,'Audience')]/text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "prerequisites": {
+        "xpath": "//h4[contains(.,'Prerequisites')]/following-sibling::*[1]//text()", 
+        "python": "html_to_text(data)"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'Sorry, that page was not trained properly' in response.body", 
+          "level": "1"
+        }
+      ]
+    }, 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lrgl(allow=('(courses/[^/]+.html)',)),callback='parse_product')"
+      ]
+    }
+  }
+}

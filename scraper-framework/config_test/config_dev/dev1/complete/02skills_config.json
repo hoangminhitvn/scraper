@@ -1,0 +1,89 @@
+{
+    "baseUrl": "https://02skills.com/",
+    "levels": {
+        "1": {
+            "xpath": "./@onclick",
+            "re": "'(https:.*)'"
+        }
+    },
+    "start_url": "https://02skills.com/directory/",
+    "output_config": {
+        "fields": {
+            "provider_name": "02skills",
+            "provider_id": "10",
+            "product_type_name": "Courses",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "name": {
+                "xpath": "string(//div[@id='coursetitle']/text())",
+                "level": "1"
+            },
+            "formats": "video",
+            "short_desc": {
+                "xpath": "string(//div[@id='coursesubtitle']/text())",
+                "level": "1"
+            },
+            "description": {
+                "xpath": "string(//div[@id='course_description_div'])",
+                "level": "1"
+            },
+            "prod_image": [
+                {
+                    "xpath": "//div[@id='course-image']/img/@src",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//script[contains(., 'wistiaEmbed')]",
+                    "re": "https.*\\.(?:jpg|png|jpeg)",
+                    "level": "1"
+                }
+            ],
+            "preview_video": {
+                "xpath": "//div[@id='course-image']//video/source/@src",
+                "level": "1"
+            },
+            "toc": {
+                "xpath": "//div[@class='container']//table[contains(@class, 'table-striped')]/..",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "instructors": {
+                        "fields": {
+                            "name": {
+                                "xpath": ".//div[@class='row']//b/a/text()"
+                            },
+                            "bio": {
+                                "xpath": "string(.//span[@id='author_bio'])"
+                            },
+                            "image": {
+                                "xpath": ".//div[@class='row']//a/img/@src"
+                            },
+                            "link": {
+                                "xpath": ".//div[@class='row']//b/a/@href"
+                            }
+                        },
+                        "type": "[Instructor]",
+                        "xpath": "//div[@id='course-description']/following-sibling::div[1]",
+                        "level": "1"
+                    },
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": "./div[@class='row']/div[contains(@class, 'col-lg-4')]/text()",
+                        "re": "\\d+",
+                        "python": "getPriceFloat(data) if data else 0.00"
+                    },
+                    "price_filter": {
+                        "xpath": "./div[@class='row']/div[contains(@class, 'col-lg-4')]/text()",
+                        "re": "\\d+",
+                        "python": "getPriceFloat(data) if data else 0.00"
+                    }
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "[Product]",
+        "xpath": "//div[@class='course_listing']"
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "base_url": "http://www.grovo.com",
+    "start_url": "http://www.grovo.com/browse/",
+    "levels": {
+        "1": "./@href"
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "118",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": {
+                "xpath": "//div[@class='Content_Video_Metadata']/p/text()",
+                "re": "\\w.*",
+                "python": "html_to_text(data)",
+                "level": "1"
+            },
+            "name": {
+                "xpath": "//div[@class='TitleScreenMask']/h1/text()",
+                "level": "1"
+            },
+            "toc": {
+                "xpath": "//*[@id='gcontent']/div[4]/div[1]",
+                "level": "1"
+            },
+            "product_video_url": {
+                "xpath": "//*[@id='gplayerHTML']/source[2]/@src",
+                "level": "1"
+            },
+            "product_image_url": {
+                "xpath": "//a[@class='TitleScreen TitleScreenExtraHeight']/img/@src",
+                "level": "1"
+            },
+            "duration_filter": {
+                "xpath": "//div[@class='LessonListInfo']/p//text()",
+                "re": "\\d+:\\d+",
+                "python": "duration_filter(data)",
+                "level": "1"
+            },
+            "duration_display": null,
+            "prod_keywords": {
+                "xpath": "//small[@class='TagList block']/text()",
+                "python": "normalize_space(data.replace('Tags:','')).split(',')",
+                "type": "[str]",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "xpath": "//h3[contains(.,'Learning tracks')]/following-sibling::div[1]/ul/li/a"
+    },
+    "pre_run": {
+        "price": {
+            "xpath": "//div[contains(./div/h2/text(),'Two year')]//div[contains(@class,'PricingOptionPrice')]//text()",
+            "python": "html_to_text(selector.extract())",
+            "start_url": "http://www.grovo.com/pricing"
+        }
+    }
+}

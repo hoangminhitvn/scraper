@@ -1,0 +1,149 @@
+{
+    "base_url": "http://www.mediabistro.com",
+    "start_url": [
+        "http://www.mediabistro.com/courses/",
+        "http://www.mediabistro.com/ondemandvideos.html"
+    ],
+    "levels": {
+        "1_1": {
+            "xpath": "//div[@class='main-intro divider clearfix']/a[@class='button']/@href",
+            "python": "'http://www.mediabistro.com/socialmedia101/%s' %(selector.extract()[0])"
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "281",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "B",
+            "space_lock": "B",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "concat(//div[@itemprop='description']/div[@class='course-details'][1],//div[@class='main-intro divider clearfix']/p[1],//div[@class='main-intro divider clearfix']/p[2],//div[@class='main-intro divider clearfix']/p[3])",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "//h3[contains(.,'Video Details')]/following-sibling::div[1]/text()",
+                    "python": "html_to_text(data)"
+                }
+            ],
+            "name": [
+                {
+                    "xpath": "concat(//div[@class='title-data']/h1/text(),//div[@class='main-intro divider clearfix']/h2/text())"
+                },
+                {
+                    "xpath": "string(//h1[@class='clear'])"
+                }
+            ],
+            "toc": [
+                {
+                    "xpath": "//div[@class='schedule']"
+                },
+                {
+                    "xpath": "//p[contains(.,'Enrollment Options:')]/following-sibling::ul"
+                },
+                {
+                    "xpath": "//div[@id='od-content']/ol[@class='toc']"
+                }
+            ],
+            "product_events": {
+                "fields": {
+                    "location_city": {
+                        "xpath": "substring-before(string(//select[@class='other-sections']),',')",
+                        "re": "New York"
+                    },
+                    "price_currency": "USD",
+                    "location_addr": {
+                        "xpath": "normalize-space(string(//h3[contains(.,'class location')]/following-sibling::div))",
+                        "re": ".*Broadway|.*8th floor"
+                    },
+                    "language": "eng",
+                    "location_state": {
+                        "xpath": "normalize-space(string(//h3[contains(.,'class location')]/following-sibling::div))",
+                        "re": ".*(NY).*"
+                    },
+                    "location_postal": {
+                        "xpath": "string(//h3[contains(.,'class location')]/following-sibling::div)",
+                        "re": "\\d{5}"
+                    },
+                    "start_date_local": [
+                        {
+                            "xpath": "substring-before(//select[@class='other-sections'],'-')",
+                            "python": "convert_date(data)"
+                        },
+                        {
+                            "xpath": "substring-before(//div[@id='hcta']/span[1],'-')",
+                            "python": "convert_date(data)"
+                        }
+                    ],
+                    "price_display_float": [
+                        {
+                            "xpath": "string(//span[@class='full-price'])",
+                            "python": "get_price_float(data) if len(data)>0 else None"
+                        },
+                        {
+                            "xpath": "//span[@class='regcta'][1]/h3/strong//text()",
+                            "re": "\\d.*",
+                            "python": "get_price_float(data)",
+                            "level": "1_1"
+                        }
+                    ],
+                    "location_display": {
+                        "xpath": "normalize-space(string(//h3[contains(.,'class location')]/following-sibling::div))"
+                    },
+                    "end_date_local": [
+                        {
+                            "xpath": "string(//select[@class='other-sections'])",
+                            "re": ".*-(.*)-.*",
+                            "python": "convert_date(data)"
+                        },
+                        {
+                            "xpath": "substring-before(substring-after(//div[@id='hcta']/span[1],'- '),',')",
+                            "python": "convert_date(data)"
+                        },
+                        {
+                            "xpath": "substring-before(substring-after(//div[@id='hcta']/span[1],'-'),',')",
+                            "python": "convert_date('October '+ data)"
+                        }
+                    ]
+                },
+                "type": "[ProductEvent]"
+            },
+            "product_video_url": {
+                "xpath": "//div[@id='viewer']//iframe/@src",
+                "python": "urljoin('http://www.mediabistro.com/',data) if data else None"
+            },
+            "price_currency": "USD",
+            "duration_filter": {
+                "xpath": "//ol[@class='toc']/li/text()",
+                "re": "\\d+:\\d+",
+                "python": "duration_filter(data)"
+            },
+            "price_display_float": [
+                {
+                    "xpath": "string(//span[@class='full-price'])",
+                    "python": "get_price_float(data) if len(data)>0 else None"
+                }
+            ],
+            "duration_display": null,
+            "requirements": {
+                "xpath": "//h3[contains(.,'requirements')]/following-sibling::p//text()",
+                "type": "[str]"
+            },
+            "prod_keywords": {
+                "xpath": "//h3[contains(.,'Video Details')]/following-sibling::div[1]/div/a//text()",
+                "type": "[str]"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('/courses/.*/\\d+/?$',),),callback='parse_product')",
+                "Rule(lxml(allow=('.*',),restrict_xpaths=('//td//strong/a[@class=\\'largetext\\']')),callback='parse_product')",
+                "Rule(lxml(allow=('.*',),restrict_xpaths=('//div[@id=\\'LOCATION\\']//a','//*[@class=\\'smalltext\\']//a')), follow=True)"
+            ]
+        }
+    }
+}

@@ -1,0 +1,220 @@
+{
+    "base_url": "http://www.ciscopress.com/",
+    "start_url": "http://www.ciscopress.com/store/browse.asp",
+    "levels": {
+        "1_1": {
+            "xpath": "//ul[@class='bibliography']/li[1]/a/@href"
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "49",
+            "product_type_id": {
+                "xpath": "string(//div[contains(@class, 'buyOption')][1]/h3/text())",
+                "python": "product_type_id('Books' if 'Book' in data else 'Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//div[@id='bssContent']//span[@id='bssMetaInformation']/following-sibling::*//text()",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']/div[contains(.,'Description')])",
+                    "re": "re.compile('Description(.*)About the Author',re.S|re.I)",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']/div[contains(.,'Description')])",
+                    "re": "re.compile('Description(.*)About the Instructor',re.S|re.I)",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']/div[contains(.,'Description')])",
+                    "re": "re.compile('Description(.*)Skill Level',re.S|re.I)",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(string(//div[@id='bssContent']/div[contains(., 'What You Will Lear')]))",
+                    "re": "re.compile('(.*)Skill Level',re.S|re.I)",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(string(//div[@id='bssContent']/div[contains(., 'What You Will Lear')]))",
+                    "re": "re.compile('(.*)About the Instructor',re.S|re.I)",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']/div[contains(., 'Requirements:')])"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']/div[contains(., 'Duration:')])"
+                }
+            ],
+            "name": [
+                {
+                    "xpath": "string(//div[@id='bibCol']/h1/text())"
+                },
+                {
+                    "xpath": "string(//div[@id='bibCol1']/h1/text())"
+                }
+            ],
+            "toc": [
+                {
+                    "xpath": "//div[@id='bssContent']//h3[contains(., 'Table of Contents')]/parent::div[1]",
+                    "python": "re.sub('<h3>(.*)</h3>','',data)"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']",
+                    "re": "re.compile('Table of contents(.*)About Live',re.S)",
+                    "python": "normalize_space(html2text.html2text(data)).replace('*','')"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']",
+                    "re": "re.compile('Table of contents(.*)',re.S)",
+                    "python": "normalize_space(html2text.html2text(data)).replace('*','')"
+                }
+            ],
+            "price_display_float": {
+                "xpath": "//div[contains(@class, 'buyOption')]/ul[@class='uppPricing']/li[contains(., 'Your Price')]",
+                "python": "get_price_float(min_price(normalize_space(selector.extract())))"
+            },
+            "price_currency": "USD",
+            "duration_filter": [
+                {
+                    "xpath": "string(//div[@id='bssContent']//b[contains(., 'of Video')])",
+                    "re": "(\\d+(?:\\+)?(?: )+(?:Hours|HR|Minutes)+)",
+                    "python": "duration_filter(data)"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent'][contains(., 'of Video')])",
+                    "re": "(\\d+(?:\\+)?(?: )+(?:Hours|HR|Minutes)+)",
+                    "python": "duration_filter(data)"
+                }
+            ],
+            "duration_display": [
+                {
+                    "xpath": "string(//div[@id='bssContent']//b[contains(., 'of Video')])",
+                    "re": "(\\d+(?:\\+)?(?: )+(?:Hours|HR|Minutes)+)"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent'][contains(., 'of Video')])",
+                    "re": "(\\d+(?:\\+)?(?: )+(?:Hours|HR|Minutes)+)"
+                },
+                {
+                    "xpath": "//span[@id='bssMetaInformation']//li[contains(., 'Pages')]",
+                    "re": "\\d+"
+                }
+            ],
+            "product_video_url": {
+                "xpath": "//div[@id='vidBasket']/following-sibling::script/@src",
+                "re": "ptgmedia[\\d.*\\w\\/\\-\\_]*"
+            },
+            "formats": {
+                "xpath": "////div[contains(@class, 'buyOption')][1]//p[@class='zoomFormat']//span[@class='format']//text()",
+                "python": "data if data else 'Video'",
+                "type": "[str]"
+            },
+            "product_image_url": {
+                "xpath": "//div[@id='cover']/a[contains(@class, coverImage)]/img/@src",
+                "python": "re.sub('&type=f', '', (urljoin('http://www.ciscopress.com/', data))) if data else None"
+            },
+            "difficulty": [
+                {
+                    "xpath": "//div[@id='bssContent']//p/b[contains(., 'User Level')]/following-sibling::text()",
+                    "re": "\\w.*",
+                    "python": "difficulty(data)"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']//p/text()[contains(., 'Skill Level')])",
+                    "re": "\\w.*",
+                    "python": "difficulty(data)"
+                }
+            ],
+            "requirements": [
+                {
+                    "xpath": "//div[@id='bssContent']/div[contains(., 'Requirements')]",
+                    "re": "re.compile('Requirements</b>(.*)<b>Table of Content',re.S)",
+                    "python": "html_to_text(data).replace('*','')"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']/div[contains(., 'Requirements')]",
+                    "re": "re.compile('Requirements</b>(.*)<b>TOC',re.S)",
+                    "python": "html_to_text(data).replace('*','')"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']/div[contains(., 'Requirements')]",
+                    "re": "re.compile('Requirements</b>(.*)<b>Module 1:',re.S)",
+                    "python": "html_to_text(data).replace('*','')"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']/div[contains(., 'Requirements')]",
+                    "re": "re.compile('Requirements</b>(.*)<b>Please Note',re.S)",
+                    "python": "html_to_text(data).replace('*','')"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']",
+                    "re": "re.compile('Requirements</u>(.*)<u>Table of Content',re.S)",
+                    "python": "html_to_text(data).replace('*','')"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']/div[contains(., 'Requirements')]",
+                    "re": "re.compile('Requirements</b>(.*)<b>Skill Level',re.S)",
+                    "python": "html_to_text(data).replace('*','')"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']/div[contains(., 'Requirements')]",
+                    "re": "re.compile('Requirements(.*)',re.S)",
+                    "python": "html_to_text(data).replace('*','')"
+                }
+            ],
+            "published_date": {
+                "xpath": "//ul[@class='bibliography']/li[2]/text()[1]",
+                "python": "convert_date(re.sub('Published|by','',data))"
+            },
+            "authors": {
+                "xpath": "//div[@id='contentAuthors']",
+                "fields": {
+                    "bio": {
+                        "xpath": ".//div[@class='clearfix']/h1/following-sibling::*//text()",
+                        "python": "html_to_text(data)"
+                    },
+                    "image": {
+                        "xpath": ".//div[@class='clearfix']/img/@src"
+                    },
+                    "link": {
+                        "xpath": "//ul[@class='bibliography']/li[1]/a/@href",
+                        "python": "urljoin('http://www.ciscopress.com/', data) if data else None",
+                        "level": "1"
+                    },
+                    "name": {
+                        "xpath": ".//div[@class='clearfix']/h1//text()"
+                    }
+                },
+                "type": "[Author]",
+                "level": "1_1"
+            },
+            "publisher": {
+                "xpath": "//ul[@class='bibliography']/li[2]",
+                "fields": {
+                    "link": {
+                        "xpath": "//ul[@class='bibliography']/li[2]/a[1]/@href"
+                    },
+                    "name": {
+                        "xpath": "//ul[@class='bibliography']/li[2]/a[1]/text()"
+                    }
+                },
+                "type": "[Publisher]"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('.*'),restrict_xpaths=('//table[@id=\\'allProdlist\\']//td[@class=\\'txt\\']/a')), callback='parse_product')",
+                "Rule(lxml(allow=('/store/browse.asp.*')), follow=True)"
+            ]
+        }
+    }
+}

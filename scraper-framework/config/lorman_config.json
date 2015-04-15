@@ -1,0 +1,138 @@
+{
+  "base_url": "http://www.lorman.com",
+  "start_url": "http://www.lorman.com/training/?s=header",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "417",
+      "product_type_id": {
+        "python": "product_type_id('webinar')"
+      },
+      "time_lock": "B",
+      "space_lock": "N",
+      "description": [
+        {
+          "xpath": "substring-before(//section[@id='overview'],'Learning Objectives')",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "substring-before(//section[@id='overview'],'Faculty')",
+          "python": "html_to_text(data)"
+        }
+      ],
+      "name": {
+        "xpath": "//h1[@class='product-hero-head']//text()"
+      },
+      "product_events": {
+        "xpath": "//li[@class='date']",
+        "fields": {
+          "duration_filter": {
+            "xpath": "substring-before(//li[@class='time'],' pm')",
+            "python": "duration_filter(data.split(' - ')[1] + ':00') - duration_filter(data.split(' - ')[0] + ':00')"
+          },
+          "start_date_local": {
+            "xpath": "concat(.//text(),' ',substring-before(//li[@class='time'],'-'),'pm')",
+            "python": "convert_date(data)"
+          },
+          "tz": {
+            "xpath": "//li[@class='time']//text()",
+            "re": "EST"
+          },
+          "language": "eng",
+          "duration_display": null,
+          "price_currency": "USD",
+          "price_display_float": {
+            "xpath": "string(//div[@class='purchase-options-modal-product-price'])",
+            "re": "\\d.*",
+            "python": "get_price_float(data)"
+          }
+        },
+        "type": "[ProductEvent]"
+      },
+      "price_currency": "USD",
+      "price_display_float": [
+        {
+          "xpath": "string(//div[@class='purchase-options-modal-product-price'])",
+          "re": "\\d.*",
+          "python": "get_price_float(data) if data else None"
+        },
+        {
+          "xpath": "string(//div[@class='product']/div[@class='price'])",
+          "re": "\\d.*",
+          "python": "get_price_float(data) if data else None"
+        }
+      ],
+      "audience": {
+        "xpath": "//section[@id='credits']//h3[contains(.,'Who should attend?')]/following-sibling::p[1]//text()"
+      },
+      "duration_filter": {
+        "xpath": "normalize-space(string(//section[@id='hero']//section[@class='highlights']/ul))",
+        "re": "\\w.*minutes",
+        "python": "duration_filter(data)"
+      },
+      "duration_display": {
+        "xpath": "normalize-space(string(//section[@id='hero']//section[@class='highlights']/ul))",
+        "re": "\\w.*minutes"
+      },
+      "instructors": [
+        {
+          "fields": {
+            "name": {
+              "xpath": ".//h3//text()"
+            },
+            "bio": [
+              {
+                "xpath": ".//ul//text()",
+                "python": "html_to_text(data)"
+              },
+              {
+                "xpath": ".//section[@class='bio']/p//text()",
+                "python": "html_to_text(data)"
+              }
+            ],
+            "image": [
+              {
+                "xpath": ".//img/@src",
+                "re": "http.*"
+              },
+              {
+                "xpath": ".//img/@src",
+                "python": "urljoin('http://www.lorman.com/',data) if data else None"
+              }
+            ]
+          },
+          "type": "[Instructor]",
+          "xpath": "//section[@id='faculty']//section[@class='individual']"
+        },
+        {
+          "fields": {
+            "name": {
+              "xpath": ".//h3//text()"
+            },
+            "bio": {
+              "xpath": ".//ul//text()",
+              "python": "html_to_text(data)"
+            }
+          },
+          "type": "[Instructor]",
+          "xpath": "//section[@id='faculty']//section[@class='individual no-photo']"
+        }
+      ]
+    },
+    "type": "Product",
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'Sorry, that page was not trained properly' in response.body",
+          "level": "1"
+        }
+      ]
+    },
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/training/.*',),restrict_xpaths=('//div[@class=\\'product-results\\']//div[@class=\\'name\\']/a')),callback='parse_product')",
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//div[@class=\\'paging\\']//a')), follow=True)"
+      ]
+    }
+  }
+}

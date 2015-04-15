@@ -1,0 +1,101 @@
+{
+  "base_url": "http://www.eclasses.org", 
+  "start_url": "http://www.eclasses.org/coursecatalog/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "104", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "substring-before(//h2/following-sibling::div[@class='weektext'][1],'Objectives for this')", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "substring-before(//h2/following-sibling::div[@class='weektext'][1],'Applicable Job Roles')", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "string(//div[@class='weektext'][1]/p[1])"
+        }, 
+        {
+          "xpath": "string(//h2/following-sibling::div[1]/text())"
+        }
+      ], 
+      "name": {
+        "xpath": "//h2[@class='course_title']//text()"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(.,'Outline')]/following-sibling::*"
+      }, 
+      "product_events": [
+        {
+          "xpath": "//div[@class='products products-list']//table", 
+          "fields": {
+            "price_display_float": {
+              "xpath": "string(//span[@id='product_price'])"
+            }, 
+            "price_currency": "USD", 
+            "start_date_local": {
+              "xpath": "substring-after(.//tr[2],': ')", 
+              "python": "convert_date(data)"
+            }
+          }, 
+          "type": "[ProductEvent]"
+        }, 
+        {
+          "fields": {
+            "price_display_float": {
+              "xpath": "string(//span[@id='product_price'])"
+            }, 
+            "price_currency": "USD"
+          }, 
+          "type": "[ProductEvent]"
+        }
+      ], 
+      "product_image_url": {
+        "xpath": "//div/img[@id='product_thumbnail']/@src"
+      }, 
+      "requirements": {
+        "xpath": "string(//div[contains(.,'Prerequisites')]/following-sibling::div[@class='requirement'])"
+      }, 
+      "ProductRating": {
+        "xpath": "//ul[@class='creviews-reviews-list']/li", 
+        "fields": {
+          "username": {
+            "xpath": "./strong//text()"
+          }, 
+          "rating_only": "0", 
+          "user_id": "0", 
+          "review": {
+            "xpath": "./text()", 
+            "re": "\\w.*", 
+            "python": "data.replace('\"','').replace('-','')"
+          }, 
+          "pub_status": "L", 
+          "overall_rating": {
+            "xpath": "//strong[contains(.,'Rating')]/following-sibling::img[contains(./@class,'star-4')]/@class | //strong[contains(.,'Rating')]/following-sibling::img[contains(./@class,'star-3')]/@class", 
+            "re": "\\d+", 
+            "python": "str(len(selector.extract()))"
+          }
+        }, 
+        "type": "[ProductRating]"
+      }, 
+      "prerequisites": {
+        "xpath": "string(//div[contains(.,'Requirements')]/following-sibling::div[@class='requirement'])"
+      }, 
+      "partner_prod_id": {
+        "xpath": "string(//td[contains(.,'Item No.:')]/following-sibling::td)"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('/\\w\\d{1,5}/',)), callback='parse_product'), Rule(lxml(allow=('coursecatalog/\\?page=2', )), follow=True),]"
+    }
+  }
+}

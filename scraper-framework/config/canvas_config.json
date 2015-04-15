@@ -1,0 +1,79 @@
+{
+  "base_url": "https://www.canvas.net/", 
+  "start_url": "http://www.canvas.net", 
+  "levels": {
+    "1": ".//a/@href", 
+    "1_1": {
+      "xpath": "//p[@class='hero-action']/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "44", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='description']/div[@class='course-details']/p//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h2[@class='hero-head h1']//text()", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='description']/div[@class='course-details']/iframe/@src", 
+        "python": "urljoin('https:',data) if data else None", 
+        "type": "[str]", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "substring-after(//span[@class='image-wrapper']/@style,'url')", 
+        "re": "http.*jpg|http.*png", 
+        "level": "1"
+      }, 
+      "price_display_float": "0", 
+      "instructors": {
+        "xpath": "//div[@class='instructors']/h3", 
+        "fields": {
+          "bio": [
+            {
+              "xpath": "./following-sibling::p[2]//text()", 
+              "python": "html_to_text(data)"
+            }, 
+            {
+              "xpath": "./following-sibling::*//text()", 
+              "python": "html_to_text(data)"
+            }
+          ], 
+          "image": {
+            "xpath": "./preceding-sibling::img[1]/@src"
+          }, 
+          "name": {
+            "xpath": "./text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "end_date_local": {
+        "xpath": "substring-before(substring-after(//script[contains(.,'ENV')],'end_date'),'.00')", 
+        "re": "\\d.*", 
+        "level": "1_1", 
+        "python": "data.replace('T',' ')"
+      }, 
+      "start_date_local": {
+        "xpath": "substring-before(substring-after(//script[contains(.,'ENV')],'start_date'),'.00')", 
+        "re": "\\d.*", 
+        "level": "1_1", 
+        "python": "data.replace('T',' ')"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='col-md-3 col-sm-6']"
+  }
+}

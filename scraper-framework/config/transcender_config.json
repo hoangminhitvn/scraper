@@ -1,0 +1,45 @@
+{
+  "base_url": "http://www.transcender.com", 
+  "start_url": [
+    "http://www.transcender.com"
+  ], 
+  "levels": {
+    "1_1": {
+      "xpath": "//ul[@class='course_categories']/li[@class='category'][contains(.,'Syllabus')]/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "377", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='description']//text()", 
+        "python": "' '.join(normalize_space(selector.extract()))"
+      }, 
+      "name": {
+        "xpath": "//div[@id='product']/div[@id='product-title']//text()"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@id='product-image']/img/@src", 
+        "python": "urljoin('http://www.transcender.com',data) if data else None"
+      }, 
+      "price_currency": "USD", 
+      "price_display_float": {
+        "xpath": "//div[@class='dropdown_list']/ul[@id='purchase_options_list']//*[@class='price']//text()", 
+        "python": "get_price_float(data[:-2])"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('com/certprep/.+'),restrict_xpaths=('//div[@id=\\'menu\\']//a')),follow=True)", 
+        "Rule(lrgl(allow=(\"location='(/e-learning[^']+)'\")), callback='parse_product')"
+      ]
+    }
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "base_url": "http://www.informit.com/",
+  "start_url": "http://www.informit.com/store/browse.aspx",
+  "levels": {
+    "1_1": {
+      "xpath": "//ul[@class='bibliography']/li[1]/a/@href"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "230",
+      "product_type_id": [
+        {
+          "xpath": "//div[contains(@class, 'buyOption')][1]/h3/text()",
+          "python": "product_type_id('Books' if 'Book' in data else 'Courses')"
+        },
+        {
+          "xpath": "//div[contains(@class, 'buyOption')][2]/h3/text()",
+          "python": "product_type_id('Books' if 'Book' in data else 'Courses')"
+        }
+      ],
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": [
+        {
+          "xpath": "//div[@id='bssContent']//span[@id='bssMetaInformation']/following-sibling::*//text()",
+          "python": "html_to_text(data) if data else None"
+        },
+        {
+          "xpath": "//div[@id='bssContent']/div[contains(., 'Duration:')]",
+          "python": "html_to_text(data) if data else None"
+        },
+        {
+          "xpath": "//div[@id='bssContent']/div[contains(., 'Requirements:')]",
+          "python": "html_to_text(data) if data else None"
+        },
+        {
+          "xpath": "//div[@id='bssContent']/div[1]//text()",
+          "python": "html_to_text(data) if data else None"
+        }
+      ],
+      "name": [
+        {
+          "xpath": "//div[@id='bibCol']/h1/text()"
+        },
+        {
+          "xpath": "//div[@id='bibCol1']/h1/text()"
+        }
+      ],
+      "price_display_float": {
+        "xpath": "//div[contains(@class, 'buyOption')]/ul[@class='uppPricing']/li[contains(., 'Your Price')]",
+        "re": "\\d+\\.\\d+",
+        "python": "min_price(data)"
+      },
+      "price_currency": "USD",
+      "duration_filter": {
+        "xpath": "//div[@id=\"bssContent\"]",
+        "re": "Duration.{40}",
+        "python": "duration_filter(re.search('(\\d+\\.?\\d*)',data).group(1)+' hours')"
+      },
+      "duration_display": [
+        {
+          "xpath": "//div[@id=\"bssContent\"]",
+          "re": "Duration.{40}",
+          "python": "duration_filter(re.search('(\\d+\\.?\\d*)',data).group(1)+' hours')"
+        },
+        {
+          "xpath": "//span[@id='bssMetaInformation']//li[contains(., 'Pages')]",
+          "re": "\\d+"
+        }
+      ],
+      "toc": {
+        "xpath": "//div[@id='bssContent']/div[contains(., 'Table of Contents')]",
+        "python": "re.sub('Table of Contents','',data)"
+      },
+      "product_video_url": [
+        {
+          "xpath": "//div[@id='vidCover']/following-sibling::script/@src",
+          "re": "ptgmedia[\\d.*\\w\\/\\-\\_]*"
+        },
+        {
+          "xpath": "//a[@class='loadVideoClip']/@href"
+        }
+      ],
+      "formats": {
+        "xpath": "//div[@id='childContainer']//div[contains(@class, 'buyOption')][1]//li[contains(., 'ncludes')]//text()",
+        "python": "re.sub('Includes|and','',data) if data else 'Video'"
+      },
+      "product_image_url": [
+        {
+          "xpath": "//a[contains(@class, 'product-cover-image')]/img/@src",
+          "python": "re.sub('&type=f', '', (urljoin('http://www.informit.com/', data))) if data else None"
+        },
+        {
+          "xpath": "//div[@id='cover']/a[contains(@class, coverImage)]/img/@src",
+          "python": "re.sub('&type=f', '', (urljoin('http://www.informit.com/', data))) if data else None"
+        }
+      ],
+      "difficulty": [
+        {
+          "xpath": "//div[@id='bssContent']//p/b[contains(., 'User Level')]/following-sibling::text()",
+          "python": "difficulty(data)"
+        },
+        {
+          "xpath": "//div[@id='bssContent']//p/text()[contains(., 'User Level')]",
+          "python": "difficulty(data)"
+        }
+      ],
+      "requirements": [
+        {
+          "xpath": "//div[@id='bssContent']",
+          "re": "re.compile('equirements:(.*)Please Note',re.S)",
+          "python": "normalize_space(html2text.html2text(data)).replace('*','')"
+        },
+        {
+          "xpath": "//div[@id='bssContent']",
+          "re": "re.compile('equirements:(.*)',re.S)",
+          "python": "normalize_space(html2text.html2text(data)).replace('*','')"
+        }
+      ],
+      "published_date": {
+        "xpath": "//ul[@class='bibliography']/li[2]/text()[1]",
+        "python": "convert_date(re.sub('Published|by','',data))"
+      },
+      "authors": {
+        "xpath": "//div[@class='longBioDescription']",
+        "fields": {
+          "bio": [
+            {
+              "xpath": "./p//text()",
+              "python": "html_to_text(data)"
+            },
+            {
+              "xpath": ".//text()",
+              "python": "html_to_text(data)"
+            }
+          ],
+          "link": {
+            "xpath": "./p//a/@href"
+          },
+          "name": {
+            "xpath": "./h1/text()"
+          }
+        },
+        "type": "[Author]",
+        "level": "1_1"
+      },
+      "publisher": {
+        "xpath": "//ul[@class='bibliography']/li[2]",
+        "fields": {
+          "link": {
+            "xpath": "./a[1]/@href"
+          },
+          "name": {
+            "xpath": "./a[1]/text()"
+          }
+        },
+        "type": "[Publisher]"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/store/.*'), restrict_xpaths=('//a[@class=\\'title\\']')), callback='parse_product')",
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//*[@class='pagination']/a\")), follow=True)"
+      ]
+    }
+  }
+}

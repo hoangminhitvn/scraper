@@ -1,0 +1,66 @@
+{
+  "base_url": "http://mixergy.com/", 
+  "start_url": "http://mixergy.com/category/course-cheat-sheet/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "282", 
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "description": [
+        {
+          "xpath": "//div[@class='entry-content']/p[1]/following-sibling::*//text()[count(.|//div[@class='entry-content']//p[contains(.,'In his Mixergy course,')]/preceding-sibling::*//text()) = count(//div[@class='entry-content']//p[contains(.,'In his Mixergy course,')]/preceding-sibling::*//text())]", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='entry-content']/p[1]/following-sibling::*//text()[count(.|//div[@class='entry-content']//p[contains(.,'Here are the actionable highlight')]/preceding-sibling::*//text()) = count(//div[@class='entry-content']//p[contains(.,'Here are the actionable highlight')]/preceding-sibling::*//text())]", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='entry-content']/p[1]/following-sibling::*//text()[count(.|//div[@class='entry-content']/h2[1]/preceding-sibling::*//text()) = count(//div[@class='entry-content']/h2[1]/preceding-sibling::*//text())]", 
+          "python": "html_to_text(data)"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//h1[@class='entry-title'])"
+      }, 
+      "ProductRating": {
+        "fields": {
+          "username": "", 
+          "user_id": "0", 
+          "rating_only": "1", 
+          "pub_status": "L", 
+          "overall_rating": null
+        }
+      }, 
+      "published_date": {
+        "xpath": "substring-after(//p[@class='post-meta'],'on ')", 
+        "python": "convert_date(data) if data else None"
+      }, 
+      "authors": {
+        "xpath": "//article/div[@class='entry-content']/p/em[contains(.,'Written')]", 
+        "fields": {
+          "name": [
+            {
+              "xpath": "substring-before(substring-after(.//text(),'by '),'.')"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(.//text(),'by '),',')"
+            }
+          ]
+        }, 
+        "type": "[Author]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//h2[@class=\\'entry-title\\']/a')),callback='parse_product')", 
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//ul[@class=\\'pagination\\']/li/a')),follow=True)"
+      ]
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "base_url": "http://gogotraining.com", 
+  "start_url": "http://gogotraining.com/training/courses", 
+  "levels": {
+    "1": "./@href", 
+    "1_1": {
+      "xpath": "//ul/li//a[contains(.,'Meet your instructor')]/@href", 
+      "python": "urljoin('http://gogotraining.com',data) if data else None"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "242", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[contains(@id,'description')]/h2[contains(.,'Description')]/following-sibling::*//text()[count(.|//div[contains(@id,'description')]/h2[contains(.,'Description')]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//div[contains(@id,'description')]/h2[contains(.,'Description')]/following-sibling::h2[1]/preceding-sibling::*//text())]", 
+        "python": "' '.join(normalize_space(selector.extract()))", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": ".//text()"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(@id,'outline-')]", 
+        "level": "1"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//div[contains(@id,'videos')]//tr[@class='total']/td[2]//text()", 
+        "python": "duration_filter(data) if data else None", 
+        "level": "1"
+      }, 
+      "price_display_float": {
+        "xpath": "//div[contains(@id,'purchase-options')]//td[@class='cost'][1]", 
+        "python": "get_price_float(data) if data else None", 
+        "level": "1", 
+        "re": "\\d+"
+      }, 
+      "duration_display": {
+        "xpath": "//div[contains(@id,'videos')]//tr[@class='total']/td[2]//text()", 
+        "python": "data if data else None", 
+        "level": "1"
+      }, 
+      "requirements": {
+        "xpath": "//div[contains(@id,'hardware')]/h2[contains(.,'Requirements')]/following-sibling::*//text()[count(.|//div[contains(@id,'hardware')]/p[contains(.,'For more information,')]/preceding-sibling::*//text()) = count(//div[contains(@id,'hardware')]/p[contains(.,'For more information,')]/preceding-sibling::*//text())]", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }, 
+      "certificates": {
+        "xpath": "//div[contains(@id,'certification')]/h2[contains(.,'Certification')]/following-sibling::*//text()[count(.|//div[contains(@id,'certification')]/p[contains(.,'For more information')]/preceding-sibling::*//text()) = count(//div[contains(@id,'certification')]/p[contains(.,'For more information')]/preceding-sibling::*//text())]", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "xpath": "//div[@class='container']/div[@class='main']/div[@class='body']", 
+        "fields": {
+          "bio": {
+            "xpath": "string(./div[@class=\"profile\"])"
+          }, 
+          "image": {
+            "xpath": "/div[@class=\"profileimg\"]/img/@src", 
+            "python": "urljoin('http://gogotraining.com',data) if data else None"
+          }, 
+          "name": {
+            "xpath": "./h1//text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "//div[contains(@id,'description')]/h2[contains(.,'Prerequisites')]/following-sibling::*//text()[count(.|//div[contains(@id,'description')]/h2[contains(.,'Prerequisites')]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//div[contains(@id,'description')]/h2[contains(.,'Prerequisites')]/following-sibling::h2[1]/preceding-sibling::*//text())]", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='course-directory']/ul/li/a"
+  }
+}

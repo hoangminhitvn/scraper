@@ -1,0 +1,85 @@
+{
+  "base_url": "https://www.ledet.com/",
+  "levels": {
+    "1_1": {
+      "python": "ledet.request_events(response)"
+    }
+  },
+  "start_url": "https://www.ledet.com/courses?sort=all",
+  "output_config": {
+    "fields": {
+      "provider_name": "Ledet",
+      "provider_id": "141",
+      "language": "eng",
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      },
+      "product_type_name": "Courses",
+      "space_lock": "Y",
+      "time_lock": "Y",
+      "name": {
+        "xpath": "//h1/text()"
+      },
+      "product_image_url": {
+        "xpath": "//div[@class='course']/img/@src",
+        "python": "urljoin('https://www.ledet.com/', data) if data else None"
+      },
+      "description": {
+        "xpath": "//div[@id='course_overview']/div[@class='order'][2]/div//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "prerequisites": {
+        "xpath": "//h2[contains(., 'rerequisite')]/following-sibling::div[@class='description'][1]//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "audience": {
+        "xpath": "//h2[contains(./text(), 'Who Should')]/following-sibling::div[@class='description'][1]//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "toc": {
+        "xpath": "//div[@id='course_outline']"
+      },
+      "product_events": {
+        "fields": {
+          "duration_display": {
+            "xpath": "./td[contains(@class, 'duration')]/text()",
+            "re": "\\d+",
+            "python": "str(data) + ' days' if data else None"
+          },
+          "duration_filter": {
+            "xpath": "./td[contains(@class, 'duration')]/text()",
+            "re": "\\d+",
+            "python": "duration_filter(str(data) + ' days') if data else None"
+          },
+          "price_currency": "USD",
+          "price_display_float": {
+            "xpath": "substring-after(./td[contains(@class, 'price')]/text(), '$')"
+          },
+          "location_display": {
+            "xpath": "./td[contains(@class, 'location')]/a/text()"
+          },
+          "start_date_local": {
+            "xpath": "substring-after(./td[contains(@class, 'dtstart')]//text(), ',')",
+            "python": "convert_date(data) if data else None"
+          }
+        },
+        "type": "[ProductEvent]",
+        "xpath": "//table[@class='events']//tr[contains(@class, 'vevent')]",
+        "level": "1_1"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/.*'), restrict_xpaths=(\"//div[@id='courses_results']//div[@class='course']//a[@class='name']\")), callback='parse_product')",
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//div[@class='pagination']/a\")), follow=True)"
+      ]
+    },
+    "pre_filters": {
+      "filters_not": {
+        "level": "1",
+        "python": "'margulis' in response.url"
+      }
+    }
+  }
+}

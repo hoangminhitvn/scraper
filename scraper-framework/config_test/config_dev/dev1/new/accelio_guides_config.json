@@ -1,0 +1,95 @@
+{
+  "baseUrl": "https://guides.co/",
+  "levels": {
+    "1_1": {
+      "xpath": "//div[contains(@class, 'instructor-bio-inner')]//h4/a/@href",
+      "level": "1",
+      "dont_filter": true
+    }
+  },
+  "start_url": ["https://guides.co/browse"],
+  "output_config": {
+    "fields": {
+      "provider_name": "Accelio Guides",
+      "provider_id": "9",
+      "product_type_name": "Courses",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "name": {
+        "xpath": "//div[@class='header-content']/h1/text()"
+      },
+      "prod_image": {
+        "xpath": "//img[contains(@class, 'header-img')]/@src",
+        "re": "\\w.*"
+      },
+      "preview_video": {
+        "xpath": "//div[@id='overview']//iframe/@src",
+        "re": "\\w.*"
+      },
+      "description": {
+        "xpath": "//div[@id='overview']//div[@itemprop='description']//text()",
+        "python": "' '.join([normalize_space(html2text.html2text(i)).replace('\"', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('\"', '')"
+      },
+      "toc": {
+        "xpath": "//ul[contains(@class, 'guide-section')]"
+      },
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": ".//h3/text()"
+          },
+          "bio": {
+            "xpath": ".//div[@itemprop='description']//text()",
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) data"
+          },
+          "image": {
+            "xpath": ".//img[contains(@class, 'img-circle')]/@src",
+            "re": "\\w.*"
+          }
+        },
+        "type": "[Author]",
+        "xpath": "//div[@id='author']"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "substring-after(//div[contains(@class, 'guide-header-price')]/h3/text(), '$')",
+        "python": "data if data else '0'"
+      },
+      "price_filter": {
+        "xpath": "substring-after(//div[contains(@class, 'guide-header-price')]/h3/text(), '$')",
+        "python": "data if data else '0'"
+      },
+      "ProductRating": {
+        "fields": {
+          "pub_status": "L",
+          "user_id": null,
+          "rating_only": "0",
+          "review": {
+            "xpath": ".//*[@itemprop='reviewBody']//text()",
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          },
+          "username": {
+            "xpath": ".//div[@class='review-user']//*[@itemprop='author']/text()"
+          },
+          "overall_rating": {
+            "xpath": ".//div[@class='review-content']//*[@itemprop='reviewRating']/text()"
+          }
+        },
+        "type": "[ProductRating]",
+        "xpath": "//div[@id='reviews']//div[@class='review-item']",
+        "python": "data if data else None"
+      }
+    },
+    "type": "Product",
+    "extractorRules": {
+      "rules": [
+        "Rule(lxml(allow=('/guide/.*'), restrict_xpaths='//div[@class=\\'guide-image\\']/a'), callback='parse_product')",
+        "Rule(lxml(allow=('/category/.*'), restrict_xpaths=('//ul[@class=\\'ac-category\\']/li/a')), follow=True, callback='passCat')"
+      ]
+    },
+    "pre_filters": {
+      "filters_not": {}
+    }
+  }
+}

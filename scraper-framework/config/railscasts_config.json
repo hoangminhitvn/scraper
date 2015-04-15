@@ -1,0 +1,60 @@
+{
+  "base_url": "http://railscasts.com/",
+  "start_url": "http://railscasts.com/",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "445",
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": {
+        "xpath": "//div[@class='description']//text()",
+        "python": "html_to_text(data)"
+      },
+      "name": {
+        "xpath": "//h1/text()",
+        "python": "html_to_text(data)"
+      },
+      "price_display_float": {
+        "xpath": "//div[@class='pro_details']/p/text()",
+        "re": "\\$\\d+",
+        "python": "get_price_float(data.replace('$','')) if data else None"
+      },
+      "price_currency": "USD",
+      "duration_filter": {
+        "xpath": "//div[@class='info']/div[@class='details']/text()",
+        "re": "\\w.*minutes|\\w.*minute",
+        "python": "duration_filter(data.split(' | ')[1])"
+      },
+      "duration_display": {
+        "xpath": "//div[@class='info']/div[@class='details']/text()",
+        "re": "\\w.*minutes|\\w.*minute",
+        "python": "data.split(' | ')[1]"
+      },
+      "product_image_url": {
+        "xpath": "//div[@class='screenshot']//img/@src",
+        "python": "urljoin('http://railscasts.com/', data) if data else None"
+      },
+      "published_date": {
+        "xpath": "//div[@class='info']/div[@class='details']/text()",
+        "re": "\\w.*",
+        "python": "convert_date(data.split(' | ')[0])"
+      },
+      "formats": {
+        "xpath": "//ul[@class='downloads horizontal']/li[position()>2]/a//text()",
+        "type": "[str]"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/\\?page=\\d+',),),follow=True)",
+        "Rule(lxml(allow=('/episodes/',),restrict_xpaths=('//h2/a'),), callback='parse_product')"
+      ]
+    }
+  }
+}

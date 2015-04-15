@@ -1,0 +1,167 @@
+{
+  "base_url": "http://learning.pmi.org/", 
+  "start_url": "http://learning.pmi.org/search.php?keyword=&x=49&y=21&location=&dates=&area=&PDU=&level=", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "313", 
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "substring-after(substring-before(//div[@id='quizText'],'How will I benefit?'),'program.')", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "substring-after(substring-before(//div[@id='quizText'],'Your seminar experience'),'program.')", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@id='quizText']/div[1]//text()", 
+          "python": "html_to_text(data)"
+        }
+      ], 
+      "name": {
+        "xpath": "//div[@id='mainTitle']/div[2]//text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "product_events": [
+        {
+          "xpath": "//a[contains(.,'Register Now')]", 
+          "fields": {
+            "location_city": {
+              "xpath": "substring-before(./preceding-sibling::div[3]//text(),',')"
+            }, 
+            "price_currency": "USD", 
+            "end_date_local": {
+              "xpath": "normalize-space(concat(./preceding-sibling::div[@id='event_date'][1]/a/strong,substring-after(./preceding-sibling::div[contains(.,'Seminar Hours')][1]//text(),'Seminar Hours')))", 
+              "python": "get_end_date(selector.extract()[0].encode('ascii', 'replace'))"
+            }, 
+            "language": "eng", 
+            "start_date_local": {
+              "xpath": "normalize-space(concat(./preceding-sibling::div[@id='event_date'][1]/a/strong,substring-after(./preceding-sibling::div[contains(.,'Seminar Hours')][1]//text(),'Seminar Hours')))", 
+              "python": "get_start_date(selector.extract()[0].encode('ascii', 'replace'))"
+            }, 
+            "duration_filter": {
+              "xpath": "//div[@class='days']//text()", 
+              "re": "\\d+", 
+              "python": "duration_filter(data + ' DAYS')"
+            }, 
+            "price_display_float": {
+              "xpath": "//div[@class='early_registration_box']/span/text()", 
+              "python": "get_price_float(data)"
+            }, 
+            "location_display": {
+              "xpath": {
+                "operator": "and", 
+                "value": [
+                  "./preceding-sibling::div[4]//text()", 
+                  "./preceding-sibling::div[3]//text()"
+                ]
+              }, 
+              "python": "html_to_text(data)"
+            }, 
+            "location_addr": {
+              "xpath": "./preceding-sibling::div[4]//text()"
+            }, 
+            "location_postal": {
+              "xpath": "./preceding-sibling::div[3]//text()", 
+              "re": "\\d{5}"
+            }, 
+            "duration_display": {
+              "xpath": "//div[@class='days']//text()", 
+              "re": "\\d+", 
+              "python": "data + ' DAYS'"
+            }
+          }, 
+          "type": "[ProductEvent]"
+        }, 
+        {
+          "xpath": "//div[@id='event_date']/a", 
+          "fields": {
+            "price_display_float": [
+              {
+                "xpath": "//div[@class='early_registration_box']/span/text()", 
+                "python": "get_price_float(data)"
+              }, 
+              {
+                "xpath": "//div[@id='quizMEM']//text()", 
+                "re": "\\d.*", 
+                "python": "get_price_float(data)"
+              }
+            ], 
+            "price_currency": "USD", 
+            "end_date_local": {
+              "xpath": "./strong//text()", 
+              "python": "get_end_date(selector.extract()[0].encode('ascii', 'replace'))"
+            }, 
+            "language": "eng", 
+            "start_date_local": {
+              "xpath": "./strong//text()", 
+              "python": "get_start_date(selector.extract()[0].encode('ascii', 'replace'))"
+            }
+          }, 
+          "type": "[ProductEvent]"
+        }
+      ], 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//div[@class='days']//text()", 
+        "re": "\\d+", 
+        "python": "data + ' DAYS' if int(data) > 0 else None"
+      }, 
+      "price_display_float": [
+        {
+          "xpath": "//div[@class='early_registration_box']/span/text()", 
+          "python": "get_price_float(data)"
+        }, 
+        {
+          "xpath": "//div[@id='quizMEM']//text()", 
+          "re": "\\d.*", 
+          "python": "get_price_float(data)"
+        }
+      ], 
+      "difficulty": [
+        {
+          "xpath": "//div[@class='level']/span[@class='numbers_text']/span[@class='numbers_text']//text()", 
+          "python": "difficulty(data)"
+        }, 
+        {
+          "xpath": "//div[@id='quizLevel']/span//text()", 
+          "python": "difficulty(data)"
+        }
+      ], 
+      "duration_display": {
+        "xpath": "//div[@class='days']//text()", 
+        "re": "\\d+", 
+        "python": "data + ' DAYS' if int(data) > 0 else None"
+      }, 
+      "audience": [
+        {
+          "xpath": "//p[contains(.,'Who should attend?')]/following-sibling::p//text()[count(.|//p[contains(.,'Who should attend?')]/following-sibling::div[@class='breakDemand']/preceding-sibling::p//text()) = count(//p[contains(.,'Who should attend?')]/following-sibling::div[@class='breakDemand']/preceding-sibling::p//text())]"
+        }, 
+        {
+          "xpath": "//div[@id='quizText']/div[3]/p[contains(.,'Who should attend')]/following-sibling::p//text()", 
+          "re": "\\w.*", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "substring-before(//div[@id='quizText']/following-sibling::div[2],'View All e-Learning On Demand Courses')", 
+          "re": "\\w.*", 
+          "python": "html_to_text(data)"
+        }
+      ]
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//ul[@id=\\'paginate\\']/li/a')),callback='parse_product')", 
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//ul[@id=\\'pagination\\']/li/a')), follow=True),"
+      ]
+    }
+  }
+}

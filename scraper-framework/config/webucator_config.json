@@ -1,0 +1,174 @@
+{
+  "base_url": "https://www.webucator.com", 
+  "start_url": "https://www.webucator.com/self-paced-courses/index.cfm",
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "396", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "N", 
+      "description": [
+        {
+          "xpath": "//div[@id='Overview']//text()", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='overview']/p[3]//text()", 
+          "python": "html_to_text(data)"
+        }
+      ], 
+      "name": {
+          "xpath": "//span[@itemprop='name']/text()"
+      },
+      "toc": [
+        {
+          "xpath": "//h3[contains(.,'Class Outline')]/following-sibling::*"
+        }, 
+        {
+          "xpath": "//div[@class='course-page-lessons']"
+        }
+      ], 
+      "product_events": [
+        {
+          "xpath": "//table[@class='classestable upcomingClassesTable']//tr[contains(.,'Register')]", 
+          "fields": {
+            "price_currency": "USD", 
+            "end_date_local": {
+              "xpath": "normalize-space(concat(substring-before(./td[1]/time/span,' '),substring-after(substring-before(./td[1]/time/span,','),'-'),substring(substring-after(./td[1]/time/span,','),1,5),substring-after(substring-after(./td[1]/time/span,'-'),'-')))", 
+              "re": ".*PM|.*AM", 
+              "python": "convert_date(data) if data else None"
+            }, 
+            "language": "eng", 
+            "start_date_local": {
+              "xpath": "./td[1]/time/@datetime", 
+              "python": "data.replace('T',' ')"
+            }, 
+            "duration_filter": {
+              "xpath": "//ul[@class='list-discs'][1]/li[1]/time//text()", 
+              "python": "duration_filter(data) if data else None"
+            }, 
+            "price_display_float": {
+              "xpath": "./td[2]//text()[contains(.,'$')]", 
+              "re": "\\d.*"
+            }, 
+            "duration_display": {
+              "xpath": "//ul[@class='list-discs'][1]/li[1]/time//text()"
+            }
+          }, 
+          "type": "[ProductEvent]"
+        }, 
+        {
+          "fields": {
+            "price_display_float": [
+              {
+                "xpath": "//ul[@class='list-discs'][1]/li[1]/text()[contains(.,'$')]", 
+                "re": "\\d.*"
+              }, 
+              {
+                "xpath": "//a[@class='button blue'][contains(.,'Buy')]//span[@itemprop='price']//text()", 
+                "re": "\\d.*"
+              }
+            ], 
+            "price_currency": "USD", 
+            "duration_filter": [
+              {
+                "xpath": "//ul[@class='list-discs'][1]/li[1]/time//text()", 
+                "python": "duration_filter(data) if data else None"
+              }, 
+              {
+                "xpath": "//ul[@class='list-discs'][1]/li[1]//text()", 
+                "re": "\\d+\\sdays|\\d+\\sday", 
+                "python": "duration_filter(data) if data else None"
+              }, 
+              {
+                "xpath": "//div[@class='overview']/p[contains(./time/@class,'underline')]//time/text()", 
+                "re": "\\d.*", 
+                "python": "duration_filter(data) if data else None"
+              }
+            ], 
+            "language": "eng", 
+            "duration_display": [
+              {
+                "xpath": "//ul[@class='list-discs'][1]/li[1]/time//text()"
+              }, 
+              {
+                "xpath": "//ul[@class='list-discs'][1]/li[1]//text()", 
+                "re": "\\d+\\sdays|\\d+\\sday"
+              }, 
+              {
+                "xpath": "//div[@class='overview']/p[contains(./time/@class,'underline')]//time/text()", 
+                "re": "\\d.*"
+              }
+            ]
+          }, 
+          "type": "[ProductEvent]"
+        }
+      ], 
+      "product_video_url": [
+        {
+          "xpath": "//object[@id]/embed/@src"
+        }
+      ], 
+      "requirements": {
+        "xpath": "//h2[contains(.,'Requirements')]/following-sibling::*//text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "ProductRating": [
+          {
+            "xpath": "//div[@class='quotecontainer coursedescription']",
+            "fields": {
+              "username": {
+                "xpath": "substring-before(./p/em,',')",
+                "re": "\\w.*"
+              },
+              "rating_only": "0",
+              "user_id": "0",
+              "review": {
+                "xpath": "./blockquote/p//text()"
+              },
+              "pub_status": "L",
+              "overall_rating": {
+                "xpath": "./div//span[@itemprop='ratingValue']/text()",
+                "re": "\\d.*"
+              }
+            },
+            "type": "[ProductRating]"
+          },
+          {
+            "xpath": "//div[@itemprop='aggregateRating']/div[@class='aggregate-rating']",
+            "fields": {
+              "rating_only": "1",
+              "user_id": "0",
+              "pub_status": "L",
+              "overall_rating": {
+                "xpath": "./span[@itemprop='ratingValue']/text()",
+                "python": "round(float(data))"
+              }
+            },
+            "type": "[ProductRating]"
+          }
+      ],
+      "prerequisites": {
+        "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::*//text()[count(.|//h2[contains(.,'Prerequisites')]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//h2[contains(.,'Prerequisites')]/following-sibling::h2[1]/preceding-sibling::*//text())]", 
+        "python": "html_to_text(data)"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'404 - File or directory not found.' in response.body", 
+          "level": "1"
+        }
+      ]
+    }, 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/course/\\w.*',),deny=('/course/catalog\\.cfm')),callback='parse_product')"
+      ]
+    }
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "base_url": "http://www.adobepress.com/", 
+  "start_url": "http://www.adobepress.com/store/browse.asp", 
+  "levels": {
+    "1_1": {
+      "xpath": "//ul[@class='bibliography']/li[1]/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "5", 
+      "product_type_id": [
+        {
+          "xpath": "string(//div[contains(@class, 'buyOption')][1]/h3/text())", 
+          "python": "product_type_id('Books' if 'Book' in data else 'Courses')"
+        }, 
+        {
+          "xpath": "string(//div[contains(@class, 'buyOption')][2]/h3/text())", 
+          "python": "product_type_id('Books' if 'Book' in data else 'Courses')"
+        }
+      ], 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@id='bssContent']//span[@id='bssMetaInformation']/following-sibling::*//text()", 
+          "python": "' '.join(normalize_space(selector.extract())) if data else None"
+        }, 
+        {
+          "xpath": "string(//div[@id='bssContent']/div[contains(., 'Duration:')])"
+        }, 
+        {
+          "xpath": "string(//div[@id='bssContent']/div[contains(., 'Requirements:')])"
+        }, 
+        {
+          "xpath": "string(//div[@id='bssContent']/div[1])"
+        }
+      ], 
+      "name": [
+        {
+          "xpath": "string(//div[@id='bibCol']/h1/text())"
+        }, 
+        {
+          "xpath": "string(//div[@id='bibCol1']/h1/text())"
+        }
+      ], 
+      "toc": {
+        "xpath": "//div[@id='bssContent']/div[contains(., 'Table of Contents')]", 
+        "python": "re.sub('Table of Contents','',data)"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "//div[contains(@class, 'buyOption')]/ul[@class='uppPricing']/li[contains(., 'Your Price')]", 
+            "python": "get_price_float(min_price(normalize_space(selector.extract())))"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "//div[@id=\"bssContent\"]", 
+            "re": "Duration.{40}", 
+            "python": "duration_filter(re.search('(\\d+\\.?\\d*)',data).group(1)+' hours')"
+          }, 
+          "duration_display": [
+            {
+              "xpath": "//div[@id=\"bssContent\"]", 
+              "re": "Duration.{40}", 
+              "python": "duration_filter(re.search('(\\d+\\.?\\d*)',data).group(1)+' hours')"
+            }, 
+            {
+              "xpath": "//span[@id='bssMetaInformation']//li[contains(., 'Pages')]", 
+              "re": "\\d+"
+            }
+          ]
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='vidCover']/following-sibling::script/@src", 
+        "re": "ptgmedia[\\d.*\\w\\/\\-\\_]*"
+      }, 
+      "formats": {
+        "xpath": "//div[@id='childContainer']//div[contains(@class, 'buyOption')][1]//li[contains(., 'ncludes')]//text()", 
+        "python": "re.sub('Includes|and','',data) if data else 'Video'"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@id='cover']/a[contains(@class, coverImage)]/img/@src", 
+        "python": "re.sub('&type=f', '', (urljoin('http://www.adobepress.com/', data))) if data else None"
+      }, 
+      "difficulty": [
+        {
+          "xpath": "//div[@id='bssContent']//p/b[contains(., 'User Level')]/following-sibling::text()", 
+          "re": "Beginner|Intermediate|Expert\\/?"
+        }, 
+        {
+          "xpath": "string(//div[@id='bssContent']//p/text()[contains(., 'User Level')])", 
+          "re": "Beginner|Intermediate|Expert\\/?"
+        }
+      ], 
+      "requirements": [
+        {
+          "xpath": "//div[@id='bssContent']", 
+          "re": "re.compile('equirements:(.*)Please Note',re.S)", 
+          "python": "normalize_space(html2text.html2text(data)).replace('*','')"
+        }, 
+        {
+          "xpath": "//div[@id='bssContent']", 
+          "re": "re.compile('equirements:(.*)',re.S)", 
+          "python": "normalize_space(html2text.html2text(data)).replace('*','')"
+        }
+      ], 
+      "published_date": {
+        "xpath": "//ul[@class='bibliography']/li[2]/text()[1]", 
+        "python": "convert_date(re.sub('Published|by','',data))"
+      }, 
+      "authors": {
+        "xpath": "//div[@id='contentAuthors']", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[@class='clearfix']/h1/following-sibling::*//text()", 
+            "python": "' '.join(normalize_space(selector.extract())) if data else None"
+          }, 
+          "image": {
+            "xpath": ".//div[@class='clearfix']/img/@src"
+          }, 
+          "link": {
+            "xpath": "//ul[@class='bibliography']/li[1]/a/@href", 
+            "python": "urljoin('http://www.adobepress.com', data) if data else None", 
+            "level": "1"
+          }, 
+          "name": {
+            "xpath": ".//div[@class='clearfix']/h1//text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1_1"
+      }, 
+      "publisher": {
+        "xpath": "//ul[@class='bibliography']/li[2]", 
+        "fields": {
+          "link": {
+            "xpath": "//ul[@class='bibliography']/li[2]/a[1]/@href"
+          }, 
+          "name": {
+            "xpath": "//ul[@class='bibliography']/li[2]/a[1]/text()"
+          }
+        }, 
+        "type": "[Publisher]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('.*'),restrict_xpaths=('//table[@id=\\'allProdlist\\']//td[@class=\\'txt\\']/a')), callback='parse_product'), Rule(lxml(allow=('/store/browse.asp.*')), follow=True)]"
+    }
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "base_url": "https://learnable.com/",
+  "start_url": "https://learnable.com/",
+  "levels": {
+    "1": {
+      "xpath": ".//h2/a/@href"
+    },
+    "1_1": {
+      "xpath": "//div[@class='ProductAuthor']/a/@href",
+      "level": "1"
+    },
+    "1_2": {
+      "python": "learnable.get_page_review_rating(response)"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "237",
+      "product_type_id": [
+        {
+          "xpath": "//div[@class='MetaItem'][1]/span[@class='MetaBody']/text()",
+          "re": "\\w.*",
+          "python": "product_type_id('Books' if 'pg' in data else 'Courses')",
+          "level": "1"
+        },
+        {
+          "python": "product_type_id('Courses')"
+        }
+      ],
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": {
+        "xpath": "//div[contains(@class, 'ProductDescription')]//text()",
+        "python": "html_to_text(data) if data else None",
+        "level": "1"
+      },
+      "name": {
+        "xpath": "//div[@class='ProductContent']/h1/text()",
+        "level": "1"
+      },
+      "toc": {
+        "xpath": "//div[@class='ProductTable']",
+        "level": "1"
+      },
+      "product_video_url": [
+        {
+          "xpath": "//video-player/@hd",
+          "level": "1"
+        },
+        {
+          "xpath": "//video-player/@sd",
+          "level": "1"
+        }
+      ],
+      "product_image_url": {
+        "xpath": ".//div[@class='product_poster']//img/@src"
+      },
+      "difficulty": {
+        "xpath": "//span[@class='ProductMetaBody']/text()",
+        "python": "html_to_text(data) if data else None",
+        "level": "1"
+      },
+      "formats": {
+        "xpath": "//div[@class='MetaItem'][contains(., 'PDF')]/span[@class='MetaBody']/text()",
+        "python": "html_to_text(data) if data else None",
+        "level": "1"
+      },
+      "duration_filter": {
+        "xpath": "//div[@class='MetaItem'][1]/span[@class='MetaBody']/text()",
+        "python": "duration_filter(data)",
+        "level": "1"
+      },
+      "duration_display": {
+        "xpath": "//div[@class='MetaItem'][1]/span[@class='MetaBody']/text()",
+        "python": "html_to_text(data) if data else None",
+        "level": "1"
+      },
+      "published_date": {
+        "xpath": "//span[@class='MetaBody'][contains(., 'date')]/text()[2]",
+        "python": "convert_date(data) if data else None",
+        "level": "1"
+      },
+      "ProductRating": {
+        "python": "learnable.get_data_review_rating(response)",
+        "level": "1_2"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "//span[@itemprop='price']/text()",
+        "re": "\\d+",
+        "python": "get_price_float(data) if data else None",
+        "level": "1"
+      },
+      "authors": {
+        "xpath": "//div[contains(./h3/text(),'Author')]/following-sibling::div",
+        "fields": {
+          "bio": {
+            "xpath": "//div[contains(@class, 'profile-page')]/div[@class='panel']//div[contains(@class, 'small-12')]//p/text()",
+            "python": "html_to_text(data) if data else None",
+            "level": "1_1"
+          },
+          "image": {
+            "xpath": "//div[contains(@class, 'profile-page')]/div[@class='panel']//div[contains(@class, 'small-4')]//img/@src",
+            "level": "1_1"
+          },
+          "link": {
+            "xpath": "//div[contains(@class, 'profile-page')]/div[@class='panel']//div[contains(@class, 'small-12')]//p/a/@href",
+            "level": "1_1"
+          },
+          "name": {
+            "xpath": "//div[contains(@class, 'profile-page')]/div[@class='panel']//h1/text()",
+            "level": "1_1"
+          }
+        },
+        "type": "[Author]",
+        "level": "1"
+      },
+      "instructors": {
+        "xpath": "//div[contains(./h3/text(),'Instructor')]/following-sibling::div",
+        "fields": {
+          "bio": {
+            "xpath": "//div[contains(@class, 'profile-page')]/div[@class='panel']//div[contains(@class, 'small-12')]//p/text()",
+            "python": "html_to_text(data) if data else None",
+            "level": "1_1"
+          },
+          "image": {
+            "xpath": "//div[contains(@class, 'profile-page')]/div[@class='panel']//div[contains(@class, 'small-4')]//img/@src",
+            "level": "1_1"
+          },
+          "link": {
+            "xpath": "//div[contains(@class, 'profile-page')]/div[@class='panel']//div[contains(@class, 'small-12')]//p/a/@href",
+            "level": "1_1"
+          },
+          "name": {
+            "xpath": "//div[contains(@class, 'profile-page')]/div[@class='panel']//h1/text()",
+            "level": "1_1"
+          }
+        },
+        "type": "[Instructor]",
+        "level": "1"
+      }
+    },
+    "type": "Product",
+    "xpath": "//div[contains(@class, 'row collapse')]",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//ul[@class='category-nav__list']/li[not(contains(., 'All Topics'))]/a\")), callback='parse', follow=True)"
+      ]
+    }
+  }
+}

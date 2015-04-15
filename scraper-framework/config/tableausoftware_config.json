@@ -1,0 +1,92 @@
+{
+  "base_url": "http://www.tableausoftware.com", 
+  "start_url": "http://www.tableausoftware.com/learn/webinars", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "276", 
+      "product_type_id": {
+        "python": "product_type_id('webinars')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//h3[@class='field-event-subheader']/following-sibling::div[1]//text()", 
+        "python": "html_to_text(data) if data else None"
+      }, 
+      "name": {
+        "xpath": "//h1[@id='page-title']/text()"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "substring-after(//h3[contains(., 'minutes')]/text(), '|')", 
+        "python": "duration_filter(data) if data else None"
+      }, 
+      "duration_display": {
+        "xpath": "substring-after(//h3[contains(., 'minutes')]/text(), '|')"
+      }, 
+      "instructors": [
+        {
+          "xpath": "//h3[contains(., 'Speaker')]/following-sibling::div", 
+          "fields": {
+            "bio": {
+              "xpath": "./article/div[1]//div[@class='long']//text()", 
+              "python": "html_to_text(data) if data else None"
+            }, 
+            "image": {
+              "xpath": "./article//img/@src"
+            }, 
+            "name": {
+              "xpath": "./article/div[1]//div[@class='speaker-name']/text()"
+            }
+          }, 
+          "type": "[Instructor]"
+        }, 
+        {
+          "xpath": "//p[contains(.,'the Presenters')]/following-sibling::p", 
+          "fields": {
+            "bio": {
+              "xpath": "string(./b/following-sibling::text()[1])"
+            }, 
+            "name": {
+              "xpath": "string(./b/text()[1])"
+            }
+          }, 
+          "type": "[Instructor]"
+        }, 
+        {
+          "xpath": "//div[@class='field-item even']/p[contains(., 'Speakers:')]/following-sibling::p", 
+          "fields": {
+            "bio": {
+              "xpath": "string(./strong/following-sibling::text()[1])"
+            }, 
+            "name": {
+              "xpath": "string(./strong)"
+            }
+          }, 
+          "type": "[Instructor]"
+        }, 
+        {
+          "xpath": "//div[@class='field-item even']/p[contains(., 'Speakers:')]/following-sibling::p", 
+          "fields": {
+            "bio": {
+              "xpath": "substring-after(./text(), ',')"
+            }, 
+            "name": {
+              "xpath": "substring-before(./text(), ',')"
+            }
+          }, 
+          "type": "[Instructor]"
+        }
+      ]
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/learn/webinars/.*',), restrict_xpaths=(\"//tr[contains(./@class, 'contextual-links-region')]/td/a\")), callback='parse_product')", 
+        "Rule(lxml(allow=('/learn/webinars\\?page=\\d+'), restrict_xpaths=(\"//ul[contains(@class, 'pager')]/li/a\")), follow=True)"
+      ]
+    }
+  }
+}

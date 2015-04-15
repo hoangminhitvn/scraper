@@ -1,0 +1,38 @@
+{
+  "base_url": "https://benchprep.com", 
+  "start_url": "https://benchprep.com/courses", 
+  "levels": {
+    "1": ".//div[@class='title']/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "28", 
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//section[@id='overview']/p[@class='summary']/text()", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": ".//div[@class='title']/a/text()"
+      }, 
+      "toc": {
+        "xpath": "//section[@id='topics-covered']/div/ol[@class='course-content-list']|//section[@id='study-plan']/div[@id='study-plan-task-wrapper']", 
+        "level": "1"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//section[@id='topics-covered']/div[@class='table-of-contents course-content padded-container']/ol[@class='course-content-list']//li/span[contains(@class,'duration')]/text()", 
+        "python": "str(duration_filter(data))", 
+        "level": "1"
+      }, 
+      "price_display_float": "25.00"
+    }, 
+    "type": "Product", 
+    "xpath": "//ul[@class='content-packages']/li[contains(@class,'content-package')]"
+  }
+}

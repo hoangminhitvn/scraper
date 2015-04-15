@@ -1,0 +1,113 @@
+{
+  "base_url": "https://www.creativelive.com/", 
+  "start_url": [
+    "https://www.creativelive.com/catalog/category/photography"
+  ], 
+  "levels": {
+    "1_2": {
+      "xpath": "//div[contains(@class, 'col-sm-4 sidebar-outer')]//a[contains(., 'Reviews')]/@href", 
+      "level": "1"
+    }, 
+    "1_1": {
+      "xpath": "//div[contains(@class, 'instructor-bio-inner')]//h4/a/@href", 
+      "level": "1"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "171", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@class='course-description']/h2[@class='course-tagline']/following-sibling::*//text()", 
+          "python": "html_to_text(data) if data else None"
+        }, 
+        {
+          "xpath": "//div[@class='course-description']/h2/following-sibling::*//text()", 
+          "python": "html_to_text(data) if data else None"
+        }, 
+        {
+          "xpath": "//div[@class='course-description']//*[not(contains(@class, 'course-tagline'))]//text()", 
+          "python": "html_to_text(data) if data else None"
+        }
+      ], 
+      "name": {
+        "xpath": "//div[@id='pageContent']//h1/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(@class, 'session-list')]"
+      }, 
+      "product_video_url": {
+        "xpath": "//video[contains(@class, 'vjs-tech')]//source/@src"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[contains(@class, 'course-poster')]//img/@src", 
+        "python": "urljoin('https://assets.creativelive.com/', data)"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//li[contains(@class, 'session-item')]//div[contains(@class, 'duration')]/text()", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "substring-after(//div[contains(@class, 'col-sm-4 sidebar-outer')]//*[contains(@id, 'courseBuy')]/text(), '$')", 
+        "python": "get_price_float(data)"
+      }, 
+      "duration_display": "None", 
+      "ProductRating": {
+        "xpath": "//div[contains(@class, 'review-item')]", 
+        "fields": {
+          "username": {
+            "xpath": ".//div[contains(@class, 'review-user-name')]//text()", 
+            "python": "html_to_text(data)"
+          }, 
+          "user_id": null, 
+          "review": {
+            "xpath": ".//div[contains(@class, 'review-content')]//text()", 
+            "python": "html_to_text(data)"
+          }, 
+          "rating_only": "1", 
+          "pub_status": "L"
+        }, 
+        "type": "[ProductRating]", 
+        "level": "1_2"
+      }, 
+      "instructors": {
+        "xpath": "//div[contains(@class, 'instructor-profile')]", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[contains(@class, 'profile-bio')]//text()", 
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          }, 
+          "image": {
+            "xpath": ".//div[contains(@class, 'portrait-wrapper')]/img/@src", 
+            "python": "data.replace('//', '') if data else None"
+          }, 
+          "link": {
+            "xpath": ".//ul[contains(@class, 'profile-links')]/li/a/@href"
+          }, 
+          "name": {
+            "xpath": ".//h1/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": {}
+    }, 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/.*'), restrict_xpaths='//li[contains(@class, \\'course-item\\')]//div[contains(@class, \\'course\\')]/a'), callback='parse_product')", 
+        "Rule(lxml(allow=('/catalog/category/.*')), follow=True, callback='passCat')"
+      ]
+    }
+  }
+}

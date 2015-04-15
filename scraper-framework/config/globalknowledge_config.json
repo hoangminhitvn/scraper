@@ -1,0 +1,105 @@
+{
+    "base_url": "http://www.globalknowledge.com/",
+    "start_url": "http://www.globalknowledge.com/training/generic.asp?pageid=9&country=United+States",
+    "levels": {
+        "1_1": {
+            "xpath": "//*[@id='reginfo']/a/@href",
+            "python": "urljoin('http://www.globalknowledge.com/training/',data)"
+        }
+    },
+    "settings": {
+        "DOWNLOADER_MIDDLEWARES": {
+            "scrapy_balloons.useragent.RandomUserAgentMiddleware": 500
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "160",
+            "product_type_id": {
+                "python": "product_type_id('Course')"
+            },
+            "time_lock": "B",
+            "space_lock": "B",
+            "language": "eng",
+            "description": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "string(concat(//*[@id='courseinfo']//*[contains(.,'What You')]/preceding-sibling::p[8],//*[@id='courseinfo']//*[contains(.,'What You')]/preceding-sibling::p[7],//*[@id='courseinfo']//*[contains(.,'What You')]/preceding-sibling::p[6],//*[@id='courseinfo']//*[contains(.,'What You')]/preceding-sibling::p[5],//*[@id='courseinfo']//*[contains(.,'What You')]/preceding-sibling::p[4],//*[@id='courseinfo']//*[contains(.,'What You')]/preceding-sibling::*[3],//*[@id='courseinfo']//*[contains(.,'What You')]/preceding-sibling::*[2],//*[@id='courseinfo']//*[contains(.,'What You')]/preceding-sibling::*[1]))",
+                        "string(concat(//*[@id='mainContent']//*[contains(.,'will learn')]/preceding-sibling::*[5],//*[@id='mainContent']//*[contains(.,'will learn')]/preceding-sibling::*[4],//*[@id='mainContent']//*[contains(.,'will learn')]/preceding-sibling::*[3],//*[@id='mainContent']//*[contains(.,'will learn')]/preceding-sibling::*[2],//*[@id='mainContent']//*[contains(.,'will learn')]/preceding-sibling::*[1]))",
+                        "string(//*[@id='mainContent']/div[@class='article col-two'])"
+                    ]
+                },
+                "level": "1"
+            },
+            "name": {
+                "xpath": "//div[@id='coursetitle']/h1//text()"
+            },
+            "toc": {
+                "xpath": "//*[@id='courseinfo']//*[contains(.,'Course Outline')]/following-sibling::*",
+                "level": "1"
+            },
+            "product_events": {
+                "xpath": "//*[@id='subcat_']//tr[not(contains(.,'Date'))]",
+                "fields": {
+                    "location_city": {
+                        "xpath": "./td[2]/text()",
+                        "python": "re.search('(.*),',data).group(1)"
+                    },
+                    "price_currency": {
+                        "xpath": "./td[3]//text()",
+                        "python": "get_price_currency(html_to_text(data))"
+                    },
+                    "end_date_local": {
+                        "xpath": "./td[1]/text()",
+                        "python": "get_end_date(html_to_text(data))"
+                    },
+                    "location_state": {
+                        "xpath": "./td[2]/text()",
+                        "python": "re.search(', (.*)',data).group(1)"
+                    },
+                    "duration_filter": {
+                        "xpath": "./td[1]/text()",
+                        "python": "minus_dates_to_seconds(html_to_text(data))"
+                    },
+                    "start_date_local": {
+                        "xpath": "./td[1]/text()",
+                        "python": "get_start_date(html_to_text(data))"
+                    },
+                    "price_display_float": {
+                        "xpath": "./td[3]//text()",
+                        "python": "get_price_float(html_to_text(data))"
+                    },
+                    "location_display": {
+                        "xpath": "./td[2]/text()"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "level": "1_1"
+            },
+            "formats": {
+                "xpath": "//div[contains(@id,'courseresources')]/p[@class='subhead']/a/text()",
+                "re": "PDF"
+            },
+            "prerequisites": {
+                "xpath": "string(//*[@id='courseinfo']//*[contains(.,'Prerequisites')]/following-sibling::*[1])",
+                "level": "1"
+            },
+            "partner_prod_id": {
+                "xpath": "substring-after(//*[@id='priceinfo']/*[contains(.,'Course Code:')]/text(),':')"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('courseid=\\d+',),deny='http://www.globalknowledge.com/training/$|http://www.globalknowledge.com/training$'), callback='parse_product')",
+                "Rule(lxml(allow=('training/category\\.asp|pageid=3225',)), callback='passCat',follow=True)"
+            ]
+        }
+    },
+    "filters_not": {
+        "python": "'http://www.globalknowledge.com/training/' in response.url",
+        "level": "1"
+    }
+
+}

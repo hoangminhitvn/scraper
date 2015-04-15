@@ -1,0 +1,76 @@
+{
+  "base_url": "https://generalassemb.ly", 
+  "start_url": "https://generalassemb.ly/online/on-demand", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "201", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//section[contains(.,'About This Class')]/p//text()", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./div//p[@class='item-title']/text()"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='chapters']/ul", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='column']/div[contains(@class,'video-image-wrapper')]/a/img/@src", 
+        "level": "1"
+      }, 
+      "price_currency": {
+        "xpath": "//div[@id='side-pod']/div[@class='instance-info-panel hide-under-720']/div[@class='subscribe-widget panel-grey-light']/p//text()", 
+        "python": "get_price_currency(data)", 
+        "level": "1"
+      }, 
+      "duration_filter": {
+        "xpath": ".//div[@class='series-date-container']/span[1]/text()", 
+        "python": "str(duration_filter(data))"
+      }, 
+      "price_display_float": {
+        "xpath": "//div[@id='side-pod']/div[@class='instance-info-panel hide-under-720']/div[@class='subscribe-widget panel-grey-light']/p//text()", 
+        "python": "get_price_float(data)", 
+        "level": "1"
+      }, 
+      "duration_display": {
+        "xpath": ".//div[@class='series-date-container']/span[1]/text()"
+      }, 
+      "instructors": {
+        "xpath": "//*[contains(@class,'instructor-bios')]/div[contains(@class,'instructor-bio-pod')]", 
+        "fields": {
+          "bio": {
+            "xpath": ".//p[@class='bio']/text()"
+          }, 
+          "image": {
+            "xpath": ".//div[contains(@class,'instructor-image')]/img/@src"
+          }, 
+          "link": {
+            "xpath": ".//p[@class='instructor-info']/*[@class='name']/a/@href", 
+            "python": "urljoin('https://generalassemb.ly',data)"
+          }, 
+          "name": {
+            "xpath": ".//p[@class='instructor-info']/*[@class='name']/a/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "string(//section[h3[contains(.,'Prereqs & Preparation')]])", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='grid-row sidebar-left']/div[2]/a"
+  }
+}

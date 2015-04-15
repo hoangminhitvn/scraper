@@ -1,0 +1,73 @@
+{
+  "base_url": "http://www.marketingprofsu.com/", 
+  "start_url": "http://www.marketingprofsu.com/course/list/", 
+  "levels": {
+    "1": "./a/@href", 
+    "1_1": "//*[@class='subModule']//*[@class='miniBioBottomBorder']//h3/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "285", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "Y", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//*[@id='contentbody']/p[contains(.,'Already registered')]/following-sibling::p//text()[count(.|//*[@id='contentbody']/p[contains(.,'Already registered')]/following-sibling::div[1]/preceding-sibling::*//text())=count(//*[@id='contentbody']/p[contains(.,'Already registered')]/following-sibling::div[1]/preceding-sibling::*//text())]", 
+        "python": "' '.join(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//*[@id='contenttitle']/h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//*[@class='course_freebies']/following-sibling::*[count(.|//*[@class='course_freebies']/following-sibling::div[@class='center top-padding'][1]/preceding-sibling::*)=count(//*[@class='course_freebies']/following-sibling::div[@class='center top-padding'][1]/preceding-sibling::*)]", 
+        "level": "1"
+      }, 
+      "product_image_url": [
+        {
+          "xpath": "//*[@id='contentbody']/p//img/@src", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//*[@id='contentbody']/a//img/@src", 
+          "level": "1"
+        }
+      ], 
+      "price_currency": {
+        "xpath": "//*[@id='divregister']//p[contains(.,'$')]/b/text()", 
+        "python": "get_price_currency(data)", 
+        "level": "1"
+      }, 
+      "price_display_float": {
+        "xpath": "//*[@id='divregister']//p[contains(.,'$')]/b/text()", 
+        "python": "get_price_float(data)", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "fields": {
+          "bio": {
+            "xpath": "string(//*[@id='contentbody'])"
+          }, 
+          "image": {
+            "xpath": "//*[@id='contentbody']/img/@src", 
+            "python": "urljoin('http://www.marketingprofsu.com',data)"
+          }, 
+          "link": {
+            "python": "response.url"
+          }, 
+          "name": {
+            "xpath": "//*[@id='LeftCol']/h1/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//*[@id='certifications']/ul/li"
+  }
+}

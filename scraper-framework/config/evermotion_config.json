@@ -1,0 +1,75 @@
+{
+  "base_url": "http://www.evermotion.org", 
+  "start_url": "http://www.evermotion.org/tutorials/index/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "132", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(string(//h2[@id='summary_content']),string(//div[@id='tutorial-content']))"
+      }, 
+      "name": {
+        "xpath": "//h1[@id='publication_title']/text()"
+      }, 
+      "product_video_url": {
+        "xpath": "//*[@id='tutorial-content']//iframe/@src", 
+        "type": "[str]"
+      }, 
+      "product_image_url": [
+        {
+          "xpath": "//div[@class='articles-head ']/img/@src"
+        }, 
+        {
+          "xpath": "//div[@class='everblock']/a/img/@src"
+        }, 
+        {
+          "xpath": "//div[@class='articles-head animation']/img/@src"
+        }, 
+        {
+          "xpath": "//div[@class='articles-head interview']/img/@src"
+        }
+      ], 
+      "published_date": [
+        {
+          "xpath": "string(//div[@class='split-list bordered']/span[2])", 
+          "re": "^\\d.*"
+        }, 
+        {
+          "xpath": "string(//div[@class='split-list bordered']/span[1])", 
+          "re": "^\\d.*"
+        }, 
+        {
+          "xpath": "string(//div[@class='split-list download']/span[2])", 
+          "re": "^\\d.*"
+        }, 
+        {
+          "xpath": "string(//div[@class='split-list bordered']/span[1])", 
+          "re": "^\\d.*"
+        }
+      ], 
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": "substring-after(string(//div[@id='author_box']/span[1]),': ')"
+          }
+        }, 
+        "type": "[Author]"
+      }, 
+      "prod_keywords": {
+        "xpath": "//div[@class='margin-both']/a/text()", 
+        "python": "normalize_space(data).split(',')", 
+        "type": "[str]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/show/\\d+/.*',),deny=('/static/show/.*')), callback='parse_product'), Rule(lxml(allow=('/index/\\d+/newest', )), follow=True),]"
+    }
+  }
+}

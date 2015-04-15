@@ -1,0 +1,56 @@
+{
+  "base_url": "http://www.ideacityonline.com", 
+  "start_url": "http://www.ideacityonline.com/watch-talks/", 
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='post-meta-line inner-no-top-left clearfix']//ul/li[contains(.,'in')]/text()[contains(.,'in')]/preceding-sibling::a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "220", 
+      "product_type_id": {
+        "python": "product_type_id('talks')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='post-content clearfix']/p)"
+      }, 
+      "name": {
+        "xpath": "string(//h1)"
+      }, 
+      "product_video_url": {
+        "xpath": "substring-after(//div[@class='post-video']//script,'file')", 
+        "re": "http.*mp4"
+      }, 
+      "formats": [
+        "video"
+      ], 
+      "published_date": {
+        "xpath": "string(//ul/li[contains(.,'in')]/a[2])", 
+        "python": "convert_date(data)"
+      }, 
+      "instructors": {
+        "fields": {
+          "bio": {
+            "xpath": "string(//div[@class='post-content inner-top clearfix'])"
+          }, 
+          "image": {
+            "xpath": "//div[@class='post-image lightbox overlay']/a/img/@src"
+          }, 
+          "name": {
+            "xpath": "string(//h1)"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('/video/.*/',)), callback='parse_product'), Rule(lxml(allow=('/watch-talks/page/\\d+/', )), follow=True),]"
+    }
+  }
+}

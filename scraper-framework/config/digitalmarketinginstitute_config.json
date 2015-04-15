@@ -1,0 +1,106 @@
+{
+  "base_url": "http://digitalmarketinginstitute.com", 
+  "start_url": "http://digitalmarketinginstitute.com/us/courses", 
+  "levels": {
+    "1": ".//h3/a/@href", 
+    "1_1": {
+      "xpath": "//ul[@class='cclectures']/li//a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "127", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='CoursesIntro'])"
+      }, 
+      "name": {
+        "xpath": "string(//h1)"
+      }, 
+      "product_events": [
+        {
+          "xpath": "//div[@class='course_row line']", 
+          "fields": {
+            "price_display_float": {
+              "xpath": ".//span[@class='mp_current_price']//text()", 
+              "re": "\\d.*", 
+              "python": "get_price_float(data) if data else '0.00'"
+            }, 
+            "price_currency": "USD", 
+            "duration_filter": {
+              "xpath": "//ul/li[@class='normaltwo button_featured']/a[@class='buttonCourses']//text()", 
+              "re": "\\d.*", 
+              "python": "duration_filter(data)"
+            }, 
+            "start_date_local": {
+              "xpath": "substring-after(./div[1]//text(),'by')", 
+              "python": "convert_date(data.replace('th of','')) if data else None"
+            }, 
+            "duration_display": {
+              "xpath": "//ul/li[@class='normaltwo button_featured']/a[@class='buttonCourses']//text()", 
+              "re": "\\d.*"
+            }
+          }, 
+          "type": "[ProductEvent]"
+        }, 
+        {
+          "fields": {
+            "price_display_float": {
+              "xpath": "//span[@class='mp_current_price']//text()", 
+              "re": "\\d.*", 
+              "python": "get_price_float(data) if data else '0.00'"
+            }, 
+            "price_currency": "USD", 
+            "duration_filter": {
+              "xpath": "//ul/li[@class='normaltwo button_featured']/a[@class='buttonCourses']//text()", 
+              "re": "\\d.*", 
+              "python": "duration_filter(data)"
+            }, 
+            "duration_display": {
+              "xpath": "//ul/li[@class='normaltwo button_featured']/a[@class='buttonCourses']//text()", 
+              "re": "\\d.*"
+            }
+          }, 
+          "type": "[ProductEvent]"
+        }
+      ], 
+      "product_video_url": {
+        "xpath": "//a[@class='fancybox-vimeo fanybox-youtube']/@href", 
+        "python": "urljoin('http:',data) if data else None"
+      }, 
+      "product_image_url": [
+        {
+          "xpath": "//a[@class='fancybox-vimeo fanybox-youtube']/img/@src", 
+          "python": "urljoin('http://digitalmarketinginstitute.com/',data) if data else None"
+        }, 
+        {
+          "xpath": "//div[@class='largeFeaturedvideo']/img/@src", 
+          "python": "urljoin('http://digitalmarketinginstitute.com/',data) if data else None"
+        }
+      ], 
+      "requirements": {
+        "xpath": "//h4[contains(.,'Requirements')]/following-sibling::*//text()", 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "audience": [
+        {
+          "xpath": "//h2[contains(.,'Who Should Attend')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Requirements')]/following-sibling::*//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }
+      ]
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('/courses/\\w.*',),deny=('/.*diploma-in-digital-marketing.*','/shopping-cart/'),), callback='parse_product'), Rule(lxml(allow=('/modules/'),restrict_xpaths=('//div[@class=\\'unit outer_mod\\'][1]/ul/span/a')), follow=True)]"
+    }
+  }
+}

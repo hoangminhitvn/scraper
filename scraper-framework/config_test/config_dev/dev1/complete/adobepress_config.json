@@ -1,0 +1,166 @@
+{
+    "baseUrl": "http://www.adobepress.com/",
+    "levels": {
+        "1_1": {
+            "xpath": "//ul[@class='bibliography']/li[1]/a/@href",
+            "dont_filter": true
+        }
+    },
+    "start_url": "http://www.adobepress.com/store/browse.asp",
+    "output_config": {
+        "fields": {
+            "provider_name": "Adobe Press",
+            "provider_id": "5",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "name": [
+                {
+                    "xpath": "string(//div[@id='bibCol']/h1/text())"
+                },
+                {
+                    "xpath": "string(//div[@id='bibCol1']/h1/text())"
+                }
+            ],
+            "product_type_name": [
+                {
+                    "xpath": "string(//div[contains(@class, 'buyOption')][1]/h3/text())",
+                    "python": "'Books' if 'Book' in data else 'Courses'"
+                },
+                {
+                    "xpath": "string(//div[contains(@class, 'buyOption')][2]/h3/text())",
+                    "python": "'Books' if 'Book' in data else 'Courses'"
+                }
+            ],
+            "formats": {
+                "xpath": "//div[@id='childContainer']//div[contains(@class, 'buyOption')][1]//li[contains(., 'ncludes')]//text()",
+                "python": "re.sub('Includes|and','',data) if data else 'Video'"
+            },
+            "prod_image": {
+                "xpath": "//div[@id='cover']/a[contains(@class, coverImage)]/img/@src",
+                "python": "re.sub('&type=f', '', (urljoin('http://www.adobepress.com/', data))) if data else None"
+            },
+            "preview_video": {
+                "xpath": "//div[@id='vidCover']/following-sibling::script/@src",
+                "re": "ptgmedia[\\d.*\\w\\/\\-\\_]*"
+            },
+            "difficulty": [
+                {
+                    "xpath": "//div[@id='bssContent']//p/b[contains(., 'User Level')]/following-sibling::text()",
+                    "re": "Beginner|Intermediate|Expert\\/?"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']//p/text()[contains(., 'User Level')])",
+                    "re": "Beginner|Intermediate|Expert\\/?"
+                }
+            ],
+            "description": [
+                {
+                    "xpath": "//div[@id='bssContent']//span[@id='bssMetaInformation']/following-sibling::*//text()",
+                    "python": "' '.join(normalizeSpace(selector.extract())) if data else None"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']/div[contains(., 'Duration:')])"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']/div[contains(., 'Requirements:')])"
+                },
+                {
+                    "xpath": "string(//div[@id='bssContent']/div[1])"
+                }
+            ],
+            "requirements": [
+                {
+                    "xpath": "//div[@id='bssContent']",
+                    "re": "re.compile('equirements:(.*)Please Note',re.S)",
+                    "python": "normalizeSpace(html2text.html2text(data)).replace('*','')"
+                },
+                {
+                    "xpath": "//div[@id='bssContent']",
+                    "re": "re.compile('equirements:(.*)',re.S)",
+                    "python": "normalizeSpace(html2text.html2text(data)).replace('*','')"
+                }
+            ],
+            "toc": {
+                "xpath": "//div[@id='bssContent']/div[contains(., 'Table of Contents')]",
+                "python": "re.sub('Table of Contents','',data)"
+            },
+            "authors": {
+                "fields": {
+                    "name": {
+                        "xpath": ".//div[@class='clearfix']/h1//text()"
+                    },
+                    "bio": {
+                        "xpath": ".//div[@class='clearfix']/h1/following-sibling::*//text()",
+                        "python": "' '.join(normalizeSpace(selector.extract())) if data else None"
+                    },
+                    "image": {
+                        "xpath": ".//div[@class='clearfix']/img/@src"
+                    },
+                    "link": {
+                        "xpath": "//ul[@class='bibliography']/li[1]/a/@href",
+                        "python": "urljoin('http://www.adobepress.com', data) if data else None",
+                        "level": "1"
+                    }
+                },
+                "type": "[Author]",
+                "xpath": "//div[@id='contentAuthors']",
+                "level": "1_1"
+            },
+            "publisher": {
+                "fields": {
+                    "name": {
+                        "xpath": "//ul[@class='bibliography']/li[2]/a[1]/text()"
+                    },
+                    "link": {
+                        "xpath": "//ul[@class='bibliography']/li[2]/a[1]/@href"
+                    }
+                },
+                "type": "[Publisher]",
+                "xpath": "//ul[@class='bibliography']/li[2]"
+            },
+            "published_date": {
+                "xpath": "//ul[@class='bibliography']/li[2]/text()[1]",
+                "python": "convertDate(re.sub('Published|by','',data))"
+            },
+
+            "product_events": {
+                "fields": {
+                    "duration_filter": {
+                        "xpath": "//div[@id=\"bssContent\"]",
+                        "re": "Duration.{40}",
+                        "python": "duration_filter(re.search('(\\d+\\.?\\d*)',data).group(1)+' hours')"
+
+                    },
+                    "duration_display": [
+                        {
+                            "xpath": "//div[@id=\"bssContent\"]",
+                            "re": "Duration.{40}",
+                            "python": "duration_filter(re.search('(\\d+\\.?\\d*)',data).group(1)+' hours')"
+
+                        },
+                        {
+                            "xpath": "//span[@id='bssMetaInformation']//li[contains(., 'Pages')]",
+                            "re": "\\d+"
+
+                        }
+                    ],
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": "//div[contains(@class, 'buyOption')]/ul[@class='uppPricing']/li[contains(., 'Your Price')]",
+                        "python": "getPriceFloat(minPriceText(normalizeSpace(selector.extract())))"
+                    },
+                    "price_filter": {
+                        "xpath": "//div[contains(@class, 'buyOption')]/ul[@class='uppPricing']/li[contains(., 'Your Price')]",
+                        "python": "getPriceFloat(minPriceText(normalizeSpace(selector.extract())))"
+                    }
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "[Product]",
+        "extractorRules": {
+            "rules": "[Rule(lxml(allow=('.*'),restrict_xpaths=('//table[@id=\\'allProdlist\\']//td[@class=\\'txt\\']/a')), callback='parseItemExtractors'), Rule(lxml(allow=('/store/browse.asp.*')), follow=True)]"
+        }
+    }
+}

@@ -1,0 +1,79 @@
+{
+  "base_url": "http://www.writingclasses.com/index.php", 
+  "start_url": "http://www.writingclasses.com/CourseSchedule/schedule.php", 
+  "levels": {
+    "1": "./a[@class='LinksMenuSmall']/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "321", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//*[@id='ContentAreaPrint']/table//tr[2]/td/table[1]//td/span[@class='MainText'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./a[@class='LinksMenuSmall']/text()"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='ContentAreaPrint']/table//tr[2]/td/table[3]", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//table[contains(.,'Time')]//tr[@style]", 
+        "fields": {
+          "location_city": {
+            "xpath": "./ancestor-or-self::table[contains(.,'Time')]/preceding-sibling::table//td[contains(.,'Classes')]/span/text()", 
+            "python": "(None if 'Online Classes' in data else data).replace('City Classes','')"
+          }, 
+          "price_currency": "USD", 
+          "location_addr": {
+            "xpath": "./td[3]//text()"
+          }, 
+          "start_date_local": {
+            "xpath": "./td[1]/text()", 
+            "python": "convert_date_special(data)"
+          }, 
+          "duration_filter": {
+            "xpath": "./td[4]/text()[1]", 
+            "python": "duration_filter(data.replace('. a day',''))"
+          }, 
+          "price_display_float": {
+            "xpath": "./td[3]//text()", 
+            "python": "get_price_float('$399' if 'Online' in data else '$420')"
+          }, 
+          "location_display": {
+            "xpath": "./td[3]//text()"
+          }, 
+          "duration_display": {
+            "xpath": "./td[4]/text()[1]"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//*[@id='ContentAreaPrint']/table//tr[2]/td/table[1]//td/img[@name='GenrePicture']/@src", 
+        "python": "urljoin('http://www.writingclasses.com',data)", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//*/text()[contains(.,'is for beginners or anyone who wants')]", 
+            "//b[contains(.,'Prerequisite')]/following-sibling::text()"
+          ]
+        }, 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//*[@id='ContentAreaPrint']//table[@bgcolor='ffffff']//table//table//td[1]"
+  }
+}

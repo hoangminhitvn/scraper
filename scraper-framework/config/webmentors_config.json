@@ -1,0 +1,63 @@
+{
+  "base_url": "https://webmentor.org", 
+  "start_url": "https://webmentor.org/courses", 
+  "levels": {
+    "1": "./a/@href", 
+    "1_1": "//tr[1]/td[@class='course_link']/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "418", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='course_description']/p//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h1[@id='course_title']//text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='content']", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[@id='course_icon']/@src", 
+        "level": "1"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": ".//div[@class='lesson_meta']/text()", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "//div[@id='video_template']//a[contains(.,'$')]//text()", 
+        "re": "\\d.*", 
+        "level": "1_1"
+      }, 
+      "difficulty": {
+        "xpath": "//h2[@id='lesson_title']/following-sibling::p[1]/span//text()", 
+        "re": "Beginner|Intermediate|Expert", 
+        "level": "1_1", 
+        "python": "difficulty(data)"
+      }, 
+      "duration_display": {
+        "xpath": ".//div[@class='lesson_meta']/text()", 
+        "python": "html_to_text(data)"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[contains(@class,'col-md-6 lesson')]", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses\\?page=\\d+'),), follow=True,callback='parse')"
+      ]
+    }
+  }
+}

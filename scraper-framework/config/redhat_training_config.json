@@ -1,0 +1,83 @@
+{
+  "base_url": "http://www.redhat.com/", 
+  "start_url": [
+    "http://www.redhat.com/en/services/training/all-courses-exams"
+  ], 
+  "levels": {
+    "1": {
+      "xpath": "./td/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "327", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='training_desc']/*[not(contains(.//ul/@class, 'switchable'))]//text()", 
+        "python": "html_to_text(data) if data else None", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./td/a/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='Outline']//section", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//div[@class='switchable-461']//div[contains(@class, 'switchable-')]", 
+        "fields": {
+          "price_display_float": {
+            "xpath": ".//*[contains(./text(), 'Cost')]/following-sibling::*[1]/text()", 
+            "re": "\\$\\d+,?\\d+", 
+            "python": "get_price_float(data)"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": ".//*[contains(./text(), 'Duration')]/following-sibling::*[1]/text()", 
+            "python": "duration_filter(data) if data else None"
+          }, 
+          "duration_display": {
+            "xpath": ".//*[contains(./text(), 'Duration')]/following-sibling::*[1]/text()", 
+            "python": "html_to_text(data) if data else None"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "python": "redhattraining.product_events(data, response)", 
+        "level": "1"
+      }, 
+      "audience": [
+        {
+          "xpath": "//div[@id='Prerequisites']//section/h2[1]/following-sibling::*//text()[count(.|//div[@id='Prerequisites']//section/h2[2]/preceding-sibling::*//text())=count(//div[@id='Prerequisites']//section/h2[2]/preceding-sibling::*//text())]", 
+          "python": "html_to_text(data) if data else None", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@id='Prerequisites']//section/*//text()[count(.|//div[@id='Prerequisites']//*[contains(./text(), 'Prerequisites for this course')]/preceding-sibling::*//text())=count(//div[@id='Prerequisites']//*[contains(./text(), 'Prerequisites for this course')]/preceding-sibling::*//text())]", 
+          "python": "html_to_text(data) if data else None", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@id='Prerequisites']//section/ul[1]//text()", 
+          "python": "html_to_text(data) if data else None", 
+          "level": "1"
+        }
+      ], 
+      "prerequisites": {
+        "xpath": "//*[contains(./text(), 'Prerequisites for this course')]/following-sibling::*//text()", 
+        "python": "html_to_text(data) if data else None", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "./td[2]/text()"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//section[contains(@class, 'training_list')]//tr[contains(@class, 'class-training')]"
+  }
+}

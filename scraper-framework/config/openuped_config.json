@@ -1,0 +1,72 @@
+{
+  "base_url": "http://www.openuped.eu/", 
+  "start_url": "http://www.openuped.eu/courses", 
+  "levels": {
+    "1": {
+      "xpath": "./td/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "259", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//*[contains(@class, 'uk-width-medium-2-3')]//*[@id='fab_courses___description_ro']//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//*[contains(@class, 'uk-width-medium-2-3')]//h1/text()", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "duration_filter": [
+            {
+              "xpath": "//*[contains(text(), 'Duration')]/parent::td[1]/following-sibling::td//text()", 
+              "python": "duration_filter(html_to_text(data))"
+            }, 
+            {
+              "xpath": "//*[contains(text(), 'Hours of study')]/parent::td[1]/following-sibling::td//text()", 
+              "python": "duration_filter(html_to_text(data))"
+            }
+          ], 
+          "start_date_local": {
+            "xpath": ".td[contains(@class, 'start_date')]/text()", 
+            "python": "convert_date(data)", 
+            "level": "0"
+          }, 
+          "duration_display": [
+            {
+              "xpath": "//*[contains(text(), 'Duration')]/parent::td[1]/following-sibling::td//text()", 
+              "python": "html_to_text(data)"
+            }, 
+            {
+              "xpath": "//*[contains(text(), 'Hours of study')]/parent::td[1]/following-sibling::td//text()", 
+              "python": "html_to_text(data)"
+            }
+          ]
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "requirements": {
+        "xpath": "//*[contains(text(), 'Requirements')]/parent::td[1]/following-sibling::td//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//tr[contains(.//ul, 'English')]", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[@class=\\'pagination-list\\']/li/a')), follow=True,  callback='parse')"
+      ]
+    }
+  }
+}

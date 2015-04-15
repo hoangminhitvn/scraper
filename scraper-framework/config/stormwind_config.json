@@ -1,0 +1,40 @@
+{
+  "base_url": "http://stormwind.com/", 
+  "start_url": "http://stormwind.com/it-training-courses", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "343", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[h2[contains(.,'Overview')]]//*[not(contains(.,'Overview'))])", 
+        "python": "data.replace('Overview','')", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//*[@id='page-title']/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[h2[contains(.,'Course Outline')]]", 
+        "level": "1"
+      }, 
+      "audience": {
+        "xpath": "string(//div[h2[contains(.,'Who Should Attend This Course')]]//*[not(contains(.,'Who Should Attend This Course'))])", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "string(//div[h2[contains(.,'Prerequisites')]]//*[not(contains(.,'Prerequisites'))])", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/cisco-training/|/microsoft-training/|/vmware-training/|/project-management-training/|/it-pro-library-training/|/comptia-training/|/microsoft-office-365-training/',),deny=('/.*-courses$')), callback='parse_product'),Rule(lxml(allow=('/.*-courses$',)),follow=True)]"
+    }
+  }
+}

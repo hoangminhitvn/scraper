@@ -1,0 +1,75 @@
+{
+  "base_url": "http://bigthink.com", 
+  "start_url": "http://bigthink.com/videos", 
+  "levels": {
+    "1_1": {
+      "xpath": "//h4[@class='expert-name']/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "33", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='description']//text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//h3[@class='headline']/text()"
+      }, 
+      "toc": {
+        "xpath": "//ul[contains(@class, 'mini-list')]"
+      }, 
+      "formats": "Videos", 
+      "product_image_url": {
+        "xpath": "substring-before(substring-after(//div[contains(@class, 'video-overlay')]/span/@ng-init, '('), ')')", 
+        "re": "\\w.*", 
+        "python": "data.replace('\\'', '')"
+      }, 
+      "duration_filter": {
+        "xpath": "//span[@class='duration']/text()", 
+        "python": "duration_filter(data) if data else None"
+      }, 
+      "duration_display": {
+        "xpath": "//span[@class='duration']/text()"
+      }, 
+      "published_date": {
+        "xpath": "//*[@class='side-info']//li[@class='since']/text()", 
+        "re": "\\d.*", 
+        "python": "convert_date(data)"
+      }, 
+      "instructors": {
+        "xpath": "//div[@id='experts_show']/div[contains(.//h1/@class, 'expert-name')]", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[contains(@class, 'expert-bio')]//text()", 
+            "python": "html_to_text(data) if data else None"
+          }, 
+          "image": {
+            "xpath": "substring-before(substring-after(.//*[contains(@class, 'expert-headshot')]/@style, '('), ')')", 
+            "re": "\\w.*", 
+            "python": "data.replace('\\'', '')"
+          }, 
+          "name": {
+            "xpath": ".//h1/text()", 
+            "python": "html_to_text(data) if data else None"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/videos/[\\w.*]*')), callback='parse_product')", 
+        "Rule(lxml(allow=('/videos\\?page.*')), follow=True)"
+      ]
+    }
+  }
+}

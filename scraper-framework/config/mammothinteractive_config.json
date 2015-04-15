@@ -1,0 +1,81 @@
+{
+  "base_url": "http://training.mammothinteractive.com",
+  "start_url": "http://training.mammothinteractive.com/courses/",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "258",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "name": {
+        "xpath": "//p[@class='course-title']//text()"
+      },
+      "toc": {
+        "xpath": "//div[@class='row'][3]"
+      },
+      "description": {
+        "xpath": "//div[contains(./@class,'course-description')]//text()",
+        "re": "\\w.*",
+        "python": "html_to_text(data)"
+      },
+      "audience": {
+        "xpath": "//div[contains(./@class,'course-description')]/p[contains(.,'Who is this class for')]/following-sibling::ul[1]/li//text()",
+        "re": "\\w.*",
+        "type": "[str]"
+      },
+      "duration_display": null,
+      "duration_filter": {
+        "xpath": "//ul[@class='section-list']//a[@class='item']/text()",
+        "re": "\\((\\d+:\\d+)\\)",
+        "python": "duration_filter(data)"
+      },
+      "product_image_url": [
+        {
+          "xpath": "//div[@class='course-top-row has-hero-image']/@style",
+          "re": "https.*/file/\\w+"
+        },
+        {
+          "xpath": "//div[@class='col-md-5 course-splash-media']/div[@class='img-rounded']/img/@src"
+        },
+        {
+          "xpath": "//div[@class='col-md-5 course-splash-media video']/div/@data-thumbnail"
+        }
+      ],
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "string(//button[contains(.,'$')])",
+        "re": "\\d.*",
+        "level": "1",
+        "python": "get_price_float(data) if data else '0'"
+      },
+      "instructors": {
+        "xpath": "//h2[contains(.,'Instructor')]/following-sibling::div[1]",
+        "fields": {
+          "bio": {
+            "xpath": ".//p//text()",
+            "python": "html_to_text(data)"
+          },
+          "image": {
+            "xpath": ".//img/@src"
+          },
+          "name": {
+            "xpath": ".//div[@class='author-name']/text()",
+            "python": "html_to_text(data)"
+          }
+        },
+        "type": "[Instructor]"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses\\?page=\\d+',),),follow=True)",
+        "Rule(lxml(allow=('/courses/\\w+',),restrict_xpaths=('//div[@class=\\'row course-list list\\']//div[@class=\\'course-listing\\']'),tags=('div'),attrs=('data-course-url')), callback='parse_product')"
+      ]
+    }
+  }
+}

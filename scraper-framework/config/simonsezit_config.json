@@ -1,0 +1,82 @@
+{
+  "base_url": "http://www.simonsezit.com", 
+  "start_url": "http://www.simonsezit.com/courses/", 
+  "levels": {
+    "1": "./@href", 
+    "1_1": "//div[@class='more-testimonial']/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "300", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(//div[@class='linksdiv']/following-sibling::p[1],//div[@class='linksdiv']/following-sibling::ul[1])", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='content']", 
+        "level": "1"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//div[@class='rightside']//text()[contains(.,'Duration')]", 
+        "re": "\\d.*", 
+        "python": "duration_filter(data)", 
+        "level": "1"
+      }, 
+      "price_display_float": {
+        "xpath": "//div[contains(./h3,'UpMonthly')]/following-sibling::p/text()[2]", 
+        "re": "\\d+", 
+        "level": "1", 
+        "python": "get_price_float(data)"
+      }, 
+      "duration_display": {
+        "xpath": "//div[@class='rightside']//text()[contains(.,'Duration')]", 
+        "re": "\\d.*", 
+        "level": "1"
+      }, 
+      "ProductRating": {
+        "xpath": "//div[@class='content']/p[position()>2]", 
+        "fields": {
+          "username": {
+            "xpath": "./strong//text()", 
+            "python": "html_to_text(data).replace('\\-','')"
+          }, 
+          "rating_only": "1", 
+          "user_id": "0", 
+          "review": {
+            "xpath": "./em//text()", 
+            "python": "html_to_text(data)"
+          }, 
+          "pub_status": "L", 
+          "overall_rating": null
+        }, 
+        "type": "[ProductRating]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'/testimonials-and-feedback/' in response.url", 
+          "level": "1"
+        }, 
+        {
+          "python": "'/members/signup' in response.url", 
+          "level": "1"
+        }
+      ]
+    }, 
+    "xpath": "//div[@class='row_main']//a"
+  }
+}

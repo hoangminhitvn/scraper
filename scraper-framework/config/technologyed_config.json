@@ -1,0 +1,58 @@
+{
+    "base_url": "http://www.technologyed.com",
+    "start_url": "http://www.technologyed.com/online-courses/",
+    "levels": {},
+    "settings": {
+        "DOWNLOADER_MIDDLEWARES": {
+            "scrapy_balloons.useragent.RandomUserAgentMiddleware":500
+        },
+        "DOWNLOAD_DELAY": 5
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "369",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": {
+                "xpath": "string(//div[@class='wpts_cl'][1]/following-sibling::div[1])"
+            },
+            "name": {
+                "xpath": "string(//h1[@class='entry-title'])"
+            },
+            "product_events": {
+                "fields": {
+                    "price_display_float": {
+                        "xpath": "string(//div[contains(.,'Course and Certificate')]/div[@class='block_right'])",
+                        "re": "\\d.*"
+                    },
+                    "price_currency": "USD",
+                    "duration_filter": {
+                        "xpath": "string(//div[contains(.,'Duration')]/div[@class='block_right'])",
+                        "python": "duration_filter(data.replace('contact ',''))"
+                    },
+                    "duration_display": {
+                        "xpath": "string(//div[contains(.,'Duration')]/div[@class='block_right'])"
+                    }
+                },
+                "type": "[ProductEvent]"
+            },
+            "product_image_url": {
+                "xpath": "//div[@class='inner_intro_pic']/img/@src"
+            },
+            "prerequisites": {
+                "xpath": "string(//div[@class='wpts_cl'][1]/following-sibling::div[3])"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('/courses/.*/',),allow_domains=('technologyed.com')), callback='parse_product')",
+                "Rule(lxml(allow=('.*',),allow_domains=('technologyed.com')), follow=True),"
+            ]
+        }
+    }
+}

@@ -1,0 +1,40 @@
+{
+  "base_url": "http://www.newhorizons.com/", 
+  "start_url": "http://www.newhorizons.com/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "245", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//*[@id='head-content']/p", 
+        "python": "re.sub('[!()[\\]*()/]|http[^)]+','',html_to_text(data))"
+      }, 
+      "name": {
+        "xpath": "string(//*[@id='head-content']//h1/text())"
+      }, 
+      "toc": {
+        "xpath": [
+          "//*[@id='vtab']/div[h2[contains(.,'Training')]]", 
+          "//*[@id='content-main']"
+        ]
+      }, 
+      "product_image_url": {
+        "xpath": "//*[@id='head-content']/img/@src", 
+        "python": "urljoin('http://www.newhorizons.com/',data.replace('../../',''))"
+      }, 
+      "pub_status": "L"
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/')), callback='parse_product')"
+      ]
+    }
+  }
+}

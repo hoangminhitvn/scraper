@@ -1,0 +1,36 @@
+{
+  "base_url": "https://courseplus.jhsph.edu", 
+  "start_url": "https://courseplus.jhsph.edu/core/index.cfm/go/home.courselist/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "134", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "Y", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(substring(normalize-space(//*[@id='syllabusList']/li[3]//div[@id]/div[text()]),0 div boolean(contains(normalize-space(//*[@id='syllabusList']/li[3]//div[@class]/span[text()]),'Course Description'))),substring(normalize-space(//*[@id='syllabusList']/li[2]//div[@id]/div[text()]),0 div not(contains(normalize-space(//*[@id='syllabusList']/li[3]//div[@class]/span[text()]),'Course Description'))))"
+      }, 
+      "name": {
+        "xpath": "string(//h1[@id='classTitle'])"
+      }, 
+      "audience": {
+        "xpath": "concat(substring(normalize-space(//*[@id='syllabusList']/li[4]//div[@id]/div[text()]),0 div boolean(contains(normalize-space(//*[@id='syllabusList']/li[4]//div[@class]/span[text()]),'Intended Audience'))),substring(normalize-space(//*[@id='syllabusList']/li[3]//div[@id]/div[text()]),0 div not(contains(normalize-space(//*[@id='syllabusList']/li[4]//div[@class]/span[text()]),'Intended Audience'))))"
+      }, 
+      "prerequisites": {
+        "xpath": "concat(substring(normalize-space(//*[@id='syllabusList']/li[6]//div[@id]/div[text()]),0 div boolean(contains(normalize-space(//*[@id='syllabusList']/li[6]//div[@class]/span[text()]),'Prerequisites'))),substring(normalize-space(//*[@id='syllabusList']/li[5]//div[@id]/div[text()]),0 div not(contains(normalize-space(//*[@id='syllabusList']/li[6]//div[@class]/span[text()]),'Prerequisites'))))"
+      }, 
+      "partner_prod_id": {
+        "xpath": "string(//div[@id='classInfo']/div[@class='smalltext'][1]/strong[1])"
+      }, 
+      "pub_status": "L"
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('public\\.view/coid/\\d+/',),), callback='parse_product'), Rule(lxml(allow=('public',),allow_domains=('courseplus.jhsph.edu')), follow=True),]"
+    }
+  }
+}

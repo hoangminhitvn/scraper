@@ -1,0 +1,45 @@
+{
+    "baseUrl": "http://www.openuped.eu/",
+    "levels": {},
+    "start_url": "http://www.openuped.eu/courses",
+    "output_config": {
+        "fields": {
+            "provider_name": "openuped",
+            "provider_id": "259",
+            "product_type_name": "Courses",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "name": {
+                "xpath": "string(//div[@id='fab_moocs___course_name_ro']/text())"
+            },
+            "description": {
+                "xpath": "string(//div[@id='fab_moocs___summary_ro'])"
+            },
+            "publisher": {
+                "xpath": "string(//div[@id='fab_moocs___provider_ro']/text())"
+            },
+            "product_events": {
+                "fields": {
+                    "duration_filter": {
+                        "xpath": "concat(string(//div[@id='fab_moocs___hours_ro']/text()), ' Hours')",
+                        "python": "duration_filter(data)"
+                    },
+                    "duration_display": {
+                        "xpath": "//div[@class='desc']/h3[contains(., 'Hours')]/text()",
+                        "python":"re.sub('[:]','', data)"
+                    },
+                    "start_date_local": {
+                        "xpath": "//div[@id='fab_moocs___startdate_ro']/text()",
+                        "python": "convertDate(data)"
+                    }
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "[Product]",
+        "extractorRules": {
+            "rules": "[Rule(lxml(allow=('/courses/details.*'),restrict_xpaths=('//tr[contains(.//ul,\\'EN\\')]//a')), callback='parseItemExtractors'), Rule(lxml(allow=('/courses$', '/courses\\?resetfilters')), follow=True)]"
+        }
+    }
+}

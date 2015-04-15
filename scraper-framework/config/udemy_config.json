@@ -1,0 +1,98 @@
+{
+    "base_url": "https://www.udemy.com",
+    "start_url": "https://www.udemy.com/courses/",
+    "levels": {
+        "1_1": {
+            "python": "udemy.get_comment_review_resources(response)"
+        }
+    },
+    "ignore_fields": ["raw_html"],
+    "output_config": {
+        "fields": {
+            "provider_id": "393",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "description": {
+                "xpath": "string(//*[@id='desc']/div[@data-more='Full details'])",
+                "python": "html_to_text(data)"
+            },
+            "name": {
+                "xpath": "string(//h1[@class='course-title'])"
+            },
+            "toc": {
+                "xpath": "//*[@id='curriculum']/div"
+            },
+            "price_display_float": {
+                "xpath": "//meta[@property='udemy_com:price']/@content",
+                "re": "\\d.*",
+                "python": "get_price_float(data) if data else '0'"
+            },
+            "price_currency": "USD",
+            "duration_filter": [
+                {
+                    "xpath": "string(//li[contains(.,'Video')]/span[@class='list-right'])",
+                    "python": "duration_filter(data)"
+                },
+                {
+                    "xpath": "//li[@class='cr-li'][contains(.,'get from this course')]//li[contains(.,'mins')]//text()",
+                    "re": "\\d+\\s\\hours|\\d+\\s\\hour|\\d+\\smins|\\d+\\sminutes",
+                    "python": "duration_filter(data)"
+                }
+            ],
+            "language": "eng",
+            "duration_display": [
+                {
+                    "xpath": "string(//li[contains(.,'Video')]/span[@class='list-right'])"
+                },
+                {
+                    "xpath": "//li[@class='cr-li'][contains(.,'get from this course')]//li[contains(.,'mins')]//text()",
+                    "re": "\\d+\\s\\hours|\\d+\\s\\hour|\\d+\\smins|\\d+\\sminutes"
+                }
+            ],
+            "product_video_url": {
+                "xpath": "//div[@class='slp-promo-asset ud-jwplayer-communicator']/@data-playerhtml",
+                "re": "https.*\\=true"
+            },
+            "requirements": {
+                "xpath": "//*[@id='requirements']/ul/li/text()"
+            },
+            "ProductRating": {
+                "python": "udemy.product_rating(response)",
+                "level": "1_1"
+            },
+            "audience": {
+                "xpath": "//*[@id='who-should-attend']/ul/li/text()"
+            },
+            "instructors": {
+                "fields": {
+                    "name": {
+                        "xpath": ".//div[contains(@class,'ins-info')]/a/text()",
+                        "python": "html_to_text(data)"
+                    },
+                    "bio": {
+                        "xpath": ".//div[@data-more='Full biography']/p",
+                        "python": "html_to_text(data)"
+                    },
+                    "image": {
+                        "xpath": ".//img/@src"
+                    },
+                    "link": {
+                        "xpath": ".//div[contains(@class,'ins-info')]/a/@href"
+                    }
+                },
+                "xpath": "//*[@id='instructor']",
+                "type": "[Instructor]"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('.*',),restrict_xpaths=('//ul[@id=\"courses\"]/li[@data-courseid]/a'),deny=('/elearners-adtechtokyo.*','/kengo-mac/','/top-boss_4p/','/elearners-adtechkyushu.*')),callback='parse_product')",
+                "Rule(lxml(allow=('/courses/.*',),restrict_xpaths=('//li[@data-submenu-id]//ul[@class=\"sub-list\"]/li/a','//ul[@class=\" pagination\"]/li/a'),),follow=True)"
+            ]
+        }
+    }
+}

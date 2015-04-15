@@ -1,0 +1,41 @@
+{
+  "base_url": "https://learn.dummies.com/", 
+  "start_url": "https://learn.dummies.com/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "112", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[contains(.,'Description')]/div[@class='courseSpecfic-contnt'])"
+      }, 
+      "name": {
+        "xpath": "//*[@id='body-content']//div[@class='courseSpecific-description']/h3/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(@class,'course-courseDetails-container')]"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='courseSpecific-thumbnail']/img/@src", 
+        "python": "urljoin('https://learn.dummies.com',data)"
+      }, 
+      "price_currency": {
+        "xpath": "string(//*[contains(@class,'courseNewPrice')])", 
+        "python": "get_price_currency(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "string(//*[contains(@class,'courseNewPrice')])", 
+        "python": "get_price_float(data)"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/proed/',),deny=('/proed/register\\?.*|/proed/privacy-policy|/proed/help?.*|/proed/terms-of-use|/proed/index')), callback='parse_product'),Rule(lxml(allow=('https://learn.dummies.com$|/proed/index$', )), follow=True)]"
+    }
+  }
+}

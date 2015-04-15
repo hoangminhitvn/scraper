@@ -1,0 +1,159 @@
+{
+  "base_url": "http://www.careeracademy.com",
+  "start_url": "http://www.careeracademy.com",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "428",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "space_lock": "N",
+      "time_lock": "N",
+      "language": "eng",
+      "description": [
+        {
+          "xpath": "//div[@class='body_txt']/p//text()",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "//div[@class='body_txt']/div[1]/p//text()",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "//div[@id='Header']/div[@class='body_txt']/div//text()",
+          "python": "html_to_text(data)"
+        }
+      ],
+      "name": {
+        "xpath": "//div[@id='product-detail-div']/h1//text()"
+      },
+      "toc": {
+        "xpath": "//div[@id='container']",
+        "level": "1"
+      },
+      "product_image_url": {
+        "xpath": "//td[@class='prod-detail-lt']/img/@src",
+        "python": "urljoin('http://www.careeracademy.com/',data)"
+      },
+      "partner_prod_id": {
+        "xpath": "//span[@class='prod-detail-part-value']//text()"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "//span[@class='prod-detail-cost-value']//text()",
+        "re": "\\d.*"
+      },
+      "duration_display": {
+        "xpath": "string(//label//text())",
+        "re": "\\d.*"
+      },
+      "duration_filter": {
+        "xpath": "string(//label//text())",
+        "re": "\\d.*Months",
+        "python": "duration_filter(data)"
+      },
+      "instructors": [
+        {
+          "fields": {
+            "image": {
+              "xpath": "./@src",
+              "python": "data.replace('..','http://www.careeracademy.com')"
+            },
+            "bio": {
+              "xpath": "./following-sibling::p/text()",
+              "re": "\\w.*",
+              "python": "html_to_text(data)"
+            },
+            "name": [
+              {
+                "xpath": "substring-before(./following-sibling::p/strong,'-')"
+              },
+              {
+                "xpath": "./following-sibling::p/strong//text()",
+                "python": "data.split('(')[0].split(',')[0]"
+              },
+              {
+                "xpath": "./following-sibling::p/strong//text()"
+              }
+            ]
+          },
+          "type": "[Instructor]",
+          "xpath": "//div[@id='container2']/div[@class='Ind85x35']/img"
+        },
+        {
+          "fields": {
+            "image": {
+              "xpath": "./@src",
+              "python": "data.replace('..','http://www.careeracademy.com')"
+            },
+            "bio": {
+              "xpath": "./following-sibling::p/text()",
+              "re": "\\w.*",
+              "python": "html_to_text(data)"
+            },
+            "name": [
+              {
+                "xpath": "substring-before(./following-sibling::p/strong,'-')"
+              },
+              {
+                "xpath": "./following-sibling::p/strong//text()"
+              }
+            ]
+          },
+          "type": "[Instructor]",
+          "xpath": "//div[@class='Ind85x35']/img"
+        },
+        {
+          "fields": {
+            "image": {
+              "xpath": "./img/@src",
+              "python": "data.replace('..','http://www.careeracademy.com')"
+            },
+            "bio": {
+              "xpath": "./p/text()",
+              "python": "html_to_text(data)"
+            },
+            "name": {
+              "xpath": "substring-before(./p/strong,'-')"
+            }
+          },
+          "type": "[Instructor]",
+          "xpath": "//td[@class='prod-detail-bt']/div[@class='Ind85x35']"
+        },
+        {
+          "fields": {
+            "image": {
+              "xpath": "./img/@src",
+              "python": "data.replace('..','http://www.careeracademy.com')"
+            },
+            "bio": {
+              "xpath": "./p/text()",
+              "python": "html_to_text(data)"
+            },
+            "name": {
+              "xpath": "substring-before(./p/strong,'-')"
+            }
+          },
+          "type": "[Instructor]",
+          "xpath": "//div[@id='container2']/div"
+        }
+      ],
+      "certificates": {
+        "fields": {
+          "name": {
+            "python": "careeracademy.certificattion(response)"
+          }
+        },
+        "type": "[Certificate]"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*',), restrict_xpaths=('//ul[@class=\\'arrow_list\\']/li/a'), process_value=careeracademy.extract_links_parse),callback='parse_product')",
+        "Rule(lxml(allow=('.*',), restrict_xpaths=('//div[@id=\\'header123\\']//div[@id=\\'nav\\']/ul/li/a'), process_value=careeracademy.extract_links_follow), callback='passCat', follow=True)"
+      ]
+    }
+  }
+}

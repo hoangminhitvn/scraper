@@ -1,0 +1,19 @@
+{
+    "base_url": "https://www.zeitgeistminds.com",
+    "levels": {
+        "0": {
+            "callback": "zeitgeistminds.start"
+        }
+    },
+    "start_url": "https://www.google.com",
+    "output_config": {
+        "fields": {
+            "provider_id": "326",
+            "product_type_id": {
+                "python": "product_type_id('courses')"
+            },
+            "language": "eng"
+        },
+        "type": "Product"
+    }
+}

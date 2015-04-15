@@ -1,0 +1,24 @@
+{
+  "base_url": "http://www.pluralsight.com/", 
+  "start_url": "http://www.pluralsight.com/", 
+  "levels": {
+    "0": {
+      "callback": "pluralsight.parse"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "339", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "formats": [
+        "video"
+      ]
+    }, 
+    "type": "Product"
+  }
+}

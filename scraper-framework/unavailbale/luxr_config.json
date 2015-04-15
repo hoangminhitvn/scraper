@@ -1,0 +1,88 @@
+{
+    "base_url": "http://luxr.co",
+    "levels": {
+        "1": ".//h3/a/@href"
+    },
+    "start_url": "http://luxr.co/workshops",
+    "output_config": {
+        "fields": {
+            "provider_name": "Luxr",
+            "provider_id": "374",
+            "product_type_name": "Courses",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "name": {
+                "xpath": ".//h3/a/text().",
+                "level": "1"
+            },
+            "toc": {
+                "xpath": "//div[@class='wide-black clearfix']/div[@class='container']/div[@class='row']/div[2]",
+                "level": "1"
+            },
+            "product_video_url": {
+                "xpath": "//div[@class='wide-black clearfix']/div[@class='container']//script",
+                "re": ".*(https.*mov).*",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": "substring-after(//h4[@class='light']/strong/text(),'Only ')",
+                        "re": "\\d{2}\\.\\d{2}"
+                    },
+                    "price_filter": {
+                        "xpath": "substring-after(//h4[@class='light']/strong/text(),'Only ')",
+                        "re": "\\d{2}\\.\\d{2}"
+                    },
+                    "price_display_text": {
+                        "xpath": "substring-after(//h4[@class='light']/strong/text(),'Only ')",
+                        "re": "month"
+                    },
+                    "duration_filter": {
+                        "xpath": ".//small[contains(.,'Approx')]",
+                        "re": "\\d{1} hour|\\d+ min|\\d\\.\\d hours",
+                        "python": "duration_filter(data)"
+                    },
+                    "duration_display": {
+                        "xpath": "substring-after(.//small[contains(.,'Approx')],'.')"
+                    },
+                    "instructors": {
+                        "fields": {
+                            "name": {
+                                "xpath": "//h3[@class='light']/text()[1]"
+                            },
+                            "image": {
+                                "xpath": "//img[@class='media-object round avatar']/@src"
+                            },
+                            "bio": {
+                                "xpath": "string(//div[@class='row']/div[@class='span6'][2]/p)"
+                            },
+                            "link": {
+                                "xpath": "//div[@class='row']/div[@class='span6'][2]/p[contains(.,'follow')]/a/@href"
+                            }
+                        },
+                        "type": "[Instructor]",
+                        "level": "1"
+                    }
+                },
+                "type": "[ProductEvent]"
+            },
+            "description": {
+                "xpath": "//p[@class='lead']//text()",
+                "level": "1"
+            },
+            "audience": {
+                "xpath": "//h4[contains(.,'Who is it for')]/following-sibling::p//text()",
+                "level": "1"
+            },
+            "requirements": {
+                "xpath": "string(//h4[contains(.,'ll need')]/following-sibling::ul)",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "xpath": "//div[@id='wrap']/div[@class='page page-workshop']/div[@class='container'][2]/div[position()<10]"
+    }
+}

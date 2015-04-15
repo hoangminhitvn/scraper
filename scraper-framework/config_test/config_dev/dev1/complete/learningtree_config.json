@@ -1,0 +1,120 @@
+{
+    "baseUrl": "http://www.learningtree.com/",
+    "levels": {},
+    "start_url": "http://www.learningtree.com/topic-keyword-index.htm#!tab2",
+    "output_config": {
+        "fields": {
+            "provider_name": "Learning Tree",
+            "provider_id": "137",
+            "language": "eng",
+            "space_lock": "Y",
+            "time_lock": "Y",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//div[@id='inner']/h1/text()"
+            },
+            "prod_image": [
+                {
+                    "xpath": "//div[@class='topColumn'][1]//img/@src",
+                    "python": "urljoin('http://www.learningtree.com/', data)"
+                },
+                {
+                    "xpath": "//div[@class='topColumn'][2]//img/@src",
+                    "python": "urljoin('http://www.learningtree.com/', data)"
+                }
+            ],
+            "description": [
+                {
+                    "xpath": "substring-after(//p[contains(./b,'About This Course')],':')",
+                    "python": "normalizeSpace(html2text.html2text(data)).replace('*','') if data else None"
+                },
+                {
+                    "xpath": "//div[contains(@class, 'aboutThisCourse')]/p//text()",
+                    "python": "normalizeSpace(html2text.html2text(data)).replace('*','') if data else None"
+                },
+                {
+                    "xpath": "//div[contains(@class, 'aboutThisCourse')]/div/text()",
+                    "python": "''.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                }
+            ],
+            "toc": {
+                "xpath": "//li[@id='crstab1']//div[contains(@class, 'splitCols')]"
+            },
+            "product_events": {
+                "fields": {
+                    "location_display": {
+                        "xpath": "./div[@class='evLoc']//span/text()"
+                    },
+                    "location_city": {
+                        "xpath": "./div[@class='evLoc']//span/text()"
+                    },
+                    "duration_filter": {
+                        "xpath": "//div[@id='courseInfo']//b/i/text()",
+                        "python": "duration_filter(data)"
+
+                    },
+                    "duration_display": {
+                        "xpath": "//div[@id='courseInfo']//b/i/text()"
+
+                    },
+                    "price_currency": "USD",
+                    "price_display_float": [
+                        {
+                            "xpath": "//li[@id='crstab2']//div[@class='miniStdTuition']/table//tr[3]/td[@class='tuition-new']",
+                            "python": "getPriceFloat(data)"
+                        },
+                        {
+                            "xpath": "//li[@id='crstab2']//div[@class='miniStdTuition']/table//tr[2]/td[@class='tuition-new']",
+                            "python": "getPriceFloat(data)"
+                        }
+                    ],
+                    "price_filter": [
+                        {
+                            "xpath": "//li[@id='crstab2']//div[@class='miniStdTuition']/table//tr[3]/td[@class='tuition-new']",
+                            "python": "getPriceFloat(data)"
+                        },
+                        {
+                            "xpath": "//li[@id='crstab2']//div[@class='miniStdTuition']/table//tr[2]/td[@class='tuition-new']",
+                            "python": "getPriceFloat(data)"
+                        }
+                    ],
+                    "start_date_local": [
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[1]/@content",
+                            "python": "getStartDate(data + ' '+extractData(response.xpath(\"//li[@id='crstab1']//b[contains(.,'Standard Course')]/following-sibling::text()[1]\")).replace('.',''))"
+                        },
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[1]/@content",
+                            "python": "getStartDate(data + ' '+extractData(response.xpath(\"//li[@id='crstab1']//p[contains(., 'a.m')][1]/text()[1]\")).replace('.',''))"
+                        },
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[1]/@content",
+                            "python": "getStartDate(data + ' '+extractData(response.xpath(\"//li[@id='crstab1']//p[1]//b[contains(.,'Course Hours')][1]/following-sibling::text()[1]\")).replace('.',''))"
+                        }
+
+                    ],
+                    "end_date_local": [
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[2]/@content",
+                            "python": "getEndDate(data + ' '+extractData(response.xpath(\"//li[@id='crstab1']//b[contains(.,'Standard Course')]/following-sibling::text()[1]\")).replace('.',''))"
+                        },
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[2]/@content",
+                            "python": "getEndDate(data + ' '+extractData(response.xpath(\"//li[@id='crstab1']//p[1]//b[contains(.,'Course Hours')][1]/following-sibling::text()[1]\")).replace('.',''))"
+                        },
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[2]/@content",
+                            "python": "getEndDate(data + ' '+extractData(response.xpath(\"//li[@id='crstab1']//p[contains(., 'a.m')][1]/text()[1]\")).replace('.',''))"
+                        }
+                    ]
+                },
+                "type": "[ProductEvent]",
+                "xpath": "//ul[contains(@class, 'courseDates')]/li"
+            }
+        },
+        "type": "[Product]",
+        "extractorRules": {
+            "rules": "[Rule(lxml(allow=('/courses/\\d+/.*'), restrict_xpaths=('//li[@id=\\'courseNumTab\\']//ul[contains(@class, \\'indexCrsList\\')]/li/a')), callback='parseItemExtractors'),]"
+        }
+    }
+}

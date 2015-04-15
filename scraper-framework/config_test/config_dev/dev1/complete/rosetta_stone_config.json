@@ -1,0 +1,83 @@
+{
+    "base_url": "http://www.rosettastone.com/",
+    "levels": {
+        "1": {
+            "selenium_function": "slm.wait_until_available_and_get_response(request.url,request=request)"
+        },
+        "1_1": {
+            "xpath": "//a[@id='learn-more-online']/@href"
+        }
+    },
+    "selenium_config": {
+        "driver": "phantomjs",
+        "wait_until_available": {
+            "xpath": "//*[@id='hero-amt']",
+            "sleep": 2
+        }
+    },
+    "start_url": ["http://www.rosettastone.com/buynow"],
+    "output_config": {
+        "fields": {
+            "provider_id": "367",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "name": {
+                "xpath": "string(//*[@id='wrapper-catalog']/h1)"
+            },
+            "product_video_url": [
+                {
+                    "xpath": "//div[@class='thumbnails']/ul/li/a/@href",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//div[@class='thumbnails']/ul/li/a/@href",
+                    "level": "1_1"
+                }
+            ],
+            "description": {
+                "xpath": "//div[@class='big-bottom-box']//div[@class='box1']//p/text()",
+                "python": "html_to_text(data)",
+                "level": "1"
+            },
+            "duration_filter": [
+                {
+                    "xpath": "//ul[@class='online-products-list']/li[last()]/*[@class='product_name']/a/text()",
+                    "python": "duration_filter(data)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//div[@class='product-price']/ul[@class='online-products-list']/li[last()]/*[@class='title']/text()",
+                    "python": "duration_filter(data)",
+                    "level": "1"
+                }
+            ],
+            "duration_display": [
+                {
+                    "xpath": "//ul[@class='online-products-list']/li[last()]/*[@class='product_name']/a/text()",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//div[@class='product-price']/ul[@class='online-products-list']/li[last()]/*[@class='title']/text()",
+                    "level": "1"
+                }
+            ],
+            "price_currency": "USD",
+            "price_display_float": {
+                "xpath": "string(//*[@id='hero-amt'])",
+                "python": "get_price_float(data)",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "xpath": "//div[@class='langs']/ul/li/a",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('.*',),restrict_xpaths=(\"//div[@class='langs']/ul/li/a\"),), callback='parse_product')"
+            ]
+        }
+    }
+}

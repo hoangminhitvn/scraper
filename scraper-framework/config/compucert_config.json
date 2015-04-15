@@ -1,0 +1,69 @@
+{
+  "base_url": "http://www.compucert.com", 
+  "start_url": "http://www.compucert.com/browse-courses.html", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "76", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@id='course_overview']/*[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "string(//div[@id='course_overview'])"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//h1)"
+      }, 
+      "toc": {
+        "xpath": "//h3[contains(.,'COURSE OUTLINE')]/following-sibling::*"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@id='main-product-img']/img/@src", 
+        "python": "urljoin('http://www.compucert.com/',data) if data else None"
+      }, 
+      "price_currency": "USD", 
+      "price_display_float": {
+        "xpath": "//div[@id='product_table']/div[contains(.//@name,'addToCart')][1]//div[@id='priceright']//text()", 
+        "re": "\\d.*", 
+        "python": "get_price_float(data) if data else '0.00'"
+      }, 
+      "requirements": {
+        "xpath": "//div[@id='system_requirements']/div[@id='left']/following-sibling::div[1]//span//text()", 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "instructors": {
+        "fields": {
+          "bio": [
+            {
+              "xpath": "string(//h3[contains(.,'INSTRUCTOR')]/following-sibling::div[@id='instructor_about'][1])"
+            }
+          ], 
+          "image": {
+            "xpath": "//img[@class='marRight']/@src", 
+            "python": "urljoin('http://www.compucert.com/',data) if data else None"
+          }, 
+          "name": {
+            "xpath": "//div[@id='instructor']/div[@id='right']//text()"
+          }
+        }, 
+        "type": "[Instructor]"
+      }, 
+      "partner_prod_id": {
+        "xpath": "substring-after(//div[@id='prodCode'][contains(.,'Code')],': ')"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('.*\\.html',),deny=('/Exam70-247.*','/comptia-casp-certification.*','/coming_soon.*'),restrict_xpaths=('//div[@id=\\'courses_row\\']/div[@id=\\'courses_col1\\']/a')), callback='parse_product')]"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "base_url": "http://marketfy.com/",
+  "start_url": "http://marketfy.com/store/browse/",
+  "levels": {
+    "1_2": {
+      "python": "marketfy.request_comments(response)"
+    },
+    "1_1": {
+      "xpath": "//a[contains(.,'Read More')]/@href"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "265",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": {
+        "xpath": "//div[@class='item-description']/p[@itemprop='description']",
+        "python": "html_to_text(data)"
+      },
+      "name": {
+        "xpath": "//h1[@itemprop='name']/text()"
+      },
+      "product_image_url": {
+        "xpath": "//div[@class='item-image']//img/@src",
+        "python": "urljoin('http://marketfy.com',data)"
+      },
+      "price_currency": {
+        "xpath": "string(//div[@class='item-sidebar-price']/h2)",
+        "python": "get_price_currency(data)"
+      },
+      "price_display_float": {
+        "xpath": "string(//div[@class='item-sidebar-price']/h2)",
+        "re": "re.compile('(.*)\\/',re.S|re.I)",
+        "python": "get_price_float(data)"
+      },
+      "ProductRating": {
+        "xpath": "//div[@class='review-list']/div[@class='review-list-box']",
+        "fields": {
+          "username": {
+            "xpath": ".//span[@itemprop='author']/text()"
+          },
+          "rating_only": "0",
+          "user_id": "0",
+          "review": {
+            "xpath": ".//p[@itemprop='description']",
+            "python": "html_to_text(data)"
+          },
+          "pub_status": "L",
+          "overall_rating": {
+            "xpath": ".//div[@class='review-list-box-info-stars']/span[@class='rating-star']",
+            "python": "len(data)"
+          }
+        },
+        "type": "[ProductRating]",
+        "level": "1_2"
+      },
+      "authors": {
+        "fields": {
+          "bio": {
+            "xpath": "string(//*[@class='maven-bio'])"
+          },
+          "image": {
+            "xpath": "//*[@class='maven-avatar']/img/@src",
+            "python": "urljoin('http://s3.amazonaws.com',data)"
+          },
+          "link": {
+            "python": "response.url"
+          },
+          "name": {
+            "xpath": "//*[@class='maven-name']/text()"
+          }
+        },
+        "type": "[Author]",
+        "level": "1_1"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/item/.*'),restrict_xpaths=(\"//div[contains(@class, 'products')]/div[@class='product-box']/a\")), callback='parse_product')"
+      ]
+    }
+  }
+}

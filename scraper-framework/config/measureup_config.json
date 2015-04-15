@@ -1,0 +1,138 @@
+{
+  "base_url": "http://www.measureup.com",
+  "start_url": "http://www.measureup.com",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "295",
+      "product_type_id": {
+        "xpath": "//div[@id='contentcentercolumn']/h4//text()[contains(., 'Pages')]",
+        "python": "product_type_id('Book') if data else product_type_id('Course')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": [
+        {
+          "xpath": "//div[@id='contentcentercolumn']//tr/td/p/text()",
+          "python": "html_to_text(data) if data else None"
+        },
+        {
+          "xpath": "//div[contains(@id,'BuyProductPanel')]/following-sibling::text()",
+          "python": "html_to_text(data) if data else None"
+        },
+        {
+          "xpath": "//div[@id='contentcentercolumn']//tr/td/div/text()",
+          "python": "html_to_text(data) if data else None"
+        }
+      ],
+      "name": {
+        "xpath": "//h1[@class='productDetails']/text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "toc": [
+        {
+          "xpath": "//p[contains(.//text(), 'Learning Objectives')]/following-sibling::ul"
+        },
+        {
+          "xpath": "//*[contains(.//text(), 'Learning Objectives')]/following-sibling::ul"
+        }
+      ],
+      "product_image_url": {
+        "xpath": "//img[@id='ProductImage']/@src",
+        "python": "urljoin('http://www.measureup.com/', data) if data else None"
+      },
+      "duration_display": [
+        {
+          "xpath": "//div[@id='contentcentercolumn']/h4//text()[contains(.,'Pages')]",
+          "re": "\\d+"
+        },
+        {
+          "xpath": "//div[@id='contentcentercolumn']//p//text()[contains(.,'Learning Time')]",
+          "re": "\\d+.*"
+        },
+        {
+          "xpath": "substring-before(//select[@class='distDropDown']/option[1]/text(), '-')",
+          "re": "\\d+.*",
+          "python": "data.replace('Online', '') if data else None"
+        }
+      ],
+      "duration_filter": [
+        {
+          "xpath": "//div[@id='contentcentercolumn']//p//text()[contains(.,'Learning Time')]",
+          "re": "\\d+ hours",
+          "python": "duration_filter(data)"
+        },
+        {
+          "xpath": "substring-before(//select[@class='distDropDown']/option[1]/text(), '-')",
+          "re": "\\d+.*",
+          "python": "duration_filter(data.replace('Online', '')) if data else None"
+        }
+      ],
+      "price_currency": "USD",
+      "price_display_float": [
+        {
+          "xpath": "substring-after(//select[@class='distDropDown']/option[1]/text(), '$')",
+          "re": "\\d+\\.?\\d+",
+          "python": "get_price_float(data)"
+        },
+        {
+          "xpath": "//select[@class='distDropDown']/option[1]/text()",
+          "re": "\\$\\d+",
+          "python": "get_price_float(data.replace('$',''))"
+        }
+      ],
+      "requirements": {
+        "xpath": {
+          "operator": "or",
+          "value": [
+            "//div[contains(./h2/text(),'Requirement')]//text()",
+            "//div[@id='tabRequirements']/p//text()"
+          ]
+        },
+        "python": "html_to_text(data) if data else None"
+      },
+      "published_date": [
+        {
+          "xpath": "substring-after(//div[@id='contentcentercolumn']/h4//text()[contains(.,'Released')],':')",
+          "python": "convert_date(data) if data else None"
+        },
+        {
+          "xpath": "substring-after(//div[@id='contentcentercolumn']/h4//text()[contains(.,'Released')],'Released')",
+          "python": "convert_date(data) if data else None"
+        }
+      ],
+      "instructors": {
+        "xpath": "//div[@id='contentcentercolumn']/h4",
+        "fields": {
+          "name": {
+            "xpath": "substring-after(.//text()[contains(.,'By')],':')"
+          }
+        },
+        "type": "[Instructor]"
+      },
+      "publisher": {
+        "xpath": "substring-after(//div[@id='contentcentercolumn']/h4//text()[contains(.,'Publisher')],':')"
+      }
+    },
+    "type": "Product",
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'70-689-Upgrading-Your-Skills-to-MCSA-Windows-8-P4327.aspx' in response.url",
+          "level": "1"
+        },
+        {
+          "python": "'70-414-Implementing-an-Advanced-Server-Infrastructure-P5397.aspx' in response.url",
+          "level": "1"
+        }
+      ]
+    },
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('\\.aspx$',),restrict_xpaths=('//div[@id=\\'navigation\\']//ul/li/a')),follow=True)",
+        "Rule(lxml(allow=('\\.aspx$',),restrict_xpaths=('//div[@class=\\'catalogWrapper\\']//tr//a')),callback='parse_product')"
+      ]
+    }
+  }
+}

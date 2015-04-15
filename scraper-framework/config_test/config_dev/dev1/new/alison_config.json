@@ -1,0 +1,109 @@
+{
+  "baseUrl": "https://www.creativelive.com/",
+  "levels": {
+    "1_1": {
+      "xpath": "//a[contains(text(), 'More Comments and Reviews')]/@href",
+      "level": "1",
+      "dont_filter": true
+    },
+    "1_2": {
+      "xpath": "//a[contains(text(), 'ead more about the course')]/@href",
+      "level": "1"
+    }
+  },
+  "start_url": ["http://alison.com/"],
+  "output_config": {
+    "fields": {
+      "provider_name": "ALISON",
+      "provider_id": "79",
+      "product_type_name": "Courses",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "name": {
+        "xpath": "//div[@class='box-content']//h2/text()"
+      },
+      "prod_image": {
+        "xpath": "//div[@class='thumbnail']//img/@src"
+      },
+      "description": {
+        "xpath": "//div[@class='box-content']//div[@class='col-md-9']//p//text()",
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      },
+      "toc": {
+        "xpath": "//div[@class='col-md-9']/div[@class='panel-group']"
+      },
+      "provider_id": {
+        "xpath": "//td[contains(., 'Course #')]/following-sibling::td//text()",
+        "python": "data if data else None",
+        "level": "1_2"
+      },
+      "publisher": {
+        "xpath": "/td[contains(., 'Course Publisher')]/following-sibling::td//text()",
+        "python": "data if data else None",
+        "level": "1_2"
+      },
+      "published_date": {
+        "xpath": "//td[contains(., 'Release Date')]/following-sibling::td//text()",
+        "python": "convert_date(data) if data else None",
+        "level": "1_2"
+      },
+      "duration_display": [
+        {
+          "xpath": "substring-after(//td[contains(., 'Course Duration')]/following-sibling::td//text(), '-')",
+          "python": "data if data else None",
+          "level": "1_2"
+        },
+        {
+          "xpath": "//td[contains(., 'Course Duration')]/following-sibling::td//text()",
+          "python": "data if data else None",
+          "level": "1_2"
+        }
+      ],
+      "duration_filter": [
+        {
+          "xpath": "substring-after(//td[contains(., 'Course Duration')]/following-sibling::td//text(), '-')",
+          "python": "duration_filter(data) if data else None",
+          "level": "1_2"
+        },
+        {
+          "xpath": "//td[contains(., 'Course Duration')]/following-sibling::td//text()",
+          "python": "duration_filter(data) if data else None",
+          "level": "1_2"
+        }
+      ],
+      "ProductRating": {
+        "fields": {
+          "pub_status": "L",
+          "user_id": null,
+          "rating_only": "0",
+          "review": {
+            "xpath": ".//div[@class='comment-block']/text()",
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          },
+          "username": {
+            "xpath": ".//span[@class='comment-by']//text()",
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          },
+          "overall_rating": {
+            "xpath": "substring-before(//li[@class='current-rating']/text(), '/')",
+            "level": "1"
+          }
+        },
+        "type": "[ProductRating]",
+        "xpath": "//ul[@class='comments']/li",
+        "level": "1_1"
+      }
+    },
+    "type": "Product",
+    "extractorRules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/.*'), restrict_xpaths='//div[contains(@class, \\'featured-box\\')]//h2/a'), callback='parse_product')",
+        "Rule(lxml(allow=('/subjects/.*')), follow=True, callback='passCat')"
+      ]
+    },
+    "pre_filters": {
+      "filters_not": {}
+    }
+  }
+}

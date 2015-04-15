@@ -1,0 +1,91 @@
+{
+  "base_url": "https://www.newsu.org", 
+  "start_url": "https://www.newsu.org/courses/all#table", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "246", 
+      "product_type_id": {
+        "xpath": "concat(substring('Course', 0 div boolean(//dt[contains(.,'Type:')]/following-sibling::dd[1]//text()[contains(.,'Course')])),substring('Webinar', 0 div boolean(//dt[contains(.,'Type:')]/following-sibling::dd[1]//text()[contains(.,'Seminar')])),substring('Webinar', 0 div boolean(//dt[contains(.,'Type:')]/following-sibling::dd[1]//text()[contains(.,'Webinar')])))", 
+        "python": "product_type_id(data if data else 'Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@class='content']//*[@class='about']//text()", 
+          "python": "' '.join(normalize_space(selector.extract()))"
+        }, 
+        {
+          "xpath": "//div[@class='content']//*[@class='og-mission']//text()", 
+          "python": "' '.join(normalize_space(selector.extract()))"
+        }, 
+        {
+          "xpath": "//div[@class='content']//*[@class='product-body']//text()", 
+          "python": "' '.join(normalize_space(selector.extract()))"
+        }
+      ], 
+      "name": {
+        "xpath": "//h1[@id='page-title']/text()"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='img course-logo']/img/@src"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//dd[@class='time-estimate']//text()", 
+        "re": "\\d+[ ]? (?:hour[s]?|minutes)", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "//dt[contains(.,'Cost:')]/following-sibling::dd[1]//text()", 
+        "re": "(\\d+\\.?(?:\\d+)?)+"
+      }, 
+      "duration_display": {
+        "xpath": "//dd[@class='time-estimate']//text()", 
+        "re": "\\d+[ ]? (?:hour[s]?|minutes)"
+      }, 
+      "requirements": [
+        {
+          "xpath": "string(//div[@class='content']/div[contains(@class,'requirements')]/div)"
+        }, 
+        {
+          "xpath": "//div[@class='content']/div[contains(@class,'required-courses')]//a//text()"
+        }
+      ], 
+      "published_date": {
+        "xpath": "//div[@class='content']/dl[contains(@class,'info')]/dd[@class='date']/text()"
+      }, 
+      "instructors": {
+        "xpath": "//div[contains(@class,'instructor')]//div[contains(@id,'node')]", 
+        "fields": {
+          "bio": {
+            "xpath": "string(.//div[@class='content']/p)"
+          }, 
+          "image": {
+            "xpath": ".//div[@class='image-left']/img/@src"
+          }, 
+          "name": {
+            "xpath": ".//h2//text()"
+          }
+        }, 
+        "type": "[Instructor]"
+      }, 
+      "audience": {
+        "xpath": "string(//div[@class='content']/div[contains(@class,'audience')]/div[contains(@class,'field-item')])"
+      }, 
+      "end_date_local": {
+        "xpath": "//div[@class='content']/dl[contains(@class,'info')]/dd[@class='date'][contains(./text(),' to ')]//text()/following-sibling::*//text()"
+      }, 
+      "start_date_local": {
+        "xpath": "//div[@class='content']/dl[contains(@class,'info')]/dd[@class='date'][contains(./text(),' to ')]//text()/following-sibling::*//text()"
+      }, 
+      "pub_status": "L"
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('org/(courses/)?(\\w+-)+',),restrict_xpaths=('//div[contains(@class,\\'newsu-course\\')]//h2/a')), callback='parse_product'),Rule(lxml(allow=('/courses/all\\?page=\\d+', ),restrict_xpaths=('//a[contains(@title,\\'Go to\\')]')),follow=True),]"
+    }
+  }
+}

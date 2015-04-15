@@ -1,0 +1,165 @@
+{
+  "base_url": "http://www.exitcertified.com/", 
+  "start_url": "http://www.exitcertified.com/training/", 
+  "levels": {
+    "1_1": {
+      "xpath": "//ul[@class='scheduleWidgetList']/li/a[contains(./@href,'/order/')]/@href", 
+      "python": "[urljoin('https://www.exitcertified.com/',href) for href in selector.extract()]"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "139", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "substring-before(//div[@class='courseInfo'],'Skills Gained')", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "string(//div[@class='courseInfo'])", 
+          "python": "html_to_text(data)"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//h1/text())"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='bodyContainer']/div[@id='featureSheetBottomBox']"
+      }, 
+      "product_events": {
+        "fields": {
+          "location_city": {
+            "xpath": "substring-before(substring-after(string(//span[contains(.,'City')]),':'),',')"
+          }, 
+          "price_currency": "USD", 
+          "location_addr": {
+            "xpath": "//strong[contains(.,'Address')]/following-sibling::text()"
+          }, 
+          "language": "eng", 
+          "location_state": {
+            "xpath": "substring-after(substring-after(string(//span[contains(.,'City')]),':'),',')", 
+            "re": "[A-Z]{2}"
+          }, 
+          "duration_filter": {
+            "xpath": "//strong[contains(.,'Length')]/following-sibling::text()", 
+            "re": "\\d.*", 
+            "level": "1", 
+            "python": "duration_filter(data)"
+          }, 
+          "start_date_local": {
+            "xpath": "concat(//span[contains(./strong,'Date')]/text(),' ',//span[contains(./strong,'Time')]/text())", 
+            "python": "get_start_date(data)"
+          }, 
+          "price_display_float": {
+            "xpath": "//span[contains(.,'USD')]/text()", 
+            "re": "\\d.*", 
+            "python": "get_price_float(data)"
+          }, 
+          "location_display": {
+            "xpath": "substring-after(string(//span[contains(.,'City')]),':')"
+          }, 
+          "end_date_local": {
+            "xpath": "concat(//span[contains(./strong,'Date')]/text(),' ',//span[contains(./strong,'Time')]/text())", 
+            "python": "get_end_date(data)"
+          }, 
+          "duration_display": {
+            "xpath": "//strong[contains(.,'Length')]/following-sibling::text()", 
+            "re": "\\d.*", 
+            "level": "1"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1_1"
+      }, 
+      "product_image_url": {
+        "xpath": "//h1/preceding-sibling::div/img/@src", 
+        "python": "urljoin('http://www.exitcertified.com/',data)"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//strong[contains(.,'Length')]/following-sibling::text()", 
+        "re": "\\d.*", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "//span[@class='sidebarCourseDetails'][contains(./strong,'Tuition (USD)')]/text()", 
+        "re": "\\d.*", 
+        "python": "get_price_float(data)"
+      }, 
+      "duration_display": {
+        "xpath": "//strong[contains(.,'Length')]/following-sibling::text()", 
+        "re": "\\d.*"
+      }, 
+      "audience": [
+        {
+          "xpath": "//h2[contains(.,'Who Can Benefit')]/following-sibling::*[1]//text()", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Who Can Benefit')]/following-sibling::ul[1]//text()[count(.|//h2[contains(.,'Who Can Benefit')]/following-sibling::h2/preceding-sibling::ul[1]//text()) = count(//h2[contains(.,'Who Can Benefit')]/following-sibling::h2/preceding-sibling::ul[1]//text())]", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Who Can Benefit')]/following-sibling::p[2]//text()[count(.|//h2[contains(.,'Who Can Benefit')]/following-sibling::h2/preceding-sibling::p[2]//text()) = count(//h2[contains(.,'Who Can Benefit')]/following-sibling::h2/preceding-sibling::p[2]//text())]", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Who Can Benefit')]/following-sibling::*//text()[1]", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//p[contains(.,'Who Can Benefit')]/following-sibling::p[1]//text()", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//b[contains(.,'who can benefit')]/following-sibling::ul[1]", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Who Can Benefit')]/following-sibling::p[@class][1]//text()", 
+          "type": "[str]"
+        }
+      ], 
+      "prerequisites": [
+        {
+          "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::div[1]//text()", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::ul[1]//text()", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::p[1]//text()", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::p[@class][1]//text()", 
+          "type": "[str]"
+        }, 
+        {
+          "xpath": "//h2[contains(.,'Required Knowledge and Skills')]/following-sibling::div[1]//text()", 
+          "type": "[str]"
+        }
+      ], 
+      "partner_prod_id": {
+        "xpath": "//span[@class='sidebarCourseDetails'][contains(.,'Code')]/text()"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/training/.*detail\\.html',),allow_domains=('exitcertified.com'),), callback='parse_product'), Rule(lxml(allow=('/training/.*' ),allow_domains=('exitcertified.com'),), follow=True),]"
+    }, 
+    "post_interceptors": [
+      {
+        "python": "item['product_events'] = [event for event in item['product_events'] if event['location_display']]"
+      }
+    ]
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "base_url": "https://training.mirantis.com",
+  "start_url": "https://training.mirantis.com/openstack-courses",
+  "levels": {
+    "1": {
+      "xpath": "./@href"
+    }, 
+    "1_1": {
+      "xpath": "//table[contains(@class, 'class-schedule')]//td/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "156", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "Y", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='content-section-description']/div[@class='content-section']/p//text()", 
+        "python": "html_to_text(data)",
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[@class='span12']/h2/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='content-section-outline']/div[@class='content-section']/ul", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//div[@id='content']", 
+        "fields": {
+          "location_city": {
+            "xpath": "substring-before(.//div[@class='classHeading']/p[3]/text(), ',')", 
+            "python": "data if data else None"
+          }, 
+          "location_state": {
+            "xpath": "substring-before(substring-after(.//div[@class='classHeading']/p[3]/text(), ','), ',')", 
+            "python": "data if data else None"
+          }, 
+          "end_date_local": [
+            {
+              "xpath": "substring-before(substring-after(.//div[@id='content-section-time']/div[@class='content-section']/p/text()[5], ','), '9:00')", 
+              "python": "convert_date(data + ' 05:00 PM')"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(.//div[@id='content-section-time']/div[@class='content-section']/p/text()[4], ','), '9:00')", 
+              "python": "convert_date(data + ' 05:00 PM')"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(.//div[@id='content-section-time']/div[@class='content-section']/p/text()[3], ','), '9:00')", 
+              "python": "convert_date(data + ' 05:00 PM')"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(.//div[@id='content-section-time']/div[@class='content-section']/p/text()[2], ','), '9:00')", 
+              "python": "convert_date(data + ' 05:00 PM')"
+            }
+          ], 
+          "location_country": [
+            {
+              "xpath": "substring-after(substring-after(//div[@class='classHeading']/p[3]/text(), ','), ',')"
+            }, 
+            {
+              "xpath": "substring-after(.//div[@class='classHeading']/p[3]/text(), ',')"
+            }
+          ], 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "//li[contains(., 'uration')]/text()", 
+            "python": "duration_filter(data)", 
+            "level": "1"
+          }, 
+          "start_date_local": {
+            "xpath": "substring-before(substring-after(.//div[@id='content-section-time']/div[@class='content-section']/p/text()[2], ','), '9:00')", 
+            "python": "convert_date(data + ' 09:00 PM')"
+          }, 
+          "price_display_float": {
+            "xpath": "//div[@class='courseEventQuickInfo']/text()", 
+            "re": "\\d+\\.\\d+", 
+            "python": "min_price([i for i in data])", 
+            "level": "1"
+          }, 
+          "location_display": {
+            "xpath": ".//div[@class='classHeading']/p[3]/text()", 
+            "python": "data if data else None"
+          }, 
+          "duration_display": {
+            "xpath": "//li[contains(., 'uration')]/text()", 
+            "level": "1"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1_1"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[contains(@class, 'content-photo')]/@src", 
+        "python": "urljoin('http://training.mirantis.com/', data)", 
+        "level": "1"
+      }, 
+      "requirements": {
+        "xpath": "//h4[contains(.,'equirements')]/following-sibling::ul/li//text()",
+        "type": "[str]",
+        "level": "1"
+      }, 
+      "audience": {
+        "xpath": "//h4[contains(.,'udience')]/following-sibling::ul/li//text()",
+        "type": "[str]",
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "//h4[contains(.,'rerequisites')]/following-sibling::ul/li//text()",
+        "type": "[str]",
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='blurb']/h2/a"
+  }
+}

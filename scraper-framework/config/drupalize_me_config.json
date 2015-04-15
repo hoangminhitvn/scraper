@@ -1,0 +1,100 @@
+{
+    "base_url": "https://drupalize.me",
+    "start_url": "https://drupalize.me/videos",
+    "levels": {
+        "1_1": {
+            "xpath": "//h4[@class='presenter--name']/a/@href"
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "106",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//div[@class='field field-name-body field-type-text-with-summary field-label-hidden text-content']//div[@class='field-item even']/p//text()",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "//div[@class='field field-name-body field-type-text-with-summary field-label-hidden text-content']//div[@class='field-item even']//text()",
+                    "python": "html_to_text(data)"
+                }
+            ],
+            "name": {
+                "xpath": "//h1[@id='page-title']//text()"
+            },
+            "toc": {
+                "xpath": "//div[@class='playlist']"
+            },
+            "product_image_url": {
+                "xpath": "//meta[@property='thumbnailUrl']/@content"
+            },
+            "price_currency": "USD",
+            "duration_filter": {
+                "xpath": "string(//span[@class='content--meta--length'])",
+                "python": "duration_filter(data)"
+            },
+            "duration_display": {
+                "xpath": "string(//span[@class='content--meta--length'])"
+            },
+            "ProductRating": {
+                "xpath": "//div[@id='comments']//div[@class='ajax-comment-wrapper']",
+                "fields": {
+                    "username": {
+                        "xpath": "substring-after(.//div[@class='comment clearfix']/div[1],'by ')"
+                    },
+                    "rating_only": "0",
+                    "user_id": "0",
+                    "review": {
+                        "xpath": ".//div[@class='content']//p//text()",
+                        "python": "html_to_text(data)"
+                    },
+                    "pub_status": "L",
+                    "overall_rating": {
+                        "xpath": ".//div[@class='form-item form-type-item']//span[@class='on']",
+                        "python": "str(len(data))"
+                    }
+                },
+                "type": "[ProductRating]"
+            },
+            "published_date": {
+                "xpath": "substring-after(//div[@class='info_released_date'],'Released ')",
+                "re": "convert_date(data)"
+            },
+            "instructors": {
+                "fields": {
+                    "bio": {
+                        "xpath": "string(//div[@class='view-content']//div)",
+                        "python": "html_to_text(data)"
+                    },
+                    "image": {
+                        "xpath": "//div[@class='team-profile-picture']/img/@src"
+                    },
+                    "name": {
+                        "xpath": "//h1[@id='page-title']//text()"
+                    }
+                },
+                "type": "[Instructor]",
+                "level": "1_1"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('.*',),restrict_xpaths=('//div[@class=\\'view-content\\']/div//h4/a'),),callback='parse_product')",
+                "Rule(lxml(allow=('.*',),restrict_xpaths=('//ul[@class=\\'pager\\']/li/a')), follow=True)"
+            ]
+        }
+    },
+    "pre_run": {
+        "price": {
+            "xpath": "concat(//div[@class='pricing--plan annual']/div[1],//div[@class='pricing--plan annual']/div[2])",
+            "start_url": "https://drupalize.me/pricing"
+        }
+    }
+}

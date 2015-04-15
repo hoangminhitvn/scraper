@@ -1,0 +1,87 @@
+{
+  "base_url": "https://www.parallelbranch.com/", 
+  "start_url": [
+    "https://www.parallelbranch.com/courses/online-courses-from-parallel-branch"
+  ], 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "308", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//h2[contains(., 'What You Will Get')]/following-sibling::div[1]//text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//div[@id='computerCourse']//*[@class='courseTitleinner']/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(@class, 'resp-tabs-container')]/div[1]"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@id='computerCourse']//div[@class='deskVideo']//div[@class='videoBorder']/img/@src"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": [
+        {
+          "xpath": "substring-after(//div[@id='computerCourse']//div[@class='unlimited_access_div']//text()[1], 'Duration:')", 
+          "python": "duration_filter(data)"
+        }, 
+        {
+          "xpath": "substring-after(//div[@id='computerCourse']//div[@class='unlimited_access_div']//text()[1], 'Duration')", 
+          "python": "duration_filter(data)"
+        }
+      ], 
+      "price_display_float": {
+        "xpath": "substring-after(//div[@id='computerCourse']//*[@class='takePrice']/text(), '$')", 
+        "python": "get_price_float(data)"
+      }, 
+      "duration_display": [
+        {
+          "xpath": "substring-after(//div[@id='computerCourse']//div[@class='unlimited_access_div']//text()[1], 'Duration:')"
+        }, 
+        {
+          "xpath": "substring-after(//div[@id='computerCourse']//div[@class='unlimited_access_div']//text()[1], 'Duration')"
+        }
+      ], 
+      "certificates": {
+        "xpath": "//div[@id='CertificationName']//text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "ProductRating": {
+        "xpath": "//div[@id='on_click_CourseComment']//div[@class='bottomline']", 
+        "fields": {
+          "username": {
+            "xpath": ".//*[@class='username']/text()"
+          }, 
+          "rating_only": "0", 
+          "user_id": null, 
+          "review": {
+            "xpath": "concat(.//div[@class='ratetitle']//text(), .//div[@class='expandable']//text())"
+          }, 
+          "pub_status": "L", 
+          "overall_rating": {
+            "xpath": "substring-before(substring-after(.//div[@class='jRatingAverage'][1]/@style, 'width:'), 'px')", 
+            "python": "int(data)*5/115"
+          }
+        }, 
+        "type": "[ProductRating]"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": {}
+    }, 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/course/.*',), restrict_xpaths=('//div[contains(@class, \\'listHolder\\')]/a')), callback='parse_product')", 
+        "Rule(lxml(allow=('.*'), restrict_xpaths=('//div[@class=\\'pagination\\']//a')), follow=True,  callback='passCat')"
+      ]
+    }
+  }
+}

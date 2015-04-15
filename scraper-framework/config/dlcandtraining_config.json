@@ -1,0 +1,50 @@
+{
+  "base_url": "http://www.dlcandtraining.co.uk", 
+  "start_url": "http://www.dlcandtraining.co.uk/courses/", 
+  "levels": {
+    "1": ".//h3/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "100", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "description": {
+        "xpath": "//div[@class='main']/p//text()", 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "name": {
+        "xpath": "string(//div[@id='content']/div[@class='main']/h1)"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "string(//span[contains(.,'Price')])", 
+            "re": "\\d.*", 
+            "python": "data if data else '0.00'"
+          }, 
+          "price_currency": "GBP", 
+          "duration_filter": {
+            "xpath": "string(//h5[contains(.,'How does the course work')]/following-sibling::p[1])", 
+            "re": "\\d+", 
+            "python": "duration_filter(data + ' hours') if data else None"
+          }, 
+          "language": "eng", 
+          "duration_display": {
+            "xpath": "string(//h5[contains(.,'How does the course work')]/following-sibling::p[1])", 
+            "re": "\\d+", 
+            "python": "data + ' hours'if data else None"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/courses/.*',),restrict_xpaths=('//ul[@class=\\'shortcourselist\\']/li/a','//section//ul/li/a[contains(.,\\'More Info\\')]')), callback='parse_product'), Rule(lxml(allow=('/courses/.*/.*/',),), follow=True)]"
+    }
+  }
+}

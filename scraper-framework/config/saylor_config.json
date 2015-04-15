@@ -1,0 +1,147 @@
+{
+  "base_url": "http://www.saylor.org/", 
+  "start_url": "http://eportfolio.saylor.org/course-catalog", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "227", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='courseinfodiv'])"
+      }, 
+      "name": {
+        "xpath": "substring-before(substring-after(//h1[@class='page-title'],': '),'\u2014')"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='unit_outline_title']/following-sibling::ul"
+      }, 
+      "duration_filter": [
+        {
+          "xpath": "string(//div[@id='courseinfodiv'])", 
+          "re": ".*proximately.{1}(\\d+\\.?\\d+\\shours).*", 
+          "python": "duration_filter(data) if data else None"
+        }, 
+        {
+          "xpath": "string(//div[@id='courseinfodiv'])", 
+          "re": ".*a total of.{1}(\\d+\\.?\\d+\\shours).*", 
+          "python": "duration_filter(data) if data else None"
+        }, 
+        {
+          "xpath": "string(//strong[contains(.,'hours')])", 
+          "re": "\\d.*", 
+          "python": "duration_filter(data)"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'take you about '),'to complete')", 
+          "re": "\\d.*", 
+          "python": "duration_filter(data)"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'take you a total of '),'to complete')", 
+          "re": "\\d.*", 
+          "python": "duration_filter(data)"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'take approximately '),'to complete')", 
+          "re": "\\d.*", 
+          "python": "duration_filter(data)"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'take you approximately '),'to complete')", 
+          "re": "\\d.*", 
+          "python": "duration_filter(data)"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'should take about '),'to complete')", 
+          "re": "\\d.*", 
+          "python": "duration_filter(data)"
+        }
+      ], 
+      "duration_display": [
+        {
+          "xpath": "string(//div[@id='courseinfodiv'])", 
+          "re": ".*proximately.{1}(\\d+\\.?\\d+\\shours).*", 
+          "python": "data if data else None"
+        }, 
+        {
+          "xpath": "string(//div[@id='courseinfodiv'])", 
+          "re": ".*a total of.{1}(\\d+\\.?\\d+\\shours).*", 
+          "python": "data if data else None"
+        }, 
+        {
+          "xpath": "string(//strong[contains(.,'hours')])", 
+          "re": "\\d.*"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'take you about '),'to complete')", 
+          "re": "\\d.*"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'take you a total of '),'to complete')", 
+          "re": "\\d.*"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'take approximately '),'to complete')", 
+          "re": "\\d.*"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'take you approximately '),'to complete')", 
+          "re": "\\d.*"
+        }, 
+        {
+          "xpath": "substring-before(substring-after(//div[@id='courseinfodiv'],'should take about '),'to complete')", 
+          "re": "\\d.*"
+        }
+      ], 
+      "requirements": {
+        "xpath": "string(//div[@id='coursereqsdiv'])"
+      }, 
+      "authors": [
+        {
+          "xpath": "//strong[contains(.,'Course Designer')]/following-sibling::a[count(.|//strong[contains(.,'Course Designer')]/following-sibling::strong[1]/preceding-sibling::a) = count(//strong[contains(.,'Course Designer')]/following-sibling::strong[1]/preceding-sibling::a)]", 
+          "fields": {
+            "link": {
+              "xpath": "./@href"
+            }, 
+            "name": {
+              "xpath": "./text()"
+            }
+          }, 
+          "type": "[Author]"
+        }, 
+        {
+          "fields": {
+            "name": {
+              "xpath": "//strong[contains(.,'Course Designer')]/following-sibling::text()[1]"
+            }
+          }, 
+          "type": "[Author]"
+        }, 
+        {
+          "xpath": "//strong[contains(.,'Course Designer')]/following-sibling::a", 
+          "fields": {
+            "link": {
+              "xpath": "./@href"
+            }, 
+            "name": {
+              "xpath": "./text()"
+            }
+          }, 
+          "type": "[Author]"
+        }
+      ], 
+      "partner_prod_id": {
+        "xpath": "substring-after(substring-before(//h1[@class='page-title'],': '),'\u2014')"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/courses/.*',),deny=('/cs303/','/psych305/','/prdv004/','/engl410/','/common-core-101/','/trycollege101/','/chem102/'),allow_domains=('saylor.org'),restrict_xpaths=('//table[@id=\\'course-catalog-table\\']//tr[@id]//a[@class=\\'title\\']')), callback='parse_product'),  Rule(lxml(allow=('.*',),restrict_xpaths=('//nav[@class=\\'pagination\\']/span[@class=\\'page\\']/a')), follow=True),]"
+    }
+  }
+}

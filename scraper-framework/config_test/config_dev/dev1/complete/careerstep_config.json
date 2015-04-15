@@ -1,0 +1,89 @@
+{
+  "baseUrl": "http://www.careerstep.com/",
+  "levels": {
+    "1": "./div[1]/a/@href",
+    "1_1": {
+      "xpath": "//ul[@class='tabs']/li/a[contains(.,'Program Overview')]/@href",
+      "dont_filter": true
+    },
+    "1_2": {
+      "xpath": "//ul[@class='tabs']/li/a[contains(.,'Training Bundle')]/@href",
+      "dont_filter": true
+    }
+  },
+  "start_url": "http://www.careerstep.com/career-training-programs",
+  "output_config": {
+    "fields": {
+      "provider_name": "CareerStep",
+      "provider_id": "57",
+      "product_type_name": "Courses",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "name": {
+        "xpath": "./div[2]//a/text()"
+      },
+      "prod_image": {
+        "xpath": "./div[1]//img/@src"
+      },
+      "description": [
+        {
+          "xpath": "//div[@id='coursesContent']/div[@class='tab_container']/div[@id]/h1/following-sibling::*//text()",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data",
+          "level": "1_1"
+        },
+        {
+          "xpath": "//div[@id='coursesContent']/div[@class='tab_container']/div[@id]/h1/following-sibling::*//text()",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data",
+          "level": "1_2"
+        }
+      ],
+      "preview_video": {
+        "xpath": "//div[@id='coursesContent']/div[@class='tab_container']/div[@id]/iframe/@src",
+        "python": "urljoin('http:',data) if data else None",
+        "level": "1_1"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "//div[@id='courseSummary']/ul/li[contains(.,'$')]/b//text()",
+        "re": "\\d.*",
+        "python": "get_price_float(data)",
+        "level": "1"
+      },
+      "price_filter": {
+        "xpath": "//div[@id='courseSummary']/ul/li[contains(.,'$')]/b//text()",
+        "re": "\\d.*",
+        "python": "get_price_float(data)",
+        "level": "1"
+      },
+      "duration_display": [
+        {
+          "xpath": "//div[@id='courseSummary']/ul/li[contains(.,'months')]//text()",
+          "re": "\\d.*months",
+          "level": "1"
+        },
+        {
+          "xpath": "//p[contains(.,'The tuition fee entitles')]//text()",
+          "re": "\\d.*months",
+          "level": "1_2"
+        }
+      ],
+      "duration_filter": [
+        {
+          "xpath": "//div[@id='courseSummary']/ul/li[contains(.,'months')]//text()",
+          "re": "\\d.*months",
+          "python": "duration_filter(data)",
+          "level": "1"
+        },
+        {
+          "xpath": "//p[contains(.,'The tuition fee entitles')]//text()",
+          "re": "\\d.*months",
+          "python": "duration_filter(data)",
+          "level": "1_2"
+        }
+      ]
+    },
+    "type": "Product",
+    "xpath": "//ul[@class='courseList']/li"
+  }
+}

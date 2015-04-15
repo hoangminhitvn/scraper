@@ -1,0 +1,71 @@
+{
+  "base_url": "http://www.globalfinanceschool.com", 
+  "start_url": "http://www.globalfinanceschool.com/courses", 
+  "levels": {
+    "1": ".//h2/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "233", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//h3[contains(.,'course about')]/following-sibling::div[1])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//h2[contains(.,'SYLLABUS')]/following-sibling::div[1]", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": ".//span[contains(.,'Price')]/following-sibling::div/text()", 
+            "re": "\\d+\\.\\d+"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": ".//span[contains(.,'Duration')]/following-sibling::div/text()", 
+            "python": "duration_filter(data + 'hours')"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@class='field-items']//iframe/@src", 
+        "python": "'http:' + data", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": ".//div[@class='field-content']/a/img/@src"
+      }, 
+      "certificates": {
+        "fields": {
+          "name": {
+            "xpath": "string(//div[@class='pane-content']/div[@class='inpane-label'][2])"
+          }
+        }, 
+        "type": "[Certificate]", 
+        "level": "1"
+      }, 
+      "audience": {
+        "xpath": "string(//h3[contains(.,'course for')]/following-sibling::div[1])", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "string(//h3[contains(.,'prerequisites')]/following-sibling::div[1])", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='view-content']/div"
+  }
+}

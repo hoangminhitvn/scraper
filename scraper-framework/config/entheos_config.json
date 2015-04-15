@@ -1,0 +1,52 @@
+{
+    "base_url": "https://www.entheos.com",
+    "levels": {
+        "1_1": "//h5[@class='professor-name']/a/@href"
+    },
+    "start_url": "https://www.entheos.com/catalog",
+    "output_config": {
+        "fields": {
+            "provider_id": "427",
+            "product_type_id": {
+                "python": "product_type_id('courses')"
+            },
+            "language": "eng",
+            "pub_status":"L",
+            "name": {
+                "xpath": "string(//div[@class='page-header']/h1)",
+                "python": "html_to_text(data)"
+            },
+            "product_image_url": {
+                "xpath": "//div[@class='video']/img/@src"
+            },
+            "description": {
+                "xpath": "string(//article[contains(.,'Overview')]/p)",
+                "python": "html_to_text(data)"
+            },
+            "instructors": {
+                "fields": {
+                    "name": {
+                        "xpath": ".//h1/text()"
+                    },
+                    "bio": {
+                        "xpath": ".//p//text()",
+                        "python": "html_to_text(data)"
+                    },
+                    "image": {
+                        "xpath": ".//img/@src"
+                    }
+                },
+                "type": "[Instructor]",
+                "level": "1_1",
+                "xpath": "//*[@id='professor_bio']"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('/classes/',)), callback='parse_product')",
+                "Rule(lxml(allow=('/catalog\\?page=\\d+')), follow=True)"
+            ]
+        }
+    }
+}

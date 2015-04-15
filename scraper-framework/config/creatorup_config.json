@@ -1,0 +1,79 @@
+{
+  "base_url": "https://creatorup.com", 
+  "start_url": "https://creatorup.com/products/", 
+  "levels": {
+    "1": ".//a[@id='moredetail']/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "82", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "substring-after(//p[contains(.,'OVERVIEW')],':')", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@id='course-overview']/p[2]/text()", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "string(//div[@id='tabs1-pane1']/p[2])", 
+          "level": "1"
+        }
+      ], 
+      "name": {
+        "xpath": "//h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='preview']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "substring-after(//p[contains(.,'for $')],'for $')", 
+            "python": "get_price_float(data) if data else '0.00'"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": [
+            {
+              "xpath": "substring-after(string(//p[contains(.,'Running time')]/em[1]),'time: ')", 
+              "re": "\\d.*inutes", 
+              "python": "duration_filter(data) if data else None"
+            }, 
+            {
+              "xpath": "//ul[@class='chapterlist']/li/em/strong/text()", 
+              "python": "duration_filter(data) if data else None"
+            }, 
+            {
+              "xpath": "//div[@class='span7']/p/em/strong//text()", 
+              "python": "duration_filter(data) if data else None"
+            }
+          ], 
+          "duration_display": {
+            "xpath": "substring-after(string(//p[contains(.,'Running time')]/em[1]),'time: ')", 
+            "re": "\\d.*inutes"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//*[@id='introvideo']//iframe/@src", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": ".//noscript/img/@src"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//*[@id='linktodetail']"
+  }
+}

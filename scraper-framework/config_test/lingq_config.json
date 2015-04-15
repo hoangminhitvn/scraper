@@ -1,0 +1,27 @@
+{
+    "base_url": "http://www.lingq.com/",
+    "start_url": "http://www.lingq.com/",
+    "levels": {
+        "0": {
+            "callback": "lingq.parse"
+        }
+    },
+    "login": {
+        "formdata": {
+            "username": "vinhnguyen2015",
+            "password": "vinhteamAUS"
+        },
+        "start_url": "https://www.lingq.com/accounts/login/",
+        "from_response": true
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "247",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "language": "eng"
+        },
+        "type": "Product"
+    }
+}

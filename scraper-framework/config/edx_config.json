@@ -1,0 +1,100 @@
+{
+    "base_url": "",
+    "start_url": [
+        "https://www.edx.org/search/api/all"
+    ],
+    "levels": {
+        "1": {
+            "xpath": "./a/@href"
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "142",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "Y",
+            "space_lock": "N",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//*[contains(./@itemprop, 'description')]/h4[contains(text(), 'Note')]/following-sibling::*//text()",
+                    "python": "html_to_text(data).replace('*', '') if data else None",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//div[contains(@class, 'course-detail-about')]//h3/following-sibling::*//text()",
+                    "python": "html_to_text(data).replace('*', '') if data else None",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//div[contains(@class, 'course-detail-about')]//p//text()",
+                    "python": "html_to_text(data).replace('*', '') if data else None",
+                    "level": "1"
+                }
+            ],
+            "name": {
+                "xpath": "//*[@class='course-detail-title']/text()",
+                "python": "html_to_text(data).replace('\"', '') if data else None",
+                "level": "1"
+            },
+            "product_events": {
+                "xpath": "//div[contains(@class, 'course-detail-overview')]",
+                "fields": {
+                    "duration_filter": {
+                        "xpath": ".//div[contains(@class, 'course-detail-length')]/text()",
+                        "python": "duration_filter(data) if data else None"
+                    },
+                    "start_date_local": {
+                        "xpath": ".//div[contains(@class, 'course-detail-start')]/text()",
+                        "python": "convert_date(data) if data else None"
+                    },
+                    "duration_display": {
+                        "xpath": ".//div[contains(@class, 'course-detail-length')]/text()",
+                        "python": "data if data else None"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "level": "1"
+            },
+            "product_video_url": {
+                "xpath": "//div[@class='course-detail-video']/a/@href",
+                "level": "1"
+            },
+            "product_image_url": {
+                "xpath": "//div[@class='course-detail-image']/img/@src",
+                "level": "1"
+            },
+            "prerequisites": {
+                "xpath": "//div[contains(@class, 'course-detail-overview')]//div[contains(@class, 'course-detail-prerequisites')]/*[contains(./text(), 'Prerequisite')]/following-sibling::*//text()",
+                "python": "html_to_text(data) if data else None",
+                "level": "1"
+            },
+            "partner_prod_id": [
+                {
+                    "xpath": "//div[contains(@class, 'course-detail-number')]/span/following-sibling::text()",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//div[contains(@class, 'course-detail-number')]/text()",
+                    "level": "1"
+                }
+            ]
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lrgl(allow=('\"url\":\"([^\"]+)'),process_value=edx.extract_links_parse),callback='parse_product')"
+            ]
+        },
+        "pre_filters": {
+            "filters_not": [
+                {
+                    "level": "1",
+                    "python": "edx.not_in_english(response)"
+                }
+            ]
+        }
+    }
+}

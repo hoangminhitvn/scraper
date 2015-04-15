@@ -1,0 +1,83 @@
+{
+  "base_url": "http://www.certstaff.com/default.html",
+  "levels": {
+  },
+  "start_url": "http://www.certstaff.com/classes/default.html",
+  "output_config": {
+    "fields": {
+      "provider_id": "45",
+      "product_type_id": {
+        "python": "product_type_id('Webinars')"
+      },
+      "language": "eng",
+      "name": {
+        "xpath": "string(//h1)"
+      },
+      "product_image_url": {
+        "xpath": "//*[@id='ctl00_ContentPlaceHolder1_categoryimage']/img/@src",
+        "python": "data if 'www.certstaff.com' in data else urljoin('http://www.certstaff.com/',data)"
+      },
+      "description": {
+        "xpath": "string(//*[@id='ctl00_ContentPlaceHolder1_overview'])",
+        "python": "html_to_text(data)"
+      },
+      "toc": {
+        "xpath": "//table[@id='ctl00_ContentPlaceHolder1_details_tbl']"
+      },
+      "prerequisites": {
+        "xpath": "string(//*[@id='ctl00_ContentPlaceHolder1_related_tbl0'])"
+      },
+      "duration_filter": {
+        "xpath": "string(//div[@class='contentround']//p[contains(.,'Length')])",
+        "re": "re.compile('Length:(.*) \\| Delivery',re.S|re.I)",
+        "python": "duration_filter(re.sub('\\(|\\)','',data))"
+      },
+      "duration_display": {
+        "xpath": "string(//div[@class='contentround']//p[contains(.,'Length')])",
+        "re": "re.compile('Length:(.*) \\| Delivery',re.S|re.I)"
+      },
+      "price_currency": {
+        "xpath": "//div[@class='contentround']//span[@id='ctl00_ContentPlaceHolder1_price']/text()",
+        "python": "get_price_currency(data)"
+      },
+      "price_display_float": {
+        "xpath": "//div[@class='contentround']//span[@id='ctl00_ContentPlaceHolder1_price']/text()",
+        "python": "get_price_float(data)"
+      },
+      "product_events": {
+        "fields": {
+          "start_date_local": {
+            "xpath": "./a/text()",
+            "python": "convert_date(data)"
+          },
+          "duration_filter": {
+            "xpath": "string(./ancestor::div[@class='contentround']//p[contains(.,'Length')])",
+            "re": "re.compile('Length:(.*) \\| Delivery',re.S|re.I)",
+            "python": "duration_filter(re.sub('\\(|\\)','',data))"
+          },
+          "duration_display": {
+            "xpath": "string(./ancestor::div[@class='contentround']//p[contains(.,'Length')])",
+            "re": "re.compile('Length:(.*) \\| Delivery',re.S|re.I)"
+          },
+          "price_currency": {
+            "xpath": "./ancestor::div[@class='contentround']//span[@id='ctl00_ContentPlaceHolder1_price']/text()",
+            "python": "get_price_currency(data)"
+          },
+          "price_display_float": {
+            "xpath": "./ancestor::div[@class='contentround']//span[@id='ctl00_ContentPlaceHolder1_price']/text()",
+            "python": "get_price_float(data)"
+          }
+        },
+        "type": "[ProductEvent]",
+        "xpath": "//*[@id='ctl00_ContentPlaceHolder1_DataList1']//td[contains(.,'EST')]"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/trainingcatalog/course')), callback='parse_product')",
+        "Rule(lxml(allow=('/classes/category')), follow=True)"
+      ]
+    }
+  }
+}

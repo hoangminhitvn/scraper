@@ -1,0 +1,64 @@
+{
+  "base_url": "http://www.fxphd.com/", 
+  "start_url": "http://www.fxphd.com/fxphd/courseInfo.php", 
+  "levels": {
+    "1": {
+      "xpath": ".//h3/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "167", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='col-md-10 col-md-offset-1']/text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[@id='fxphd']/h2/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//h3[contains(.,'course syllabus')]/following-sibling::div", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[@class='fx_excerptImage']/@src", 
+        "level": "1"
+      }, 
+      "published_date": {
+        "xpath": "//dt[contains(.,'Original Run Date:')]/following-sibling::dd[1]//text()", 
+        "re": ".*20\\d{2}", 
+        "python": "convert_date('1 ' + data + ' 00 00')", 
+        "level": "1"
+      }, 
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": "//dt[contains(.,'Professor:')]/following-sibling::dd[1]//text()", 
+            "re": "\\w.*"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1"
+      }, 
+      "prod_keywords": {
+        "xpath": "//div[@class='fxtag']//text()", 
+        "type": "[str]", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "//dt[contains(.,'Course Number:')]/following-sibling::dd[1]//text()", 
+        "re": "\\w.*"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='coursecard']"
+  }
+}

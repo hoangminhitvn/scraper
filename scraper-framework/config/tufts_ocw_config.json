@@ -1,0 +1,57 @@
+{
+    "base_url": "http://ocw.tufts.edu",
+    "start_url": "http://ocw.tufts.edu/CourseList",
+    "levels": {
+        "1_1": {
+            "xpath": "//ul[@class='course_categories']/li[@class='category'][contains(.,'Syllabus')]/a/@href"
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "373",
+            "product_type_id": {
+                "python": "product_type_id('Course')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "name": {
+                "xpath": "string(//div[@class='page_header'])"
+            },
+            "description": {
+                "xpath": "//td/div[contains(.,'Course Description')]/following-sibling::*//text()",
+                "python": "' '.join(normalize_space(selector.extract())) if data else None"
+            },
+            "toc": {
+                "xpath": "//div[@class='page_header'][contains(.,'Syllabus')]/following-sibling::*",
+                "python": "' '.join(normalize_space(selector.extract())) if data else None",
+                "level": "1_1"
+            },
+            "product_image_url": {
+                "xpath": "//div[@class='right_course']/div[@class='body']//tr[1]/td/img/@src",
+                "python": "urljoin('http://ocw.tufts.edu',data) if data else None"
+            },
+            "price_currency": "USD",
+            "duration_filter": {
+                "xpath": "//tr[contains(./td/strong[@class='bluetext']/text(),'Course Length')]/following-sibling::tr[1]//text()",
+                "python": "duration_filter(data)"
+            },
+            "price_display_float": "0",
+            "difficulty": {
+                "xpath": "//tr[contains(./td/strong[@class='bluetext']/text(),'Level')]/following-sibling::tr[1]//text()",
+                "re": "Beginner|Intermediate|Expert"
+            },
+            "duration_display": {
+                "xpath": "//tr[contains(./td/strong[@class='bluetext']/text(),'Course Length')]/following-sibling::tr[1]//text()"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('/Schools/\\d+'),restrict_xpaths=('//div[@class=\\'left_main\\']/a[@class=\\'school_link\\']')),follow=True)",
+                "Rule(lxml(allow=('/Course/\\d+'),restrict_xpaths=('//div[@class=\\'orange_title\\']/following-sibling::ul/li/a')), callback='parse_product')",
+                "Rule(lxml(allow=('/Course/\\d+'),restrict_xpaths=('//td[@class=\\'schooltbl\\']/p/a[contains(.,\\'Read More\\')]')), callback='parse_product')"
+            ]
+        }
+    }
+}

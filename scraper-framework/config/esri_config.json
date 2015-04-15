@@ -1,0 +1,160 @@
+{
+  "base_url": "http://training.esri.com", 
+  "start_url": "http://training.esri.com/gateway/index.cfm?fa=search.results&searchterm=&search=Search&OrderBy=CourseTitle%20asc&AllPage=All", 
+  "levels": {
+    "1": ".//@href", 
+    "1_1": {
+      "xpath": "//div[@class='courseDetail']/ul[@class='topDetail']/li[contains(.,'Authored')]/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "173", 
+      "product_type_id": {
+        "xpath": "concat(substring('Course', 0 div boolean(//div[@class='courseDetail']/ul[@class='topDetail']/li[contains(.,'Course')])), substring('Webinar', 0 div boolean(//div[@class='courseDetail']/ul[@class='topDetail']/li[contains(.,'Seminar')])))", 
+        "python": "product_type_id(data if data else 'Course')", 
+        "level": "1"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='description']//text()", 
+        "python": "' '.join(normalize_space(selector.extract()))", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[@id='content']//h1//text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='tabContent3']/div", 
+        "python": "data if response.xpath('//a[contains(.,\\'Course Outline\\')]') else None", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//div[@id='infobooth']/div[@class='imgFrame']/ul[@class='Upcoming']/li", 
+        "fields": {
+          "price_currency": "USD", 
+          "end_date_local": {
+            "xpath": "./text()[1]", 
+            "python": "convert_date(data.split('-')[1]) if data.split('-')[1] else None  "
+          }, 
+          "start_date_local": [
+            {
+              "xpath": "./text()[1]", 
+              "re": "^(\\w+ \\d+ -).*(\\d{4})$", 
+              "python": "convert_date(' '.join(data))"
+            }, 
+            {
+              "xpath": "./text()[1]", 
+              "python": "convert_date(data)"
+            }
+          ], 
+          "duration_filter": {
+            "xpath": "//ul[@class='topDetail']/li/span[contains(.,'Duration:')]/following-sibling::text()", 
+            "re": "(\\d+(?:\\+)?(?: )+(?:hours|HR|minutes)+)", 
+            "level": "1", 
+            "python": "duration_filter(data)"
+          }, 
+          "price_display_float": {
+            "xpath": "//ul[@class='topDetail']/li/span[contains(.,'Price:')]/following-sibling::text()[contains(.,'$')]", 
+            "re": "\\d+", 
+            "level": "1", 
+            "python": "get_price_float(data) if data else \"0.00\""
+          }, 
+          "duration_display": {
+            "xpath": "//ul[@class='topDetail']/li/span[contains(.,'Duration:')]/following-sibling::text()", 
+            "level": "1"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "duration_filter": {
+        "xpath": "//ul[@class='topDetail']/li/span[contains(.,'Duration:')]/following-sibling::text()", 
+        "re": "(\\d+(?:\\+)?(?: )+(?:hours|HR|minutes)+)", 
+        "level": "1", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "//ul[@class='topDetail']/li/span[contains(.,'Price:')]/following-sibling::text()[contains(.,'$')]", 
+        "re": "\\d+", 
+        "level": "1", 
+        "python": "get_price_float(data) if data else \"0.00\""
+      }, 
+      "duration_display": {
+        "xpath": "//ul[@class='topDetail']/li/span[contains(.,'Duration:')]/following-sibling::text()", 
+        "level": "1"
+      }, 
+      "requirements": [
+        {
+          "xpath": "//div[@id='software']//text()", 
+          "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@id='tabContent3']/div//text()", 
+          "python": "' '.join(normalize_space(selector.extract())) if response.xpath('//a[contains(.,\\'Software\\')]') else None", 
+          "level": "1"
+        }
+      ], 
+      "audience": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[@id='tabContent1']//text()[count(.|//div[@id='tabContent1']//h3/preceding-sibling::*//text())=count(//div[@id='tabContent1']//h3/preceding-sibling::*//text())]", 
+            " //div[@id='tabContent1']//text()"
+          ]
+        }, 
+        "level": "1"
+      }, 
+      "authors": [
+        {
+          "xpath": "//div[@id='content']", 
+          "fields": {
+            "bio": {
+              "xpath": "./p//text()", 
+              "python": "' '.join(normalize_space(selector.extract()))"
+            }, 
+            "image": {
+              "xpath": "./img/@src"
+            }, 
+            "name": {
+              "xpath": "//h2//text()", 
+              "python": "' '.join(normalize_space(selector.extract()))"
+            }
+          }, 
+          "type": "[Author]", 
+          "level": "1_1"
+        }, 
+        {
+          "xpath": "//div[@class='courseDetail']/ul[@class='topDetail']/li[contains(.,'Authored')]", 
+          "fields": {
+            "name": {
+              "xpath": ".//text()", 
+              "python": "data.replace('Authored by ','')"
+            }
+          }, 
+          "type": "[Author]", 
+          "level": "1"
+        }
+      ], 
+      "prerequisites": {
+        "xpath": "//div[@id='tabContent1']//h3/following-sibling::*//text()", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'(24 Horas)' in response.body", 
+          "level": "1"
+        }
+      ]
+    }, 
+    "xpath": "//table[@class='filterTable']//tr/td/a"
+  }
+}

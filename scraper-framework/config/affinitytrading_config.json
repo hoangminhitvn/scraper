@@ -1,0 +1,81 @@
+{
+  "base_url": "http://affinitytrading.com/", 
+  "start_url": [
+    "http://affinitytrading.com/online-trading-room/"
+  ], 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "68", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//strong[contains(text(), 'Description')]/parent::p/following-sibling::*", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+        }, 
+        {
+          "xpath": "//div[@class='premium']//p[contains(./strong/text(), 'About The')][1]/following-sibling::p", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+        }, 
+        {
+          "xpath": "//div[@class='premium']//p", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+        }
+      ], 
+      "name": {
+        "xpath": "//div[@class='premium']/strong[1]/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='trader']/h4[contains(text(), 'Course Outline')]/following-sibling::div[contains(@class, 'part')]", 
+        "python": "' '.join(data)"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": [
+            {
+              "xpath": "substring-after(//div[@class='premium']//strong[contains(., 'Day')], '- $')", 
+              "re": "([\\d+\\,\\.]+)", 
+              "python": "get_price_float(data)"
+            }, 
+            {
+              "xpath": "substring-before(//div[@class='premium']//strong[contains(., '$')], ',')"
+            }
+          ], 
+          "price_currency": "USD", 
+          "duration_filter": [
+            {
+              "xpath": "substring-before(//div[@class='premium']//strong[contains(., 'Day')], '- $')", 
+              "re": "\\d+[\\-\\w]+", 
+              "python": "duration_filter(data)"
+            }, 
+            {
+              "xpath": "substring-before(//div[@class='premium']//p[contains(., 'Hour')]//text(), ' -')", 
+              "re": "\\d+[\\-\\w]+", 
+              "python": "duration_filter(data)"
+            }
+          ], 
+          "duration_display": [
+            {
+              "xpath": "substring-before(//div[@class='premium']//strong[contains(., 'Day')], '- $')"
+            }, 
+            {
+              "xpath": "substring-before(//div[@class='premium']//p[contains(., 'Hour')]//text(), ' -')"
+            }
+          ]
+        }, 
+        "type": "[ProductEvent]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[@id=\\'menu-trader-room-nav\\']/li/a'), deny=('/online-trading-room/$', '/online-trading-room/9-day-series-7-intensive/$')), callback='parse_product')"
+      ]
+    }
+  }
+}

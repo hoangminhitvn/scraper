@@ -1,0 +1,54 @@
+{
+  "base_url": "http://entrepreneursunpluggd.com", 
+  "start_url": "http://entrepreneursunpluggd.com/interviews-with-creative-entrepreneurs", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "126", 
+      "product_type_id": {
+        "python": "product_type_id('talks')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[@id='content']//div[@class='audio-code-container']/following-sibling::p//text()[count(.|//div[@id='content']//div[@class='audio-code-container']/following-sibling::*[contains(.,'Transcript')][1]/preceding-sibling::p//text()) = count(//div[@id='content']//div[@class='audio-code-container']/following-sibling::*[contains(.,'Transcript')][1]/preceding-sibling::p//text())]", 
+            "//div[@id='content']//div[@class='audio-code-container']/following-sibling::p//text()[count(.|//div[@id='content']//div[@class='audio-code-container']/following-sibling::a[@id='dd_end']/preceding-sibling::p//text()) = count(//div[@id='content']//div[@class='audio-code-container']/following-sibling::a[@id='dd_end']/preceding-sibling::p//text())]"
+          ]
+        }, 
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "string(//h1)", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "string(//div[@id='content']/div[@id]//iframe/@src)", 
+        "python": "urljoin('https:',data)", 
+        "level": "1"
+      }, 
+      "published_date": {
+        "xpath": "substring-after(//h1/following-sibling::p[1],'on ')", 
+        "python": "convert_date(data)", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "substring-after(substring-before(//h1/following-sibling::p[1],'on'),'by ')"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//ul[@id='customfieldlist_mainlist_3']/li[@class]"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "base_url": "https://www.ostraining.com", 
+  "start_url": "https://www.ostraining.com/courses/category/", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "270", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//form[@name='adminForm']/dl/dd[2]", 
+        "python": "normalize_space(html2text.html2text(data))"
+      }, 
+      "name": {
+        "xpath": "string(//h3[@class='tm-title'])"
+      }, 
+      "toc": {
+        "xpath": "//form[@name='adminForm']/dl/dd[1]"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[@class='image_guru']/@src"
+      }, 
+      "difficulty": {
+        "xpath": "//b[contains(.,'Level: ')]/following-sibling::text()[1]", 
+        "python": "difficulty(data)"
+      }, 
+      "requirements": {
+        "xpath": "string(//form[@name='adminForm']/dl/dd[4])"
+      }, 
+      "published_date": {
+        "xpath": "//b[contains(.,'Released: ')]/following-sibling::text()[1]", 
+        "python": "convert_date(data)"
+      }, 
+      "instructors": {
+        "xpath": "//form[@name='adminForm']/dl/dd[3]", 
+        "fields": {
+          "bio": {
+            "xpath": "string(.//div[@class='teacher_img']/following-sibling::div)"
+          }, 
+          "image": {
+            "xpath": ".//div[@class='teacher_img']//img/@src"
+          }, 
+          "link": {
+            "xpath": ".//td[@class='teacher_links']/span//@href"
+          }, 
+          "name": {
+            "xpath": "string(.//td[@class='tm-title'])"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/courses/class/.*task=view',),), callback='parse_product'), Rule(lxml(allow=('/categories/.*/' ),), follow=True),]"
+    }
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "string(//div[@class='price-plan'])", 
+      "start_url": "https://www.ostraining.com/pricing/"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "base_url": "http://www.screencastsonline.com", 
+  "start_url": "http://www.screencastsonline.com/non_members_downloads", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "380", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='tabs_inner_content_area_20']/div[@class='ac_show_content_abs_outer'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./a/p[@class='download_column_main_titles']/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='chapters_outer_wrapper']", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "string(//div[@class='poster_static']/div[@class='poster_watch_button']/a[@id='load_video_trigger']/@onclick)", 
+        "re": "http[^*]+\\w", 
+        "level": "1", 
+        "python": "data if data.startswith('http://') else None"
+      }, 
+      "duration_filter": {
+        "xpath": "//p[contains(./text(),'Duration')]/following-sibling::p[1]/text()", 
+        "level": "1"
+      }, 
+      "published_date": {
+        "xpath": "//div[contains(@class,'absolute_show_page_header')]/p/text()", 
+        "python": "convert_date(data)", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "//p[contains(./text(),'Tutor')]/following-sibling::p[1]/text()", 
+            "level": "1"
+          }
+        }, 
+        "type": "[Instructor]"
+      }, 
+      "prod_keywords": {
+        "xpath": "//div[contains(@class,'button_block_divide')]//span/text()", 
+        "type": "[str]", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "a/p[@class='download_column_red_show_numbers']//text()"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//ul[@class='download_colum_dowloads_list']/li"
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "//div[contains(text(),'Quarterly Membership')]/following-sibling::*", 
+      "python": "re.search('\\$\\d+',data).group(0)", 
+      "start_url": "https://www.screencastsonline.com/members/signup.php"
+    }
+  }
+}

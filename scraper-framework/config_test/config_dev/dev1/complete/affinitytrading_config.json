@@ -1,0 +1,88 @@
+{
+    "baseUrl": "http://affinitytrading.com/",
+    "levels": {},
+    "start_url": ["http://affinitytrading.com/online-trading-room/"],
+    "output_config": {
+        "fields": {
+            "provider_name": "Affinity Trading",
+            "provider_id": "68",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//div[@class='premium']/strong[1]/text()"
+            },
+            "description": [
+                {
+                    "xpath": "//strong[contains(text(), 'Description')]/parent::p/following-sibling::*",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+                },
+                {
+                    "xpath": "//div[@class='premium']//p[contains(./strong/text(), 'About The')][1]/following-sibling::p",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+                },
+                {
+                    "xpath": "//div[@class='premium']//p",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+                }
+            ],
+            "toc": {
+                "xpath": "//div[@class='trader']/h4[contains(text(), 'Course Outline')]/following-sibling::div[contains(@class, 'part')]",
+                "python": "' '.join(data)"
+            },
+            "product_events": {
+                "fields": {
+                    "duration_filter": [
+                        {
+                            "xpath": "substring-before(//div[@class='premium']//strong[contains(., 'Day')], '- $')",
+                            "re": "\\d+[\\-\\w]+",
+                            "python": "duration_filter(data)"
+                        },
+                        {
+                            "xpath": "substring-before(//div[@class='premium']//p[contains(., 'Hour')]//text(), ' -')",
+                            "re": "\\d+[\\-\\w]+",
+                            "python": "duration_filter(data)"
+                        }
+                    ],
+                    "duration_display": [
+                        {
+                            "xpath": "substring-before(//div[@class='premium']//strong[contains(., 'Day')], '- $')"
+                        },
+                        {
+                            "xpath": "substring-before(//div[@class='premium']//p[contains(., 'Hour')]//text(), ' -')"
+                        }
+                    ],
+                    "price_currency": "USD",
+                    "price_display_float": [
+                        {
+                            "xpath": "substring-after(//div[@class='premium']//strong[contains(., 'Day')], '- $')",
+                            "re": "([\\d+\\,\\.]+)",
+                            "python": "get_price_float(data)"
+                        },
+                        {
+                            "xpath": "substring-before(//div[@class='premium']//strong[contains(., '$')], ',')"
+                        }
+                    ],
+                    "price_filter": [
+                        {
+                            "xpath": "substring-after(//div[@class='premium']//strong[contains(., 'Day')], '- $')",
+                            "re": "([\\d+\\,\\.]+)",
+                            "python": "get_price_float(data)"
+                        },
+                        {
+                            "xpath": "substring-before(//div[@class='premium']//strong[contains(., '$')], ',')",
+                            "re": "([\\d+\\,\\.]+)",
+                            "python": "get_price_float(data)"
+                        }
+                    ]
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "Product",
+        "extractorRules": {
+            "rules": ["Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[@id=\\'menu-trader-room-nav\\']/li/a'), deny=('/online-trading-room/$', '/online-trading-room/9-day-series-7-intensive/$')), callback='parse_product')"]
+        }
+    }
+}

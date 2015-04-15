@@ -1,0 +1,49 @@
+{
+  "base_url": "https://hackdesign.org", 
+  "start_url": "https://hackdesign.org/lessons", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "176", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='lesson-description'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "string(//h1)", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[@class='lesson-side-image']/@src", 
+        "python": "'https:'+data", 
+        "level": "1"
+      }, 
+      "authors": {
+        "fields": {
+          "bio": {
+            "xpath": "string(//aside/p[2])"
+          }, 
+          "image": {
+            "xpath": "//img[@class='avatar']/@src", 
+            "python": "'https:'+data"
+          }, 
+          "name": {
+            "xpath": "//aside/h5//text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='lesson-preview ']//h4"
+  }
+}

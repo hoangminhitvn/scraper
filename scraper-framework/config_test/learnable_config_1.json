@@ -1,0 +1,119 @@
+{
+  "base_url": "https://learnable.com/",
+  "start_url": "https://learnable.com/books/html-utopia-designing-without-tables-using-css-2nd-edition",
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='ProductAuthor']/a/@href",
+      "level": "1"
+    },
+    "1_2": {
+      "python": "learnable.get_page_review_rating(response)"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "237",
+      "product_type_id": {
+        "xpath": "//div[@class='MetaItem'][1]/span[@class='MetaBody']/text()",
+        "python": "product_type_id('Courses' if 'pg' in data else 'Books')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": {
+        "xpath": "//div[contains(@class, 'ProductDescription')]//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "name": {
+        "xpath": "//div[@class='ProductContent']/h1/text()"
+      },
+      "toc": {
+        "xpath": "//div[@class='ProductTable']"
+      },
+      "product_video_url": [
+        {
+          "xpath": "//video-player/@hd"
+        },
+        {
+          "xpath": "//video-player/@sd"
+        }
+      ],
+      "product_image_url": {
+        "xpath": ".//div[@class='product_poster']//img/@src"
+      },
+      "difficulty": {
+        "xpath": "//span[@class='ProductMetaBody']/text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "formats": {
+        "xpath": "//div[@class='MetaItem'][contains(., 'PDF')]/span[@class='MetaBody']/text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "duration_filter": {
+        "xpath": "//div[@class='MetaItem'][1]/span[@class='MetaBody']/text()",
+        "python": "duration_filter(data)"
+      },
+      "duration_display": {
+        "xpath": "//div[@class='MetaItem'][1]/span[@class='MetaBody']/text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "published_date": {
+        "xpath": "//span[@class='MetaBody'][contains(., 'date')]/text()[2]",
+        "python": "convert_date(data) if data else None"
+      },
+      "ProductRating": {
+        "python": "learnable.get_data_review_rating(response)",
+        "level": "1_2"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "//span[@itemprop='price']/text()",
+        "re": "\\d+",
+        "python": "get_price_float(data) if data else None"
+      },
+      "authors": {
+        "xpath": "//*[contains(./text(),'Authors')]/ancestor-or-self::div[1]/following-sibling::div[1]/div",
+        "fields": {
+          "bio": {
+            "xpath": "./text()",
+            "python": "html_to_text(data)"
+          },
+          "image": {
+            "xpath": ".//img/@src"
+          },
+          "link": {
+            "xpath": "./a[@class='ProductAuthorBio_name']/@href",
+            "python": "urljoin('https://learnable.com/',data) if data else None"
+          },
+          "name": {
+            "xpath": "./a[@class='ProductAuthorBio_name']//text()"
+          }
+        },
+        "type": "[Author]",
+        "level": "1"
+      },
+      "instructors": {
+        "xpath": "//*[contains(./text(),'Instructor')]/ancestor-or-self::div[1]/following-sibling::div[1]/div",
+        "fields": {
+          "bio": {
+            "xpath": "./text()",
+            "python": "html_to_text(data)"
+          },
+          "image": {
+            "xpath": ".//img/@src"
+          },
+          "link": {
+            "xpath": "./a[@class='ProductAuthorBio_name']/@href",
+            "python": "urljoin('https://learnable.com/',data) if data else None"
+          },
+          "name": {
+            "xpath": "./a[@class='ProductAuthorBio_name']//text()"
+          }
+        },
+        "type": "[Instructor]",
+        "level": "1"
+      }
+    },
+    "type": "Product"
+  }
+}

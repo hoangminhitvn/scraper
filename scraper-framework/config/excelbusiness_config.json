@@ -1,0 +1,94 @@
+{
+  "base_url": "https://excelwithbusiness.com", 
+  "start_url": "https://excelwithbusiness.com/home/pages/courses", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "131", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='dynamicContainer']/div[@class='dynamicCourseContainer maincolorscheme editable'][1]/p/text()", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(@class,'dynamicCourseContainer alternatecolorscheme') and .//h2[contains(.,'Syllabus')]] | //div[contains(@class,'dynamicCourseContainer maincolorscheme') and .//h2[contains(.,'Syllabus')]]", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "//div[@class='group section']/div[@class='col span_3_of_12'][2]//span", 
+            "re": "\\d+", 
+            "python": "get_price_float(data)"
+          }, 
+          "price_currency": {
+            "xpath": "concat(substring('USD',1 div boolean(//div/a[@class='course-button']/img[contains(./@src,'/us_flag_icon')])),substring('SEK',1 div boolean(//div/a[@class='course-button']/img[contains(./@src,'/swe_flag_icon')])))"
+          }, 
+          "duration_filter": {
+            "xpath": "string(//b[contains(.,'Time')]/following-sibling::text())", 
+            "re": "\\d.*ours", 
+            "python": "duration_filter(data)", 
+            "level": "1"
+          }, 
+          "duration_display": {
+            "xpath": "string(//b[contains(.,'Time')]/following-sibling::text())", 
+            "level": "1"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "substring-after(//div[@class='video-wrapper']/iframe/@src,'//')", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "./a/img/@src"
+      }, 
+      "requirements": [
+        {
+          "xpath": "normalize-space(string(//div[contains(@class,'dynamicCourseContainer alternatecolorscheme editable') and .//h2[contains(.,'Requirements')]]/div[2] |//div[contains(@class,'dynamicCourseContainer maincolorscheme editable') and .//h2[contains(.,'Requirements')]]/div[2]))", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "string(//div[@class='dynamicCourseContainer maincolorscheme editable'][3]/div[@class='dynamicPricingContainer']/div[@class='dynamicCourseReq']/ul)", 
+          "level": "1"
+        }
+      ], 
+      "authors": {
+        "xpath": "//div[contains(@class,'dynamicCourseContainer alternatecolorscheme editable') and .//h2[contains(.,'About the Author')]] |//div[contains(@class,'dynamicCourseContainer maincolorscheme editable') and .//h2[contains(.,'About the Author')]]", 
+        "fields": {
+          "bio": {
+            "xpath": "./p/text() | ./ul/li/text() | ./div/div/ul/li/text()", 
+            "type": "[str]"
+          }, 
+          "image": {
+            "xpath": "./div/div[2]/img/@src"
+          }, 
+          "link": {
+            "xpath": "./div/div//a/@href"
+          }, 
+          "name": {
+            "xpath": ".//b/text()", 
+            "type": "[str]"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='responsiveWrapper']/div[2]/div[@data-type]"
+  }
+}

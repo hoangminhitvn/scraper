@@ -1,0 +1,118 @@
+{
+  "base_url": "https://teamtreehouse.com",
+  "start_url": "https://teamtreehouse.com/library",
+  "levels": {
+    "1": "./a/@href",
+    "1_1": {
+      "xpath": {
+        "operator": "or",
+        "value": [
+          "//div[@class='hero-actions']/ul/li[1]/a/@href",
+          "//div[@class='hero-actions']/ul/li/a/@href"
+        ]
+      }
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "305",
+      "product_type_id": {
+        "xpath": "./a/strong/text()",
+        "python": "product_type_id(data)"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": {
+        "xpath": {
+          "value": [
+            "//*[@id='content']//div[@class='hero-meta']//p/text()",
+            "//div[@class='video-meta']/p/text()",
+            "//div[@id='video-meta']/p//text()"
+          ],
+          "operator": "or"
+        },
+        "python": "html_to_text(data)",
+        "level": "1"
+      },
+      "name": {
+        "xpath": "./a/h3/text()"
+      },
+      "toc": {
+        "xpath": "//div[@class='featurette']",
+        "level": "1"
+      },
+      "price_currency": {
+        "xpath": "//div[@class='plan-meta-silver']/span/text()",
+        "python": "get_price_currency(data)",
+        "level": "price_info"
+      },
+      "duration_filter": {
+        "xpath": "./a/div[@class='progress']/span/text()",
+        "python": "duration_filter(data)"
+      },
+      "price_display_float": {
+        "xpath": "//div[@class='plan-meta-silver']/span/text()",
+        "python": "get_price_float(data)",
+        "level": "price_info"
+      },
+      "difficulty": {
+        "xpath": "./ul[@class='tags']/li[@class='difficulty']/span/text()"
+      },
+      "duration_display": {
+        "xpath": "./a/div[@class='progress']/span/text()"
+      },
+      "instructors": {
+        "xpath": "//div[@class='module module-instructor']/ul/li",
+        "fields": {
+          "bio": {
+            "xpath": "./div/p/text()"
+          },
+          "image": {
+            "xpath": "./a[1]/img/@src | ./a/img/@src"
+          },
+          "link": {
+            "xpath": "./a[1]/@href",
+            "python": "urljoin('http://teamtreehouse.com/',data)"
+          },
+          "name": {
+            "xpath": "./a[2]/h4/text() | ./h4/a/text()"
+          }
+        },
+        "type": "[Instructor]",
+        "level": "1"
+      },
+      "prod_keywords": [
+        {
+          "xpath": "//ul[@class='tags large']/li[@class]/a/text()",
+          "type": "[str]",
+          "level": "1"
+        },
+        {
+          "xpath": ".//ul[@class='tags']//li[contains(./@class,'topic')]/a/span/text()",
+          "type": "[str]"
+        }
+      ],
+      "price_display_text": {
+        "xpath": "//div[@class='plan-meta-silver']/span/small/text()",
+        "level": "price_info"
+      }
+    },
+    "type": "Product",
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'Release Date' in response.body",
+          "level": "1"
+        }
+      ]
+    },
+    "xpath": "//li[contains(@data-location,'library') and .//strong[contains(.,'Workshop')] | .//strong[contains(.,'Course')]]"
+  },
+  "pre_run": {
+    "price_info": {
+      "xpath": "concat(//div[@class='plan-meta-silver']/span/text(),//div[@class='plan-meta-silver']/span/small/text())",
+      "start_url": "https://teamtreehouse.com/subscribe/plans?trial=yes"
+    }
+  }
+}

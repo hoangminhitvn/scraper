@@ -1,0 +1,73 @@
+{
+  "base_url": "http://www.intertech.com/", 
+  "start_url": "http://www.intertech.com/Training/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "128", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='right-column']/parent::div/h2[1]/preceding-sibling::p)"
+      }, 
+      "name": {
+        "xpath": "string(//div[@id='right-column']/parent::div/h1))"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='Course-Overview']"
+      }, 
+      "product_events": {
+        "xpath": "//div[@id='right-column']/parent::div/h2[contains(., 'Upcoming Classes')]/following-sibling::ul[1]/li[not(@class='empty')]", 
+        "fields": {
+          "price_currency": "USD", 
+          "end_date_local": {
+            "xpath": ".//time[@itemprop='endDate']/@datetime"
+          }, 
+          "start_date_local": {
+            "xpath": ".//time[@itemprop='startDate']/@datetime"
+          }, 
+          "duration_filter": {
+            "xpath": "string(//div[@id='right-column']//strong[contains(., 'Duration')]/following-sibling::text()[1])", 
+            "python": "duration_filter(data)"
+          }, 
+          "price_display_float": {
+            "xpath": "string(//div[@id='right-column']//strong[contains(., 'Price')]/following-sibling::text()[1])", 
+            "re": "(\\d+)\\,(\\d+)", 
+            "python": "get_price_float(data)"
+          }, 
+          "duration_display": {
+            "xpath": "string(//div[@id='right-column']//strong[contains(., 'Duration')]/following-sibling::text()[1])"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "difficulty": {
+        "xpath": "", 
+        "re": "Beginner|Intermediate|Expert\\/?"
+      }, 
+      "audience": {
+        "xpath": "//h2[contains(.,'udience')]/following-sibling::*//text()[count(.|//h2[contains(.,'udience')]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//h2[contains(.,'udience')]/following-sibling::h2[1]/preceding-sibling::*//text())]", 
+        "python": "''.join(data) if data else None"
+      }, 
+      "prerequisites": {
+        "xpath": "//h2[contains(.,'rerequisite')]/following-sibling::*//text()[count(.|//h2[contains(.,'rerequisite')]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//h2[contains(.,'rerequisite')]/following-sibling::h2[1]/preceding-sibling::*//text())]", 
+        "python": "''.join(data) if data else None"
+      }, 
+      "partner_prod_id": {
+        "xpath": "//h2[contains(.,'ourse Number')]/following-sibling::p//text()[count(.|//h2[contains(.,'ourse Number')]/following-sibling::h2[1]/preceding-sibling::p//text()) = count(//h2[contains(.,'ourse Number')]/following-sibling::h2[1]/preceding-sibling::p//text())]", 
+        "python": "''.join(data) if data else None"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[@class=\\'exp\\']/li//ul/li[2]/a')), callback='parse_product')", 
+        "Rule(lxml(allow=('/Training/.*'),deny=('tel:\\d+')), follow=True)"
+      ]
+    }
+  }
+}

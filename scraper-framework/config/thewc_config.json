@@ -1,0 +1,62 @@
+{
+  "base_url": "http://thewc.co", 
+  "start_url": "http://thewc.co", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "370", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(substring-before(string(normalize-space(string(//div[@id='description']))),'Pre-requisite:'),substring-before(string(normalize-space(string(//div[@id='description']))),'Prerequisites:'),substring-before(string(normalize-space(string(//div[@id='description']))),'Prerequisite:'))", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[@id='about']/div[@class='inner']/div[@class='grid-row']//img/@alt", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='schedule']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//div[@id='enroll-details']/p[@class='date']", 
+        "fields": {
+          "price_display_float": {
+            "xpath": "substring-after(//div[@id='enroll-details']/p[contains(.,'Price: ')],'Price: ')", 
+            "python": "get_price_float(data)", 
+            "level": "1"
+          }, 
+          "price_currency": "USD", 
+          "start_date_local": {
+            "xpath": "substring-before(.//text(),' to ')", 
+            "python": "convert_date(str(data + ' 2014'))"
+          }, 
+          "end_date_local": {
+            "xpath": "substring-after(.//text(),' to ')", 
+            "python": "convert_date(str(data + ' 2014'))"
+          }, 
+          "tz": "EST"
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "concat('http:',string(//div[@class='video-container']//iframe/@src))", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "concat(substring-after(string(normalize-space(string(//div[@id='description']))),'Pre-requisite:'),substring-after(string(normalize-space(string(//div[@id='description']))),'Prerequisite:'),substring-after(string(normalize-space(string(//div[@id='description']))),'Prerequisites:'))", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='upcoming-courses']//a"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "base_url": "http://www.gresham.ac.uk", 
+  "start_url": "http://www.gresham.ac.uk/lectures-and-events", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "166", 
+      "product_type_id": {
+        "python": "product_type_id('talks')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='lec-desc']/div[@class='pane-content']/div[@class='field']/div[@class='item'])"
+      }, 
+      "name": {
+        "xpath": "//h1/text()"
+      }, 
+      "product_events": {
+        "fields": {
+          "location_display": {
+            "xpath": "//div[@id='simple_location']//div[@class='title']/text()"
+          }, 
+          "start_date_local": {
+            "xpath": "substring-after(//div[@id='lec-date']//div[@class='item']/span[@class='date-display-single'],', ')", 
+            "python": "convert_date(data)"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "prod_keywords": {
+        "xpath": "//div[@id='lec-cat']/div[@class='pane-content']/a/text()", 
+        "python": "normalize_space(data).split(',')", 
+        "type": "[str]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/lectures-and-events/\\w+-\\w+.*',),deny=('/static/show/.*')), callback='parse_product'), Rule(lxml(allow=('/lectures-and-events/future.*','/lectures-and-events/past.*' )), follow=True),]"
+    }
+  }
+}

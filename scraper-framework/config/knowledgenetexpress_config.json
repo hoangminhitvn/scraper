@@ -1,0 +1,78 @@
+{
+  "base_url": "http://www.knowledgenetexpress.com/", 
+  "start_url": "http://www.knowledgenetexpress.com/collections/all", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "260", 
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@id='product-description']", 
+          "re": "re.compile('Overview:(.*)Prerequisites',re.S)", 
+          "python": "html_to_text(data).replace('*','') if data else None"
+        }, 
+        {
+          "xpath": "//div[@id='product-description']", 
+          "re": "re.compile('Overview:(.*)Requirements',re.S)", 
+          "python": "html_to_text(data).replace('*','') if data else None"
+        }, 
+        {
+          "xpath": "//div[@id='product-description']", 
+          "re": "re.compile('Overview(.*)Requirements',re.S)", 
+          "python": "html_to_text(data).replace('*','') if data else None"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//div[@id='product-details']/h1/text())"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='tablist1-panel2']"
+      }, 
+      "product_video_url": {
+        "xpath": "//iframe/@src[contains(., 'vimeo.com')]", 
+        "python": "urljoin('http:',data) if data else None"
+      }, 
+      "formats": "video", 
+      "product_image_url": {
+        "xpath": "//div[@id='product-images']//a/img/@src", 
+        "python": "urljoin('http://',data)"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "substring(//select[@class='single-option-selector']/option[1]/text(), 0, 10)", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "//span[contains(@class, 'product-price ')]/text()", 
+        "re": "(\\d+)\\.", 
+        "python": "get_price_float(data) if data else None"
+      }, 
+      "duration_display": {
+        "xpath": "substring(//select[@class='single-option-selector']/option[1]/text(), 0, 10)"
+      }, 
+      "requirements": {
+        "xpath": "//div[@id='product-description']", 
+        "re": "re.compile('Exam Requirements:?(.*)Exams requirements',re.S)", 
+        "python": "re.sub('[*_]','',normalize_space(html2text.html2text(data)))"
+      }, 
+      "prerequisites": {
+        "xpath": "//div[@id='product-description']", 
+        "re": "re.compile('Prerequisites:?(.*)Exam Requirement',re.S)", 
+        "python": "re.sub('\\*+:|^\\s*:|[*_]','',normalize_space(html2text.html2text(data)))"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/products/.*'), restrict_xpaths=(\"//ul[contains(@class, 'block-grid')]/li/a\")), callback='parse_product')", 
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//div[@class='paginate']/span/a\")), follow=True)"
+      ]
+    }
+  }
+}

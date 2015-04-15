@@ -1,0 +1,65 @@
+{
+  "base_url": "https://wow.thinkful.com/", 
+  "start_url": "https://wow.thinkful.com/", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "371", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='overview'][1]/div[@class='pitch'])", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[@class='header-text']/h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='syllabus']/*[@id]", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//div[@class='pricing-subsection pricing-enroll']", 
+        "fields": {
+          "price_display_float": {
+            "xpath": "./p[@class='price']/text()", 
+            "python": "get_price_float(data)"
+          }, 
+          "price_currency": {
+            "xpath": "./p[@class='price']/text()", 
+            "python": "get_price_currency(data)"
+          }, 
+          "start_date_local": {
+            "xpath": ".//*[contains(.,'Class starts')]/text()", 
+            "python": "convert_date_special(re.sub('st|th|rd|nd','',data.replace('Class starts ','')))"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "difficulty": {
+        "xpath": "./div//p[@class='course-level-label']/text()"
+      }, 
+      "audience": {
+        "xpath": "string(//div[@id='overview']/div/div[@class='perfect-for'][contains(.,'This course is')]/ul)", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "string(//div[@class='faq']//li[contains(.,'prerequisites')]/p[not(contains(.,'prerequisites'))])", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='course-directory']/a"
+  }
+}

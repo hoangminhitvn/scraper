@@ -1,0 +1,88 @@
+{
+  "base_url": "http://www.instantetraining.com",
+  "start_url": "https://www.instantetraining.com/video-library/",
+  "levels": {},
+  "settings": {
+    "DOWNLOAD_DELAY": 3
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "204",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": {
+        "xpath": "substring-before(//div[@itemprop='description'],'Buy this video for a')",
+        "python": "html_to_text(data)"
+      },
+      "name": {
+        "xpath": "//h1[@class='product_title entry-title']//text()"
+      },
+      "price_display_float": {
+        "xpath": "//meta[@itemprop='price']/@content"
+      },
+      "price_currency": "USD",
+      "duration_filter": {
+        "xpath": "//h3[contains(.,'Total Running Time')]/text()",
+        "python": "duration_filter(data)"
+      },
+      "duration_display": {
+        "xpath": "//h3[contains(.,'Total Running Time')]/text()"
+      },
+      "product_video_url": {
+        "xpath": "//div[@class='images']/iframe/@src",
+        "python": "'https:' + data if data else None"
+      },
+      "difficulty": {
+        "xpath": "//div[@class='images']//strong[contains(.,'Skill Level')]/following-sibling::text()[1]",
+        "python": "difficulty(data)"
+      },
+      "ProductRating": {
+        "fields": {
+          "pub_status": "L",
+          "rating_only": "1",
+          "overall_rating": {
+            "xpath": "//div[@class='images']//i/text()",
+            "python": "int(round(float(data)))"
+          },
+          "review": null,
+          "user_id": "0",
+          "username": null
+        },
+        "type": "[ProductRating]"
+      },
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "//div[@id='tab-about-instructor']/figure//strong//text()"
+          },
+          "bio": {
+            "xpath": "//div[@id='tab-about-instructor']/p/text()",
+            "python": "html_to_text(data)"
+          },
+          "link": {
+            "xpath": "//div[@id='tab-about-instructor']/p/a[@class='uk-vertical-align-middle']/@href"
+          }
+        },
+        "type": "[Instructor]"
+      }
+    },
+    "type": "Product",
+    "pre_filters": {
+      "filters_not": {
+        "python": "'wp-login.php' in response.url",
+        "level": "1"
+      }
+    },
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//p[@class=\\'boxp\\']/a')), follow=True)",
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//div[@class=\\'pagination\\']/a')), follow=True)",
+        "Rule(lxml(allow=('/product/.*',),deny=('/wp-login\\.php.*'),), callback='parse_product')"
+      ]
+    }
+  }
+}

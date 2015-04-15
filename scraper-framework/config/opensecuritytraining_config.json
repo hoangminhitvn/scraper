@@ -1,0 +1,91 @@
+{
+  "base_url": "http://opensecuritytraining.info", 
+  "start_url": "http://opensecuritytraining.info/Training.html", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "336", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//p[contains(.,'Author comments:')]/following-sibling::p[1]//text()", 
+            "//p[contains(.,'Author Comments')]/following-sibling::*//text()[count(.|//p[contains(.,'Author Comments')]/following-sibling::p[contains(.,'Author Biography')]/preceding-sibling::*//text())= count(//p[contains(.,'Author Comments')]/following-sibling::p[contains(.,'Author Biography')]/preceding-sibling::*//text())]", 
+            "//p[contains(.,'Author Comments:')]/following-sibling::*//text()[count(.|//p[contains(.,'Author Comments:')]/following-sibling::p[contains(.,'Topics include')]/preceding-sibling::*//text())= count(//p[contains(.,'Author Comments:')]/following-sibling::p[contains(.,'Topics include')]/preceding-sibling::*//text())]", 
+            "//p[contains(.,'Author Comments:')]/following-sibling::*//text()[count(.|//p[contains(.,'Author Comments:')]/following-sibling::p[contains(.,'Course Objectives')]/preceding-sibling::*//text())= count(//p[contains(.,'Author Comments:')]/following-sibling::p[contains(.,'Course Objectives')]/preceding-sibling::*//text())]", 
+            "//p[contains(.,'Course Description')]/following-sibling::*//text()[count(.|//p[contains(.,'Course Description')]/following-sibling::p[contains(.,'Exam Preparation Suggestions')]/preceding-sibling::*//text())= count(//p[contains(.,'Course Description')]/following-sibling::p[contains(.,'Exam Preparation Suggestions')]/preceding-sibling::*//text())]", 
+            "//p[contains(.,'Creator Comments')]/following-sibling::*//text()[count(.|//p[contains(.,'Creator Comments')]/following-sibling::p[contains(.,'Author Biography:')]/preceding-sibling::*//text())= count(//p[contains(.,'Creator Comments')]/following-sibling::p[contains(.,'Author Biography:')]/preceding-sibling::*//text())]", 
+            "//p[contains(.,'Creator Comments:')]/following-sibling::*//text()[count(.|//p[contains(.,'Creator Comments:')]/following-sibling::div[@class='paragraph Body'][1]/preceding-sibling::*//text())= count(//p[contains(.,'Creator Comments:')]/following-sibling::div[@class='paragraph Body'][1]/preceding-sibling::*//text())]", 
+            "//p[contains(.,'Author Comments:')]/following-sibling::*//text()[count(.|//p[contains(.,'Author Comments:')]/following-sibling::div[@class='paragraph Body'][1]/preceding-sibling::*//text())= count(//p[contains(.,'Author Comments:')]/following-sibling::div[@class='paragraph Body'][1]/preceding-sibling::*//text())]"
+          ]
+        }, 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "name": [
+        {
+          "xpath": "string(//div[@class='style'])"
+        }, 
+        {
+          "xpath": "//div[@class='graphic_textbox_layout_style_default']/p[@class='Header']//text()", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//p[@class='paragraph_style']//text()", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }
+      ], 
+      "duration_filter": {
+        "xpath": "//p[contains(.,'uration')]//text()", 
+        "re": "\\d+\\sday|\\d+\\sdays", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": "0.00", 
+      "duration_display": {
+        "xpath": "//p[contains(.,'uration')]//text()", 
+        "re": "\\d.*"
+      }, 
+      "requirements": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "substring-after(//p[contains(.,'equirements')],': ')", 
+            "//p[contains(.,'equirements')]/following-sibling::*//text()[count(.|//p[contains(.,'equirements')]/following-sibling::p[contains(.,'Class Textbook')]/preceding-sibling::*//text()) = count(//p[contains(.,'equirements')]/following-sibling::p[contains(.,'Class Textbook')]/preceding-sibling::*//text())]", 
+            "//p[contains(.,'equirements')]/following-sibling::*//text()[count(.|//p[contains(.,'equirements')]/following-sibling::p[contains(.,'Recommended Class ')]/preceding-sibling::*//text()) = count(//p[contains(.,'equirements')]/following-sibling::p[contains(.,'Recommended Class ')]/preceding-sibling::*//text())]", 
+            ""
+          ]
+        }, 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": "string(//p[contains(.,'Creator')]/text())", 
+            "re": "\\w.*"
+          }
+        }, 
+        "type": "[Author]"
+      }, 
+      "prerequisites": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "substring-after(//p[contains(.,'Prerequisites')],': ')", 
+            "//p[contains(.,'Prerequisites:')]/following-sibling::*//text()[count(.|//p[contains(.,'Prerequisites:')]/following-sibling::p[contains(.,'equirements')]/preceding-sibling::*//text())= count(//p[contains(.,'Prerequisites:')]/following-sibling::p[contains(.,'equirements')]/preceding-sibling::*//text())]"
+          ]
+        }, 
+        "re": "[a-zA-Z0-9].*", 
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('.*\\.html',),restrict_xpaths=('//div[@class=\\'graphic_textbox_layout_style_default\\']/ol/li')), callback='parse_product'),]"
+    }
+  }
+}

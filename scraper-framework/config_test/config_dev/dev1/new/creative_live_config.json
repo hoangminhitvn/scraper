@@ -1,0 +1,83 @@
+{
+  "baseUrl": "https://www.creativelive.com/",
+  "levels": {
+    "1_1": {
+      "xpath": "//div[contains(@class, 'instructor-bio-inner')]//h4/a/@href",
+      "level": "1",
+      "dont_filter": true
+    }
+  },
+  "start_url": ["https://www.creativelive.com/catalog/category/photography"],
+  "output_config": {
+    "fields": {
+      "provider_name": "Creative Live",
+      "provider_id": "171",
+      "product_type_name": "Courses",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "name": {
+        "xpath": "//div[@id='pageContent']//h1/text()"
+      },
+      "prod_image": {
+        "xpath": "//div[contains(@class, 'course-poster')]//img/@src",
+        "python": "urljoin('https://assets.creativelive.com/', data)"
+      },
+      "preview_video": {
+        "xpath": "//video[contains(@class, 'vjs-tech')]//source/@src"
+      },
+      "description": {
+        "xpath": "//div[@class='course-description']//text()",
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      },
+      "toc": {
+        "xpath": "//div[contains(@class, 'session-list')]"
+      },
+      "product_events": {
+        "fields": {
+          "instructors": {
+            "fields": {
+              "name": {
+                "xpath": ".//h1/text()"
+              },
+              "bio": {
+                "xpath": ".//div[contains(@class, 'profile-bio')]//text()",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+              },
+              "image": {
+                "xpath": ".//div[contains(@class, 'portrait-wrapper')]/img/@src",
+                "python": "data.replace('//', '') if data else None"
+              },
+              "link": {
+                "xpath": ".//ul[contains(@class, 'profile-links')]/li/a/@href"
+              }
+            },
+            "type": "[Instructor]",
+            "level": "1_1",
+            "xpath": "//div[contains(@class, 'instructor-profile')]"
+          },
+          "price_currency": "USD",
+          "price_display_float": {
+            "xpath": "substring-after(//div[contains(@class, 'col-sm-4 sidebar-outer')]//*[contains(@id, 'courseBuy')]/text(), '$')",
+            "python": "get_price_float(data)"
+          },
+          "price_filter": {
+            "xpath": "substring-after(//div[contains(@class, 'col-sm-4 sidebar-outer')]//*[contains(@id, 'courseBuy')]/text(), '$')",
+            "python": "get_price_float(data)"
+          }
+        },
+        "type": "[ProductEvent]"
+      }
+    },
+    "type": "Product",
+    "extractorRules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/.*'), restrict_xpaths='//li[contains(@class, \\'course-item\\')]//div[contains(@class, \\'course\\')]/a'), callback='parse_product')",
+        "Rule(lxml(allow=('/catalog/category/.*')), follow=True, callback='passCat')"
+      ]
+    },
+    "pre_filters": {
+      "filters_not": {}
+    }
+  }
+}

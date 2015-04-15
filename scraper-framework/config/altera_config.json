@@ -1,0 +1,109 @@
+{
+    "base_url": "http://www.altera.com",
+    "start_url": "http://wl.altera.com/servlets/searchcourse?num=226&start=0&total=226&forwardto=coursecatalog&showall=1",
+    "levels": {
+        "1": "./td[1]/a/@href"
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "95",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "B",
+            "space_lock": "B",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//h3[contains(.,'escription')]/following-sibling::text()[count(.|//h3[contains(.,'escription')]/following-sibling::h3[1]/preceding-sibling::text()) = count(//h3[contains(.,'escription')]/following-sibling::h3[1]/preceding-sibling::text())]",
+                    "python": "html_to_text(data)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//h3[contains(.,'escription')]/following-sibling::p//text()[count(.|//h3[contains(.,'escription')]/following-sibling::h3[1]/preceding-sibling::p//text()) = count(//h3[contains(.,'escription')]/following-sibling::h3[1]/preceding-sibling::p//text())]",
+                    "python": "html_to_text(data)",
+                    "level": "1"
+                }
+            ],
+            "name": {
+                "xpath": "//h1/text()[1]",
+                "level": "1"
+            },
+            "duration_filter": {
+                "xpath": "string(./td[1]/em)",
+                "re": "\\d.*ours|\\d.*inutes|\\d.*our",
+                "python": "duration_filter(data)"
+            },
+            "duration_display": {
+                "xpath": "string(./td[1]/em)",
+                "re": "\\d.*ours|\\d.*inutes|\\d.*our"
+            },
+            "product_events": {
+                "xpath": "//h3[contains(.,'Schedule')]/following-sibling::div[1]//tr[position()>2]",
+                "fields": {
+                    "language": "eng",
+
+                    "location_city": {
+                        "xpath": "substring-before(./td[1],',')"
+                    },
+                    "price_currency": "USD",
+                    "location_state": {
+                        "xpath": "substring-after(./td[1],',')",
+                        "re": "[A-Z]{2}"
+                    },
+                    "end_date_local": {
+                        "xpath": "substring-after(./td[2],'-')",
+                        "re": "\\d.*",
+                        "python": "convert_date(data) if data else None"
+                    },
+                    "start_date_local": {
+                        "xpath": {
+                            "operator": "or",
+                            "value": [
+                                "substring-before(./td[2],'-')",
+                                "string(./td[2])"
+                            ]
+                        },
+                        "re": "\\d.*",
+                        "python": "convert_date(data) if data else None"
+                    },
+                    "duration_filter": {
+                        "xpath": "//h1/em/text()",
+                        "re": "\\d.*ours|\\d.*inutes|\\d.*our",
+                        "python": "duration_filter(data)"
+                    },
+                    "price_display_float": {
+                        "xpath": "./td[3]//text()",
+                        "re": "\\d.*",
+                        "python": "get_price_float(data) if data else '0.00'"
+                    },
+                    "location_display": {
+                        "xpath": "./td[1]//text()"
+                    },
+                    "duration_display": {
+                        "xpath": "//h1/em/text()",
+                        "re": "\\d.*ours|\\d.*inutes|\\d.*our"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "level": "1"
+            },
+            "requirements": {
+                "xpath": "//h3[contains(.,'Skills Required')]/following-sibling::ul//text()[count(.|//h3[contains(.,'Skills Required')]/following-sibling::h3[1]/preceding-sibling::ul//text()) = count(//h3[contains(.,'Skills Required')]/following-sibling::h3[1]/preceding-sibling::ul//text())]",
+                "type": "[str]",
+                "level": "1"
+            },
+            "prerequisites": {
+                "xpath": "//h3[contains(.,'rerequisites')]/following-sibling::ul//text()[count(.|//h3[contains(.,'rerequisites')]/following-sibling::h3[1]/preceding-sibling::ul//text()) = count(//h3[contains(.,'rerequisites')]/following-sibling::h3[1]/preceding-sibling::ul//text())]",
+                "type": "[str]",
+                "level": "1"
+            },
+            "partner_prod_id": {
+                "xpath": "./td[1]/text()",
+                "re": "\\w+\\d+|\\w+"
+            }
+        },
+        "type": "Product",
+        "xpath": "//div[@class='altera-table']/table//tr[contains(./td[4],'English')]"
+    }
+}

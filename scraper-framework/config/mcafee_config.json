@@ -1,0 +1,41 @@
+{
+  "base_url": "http://www.mcafee.com", 
+  "start_url": "http://www.mcafee.com/us/services/mcafee-education-services.aspx", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "240", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='requirements']/p[position()>1]//text()", 
+        "python": "' '.join(normalize_space(selector.extract()))"
+      }, 
+      "name": {
+        "xpath": "//div[@class='bannerAlign']/h1/text()"
+      }, 
+      "duration_filter": {
+        "xpath": "//div[@id='vtab-overview']/div[@class='requirements']/p[contains(.,'Course Length:')]/strong/following-sibling::text()[1]", 
+        "python": "duration_filter(data)"
+      }, 
+      "duration_display": {
+        "xpath": "//div[@id='vtab-overview']/div[@class='requirements']/p[contains(.,'Course Length:')]/strong/following-sibling::text()[1]"
+      }, 
+      "audience": {
+        "xpath": "//div[contains(@id,'whoshouldtake')]/div[@class='requirements']/p/text()", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*', ), restrict_xpaths='//div/h5/a'), callback='parse_product')", 
+        "Rule(lxml(allow=('product-training/index.aspx|saas-education-services/index.aspx|strategic-security-education/classroom-training/index.aspx',)),follow=True)"
+      ]
+    }
+  }
+}

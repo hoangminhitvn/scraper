@@ -1,0 +1,100 @@
+{
+  "base_url": "http://ocw.tudelft.nl/", 
+  "start_url": "http://ocw.tudelft.nl/ocw/courses", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "372", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//*[@id='contentText']/*[contains(.,'Description')]", 
+          "python": "html_to_text(re.sub('Description|Description:|Course Description|Course Description:|Course contents','',data))", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//*[@id='contentText']/*[contains(.,'Course Contents')]", 
+          "python": "html_to_text(re.sub('Description|Description:|Course Description|Course Description:|Course contents:|Course contents','',data))", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//*[@id='contentText']/*[contains(.,'This course contains:')]/following-sibling::div//text()", 
+          "python": "' '.join(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//*[@id='contentText']/*[contains(.,'Deze cursus bestaat uit:')]/following-sibling::*", 
+          "python": "html_to_text(re.sub('Description|Description:|Course Description|Course Description:|Course contents','',data))", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@id='contentText']//div[contains(@class,'csc-textpic-single-image')]/ancestor::div/p//text()", 
+          "python": "' '.join(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[contains(@class,'csc-textpic-intext')]//text()", 
+          "python": "' '.join(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@class='tx-lommanager-pi4']/following-sibling::div//text()", 
+          "python": "' '.join(data)", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//*[@id='contentText']//h2/ancestor::div/div[@class='content']", 
+          "python": "html_to_text(re.sub('Description|Description:|Course Description|Course Description:|Course contents','',data))", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//div[@id='contentText']//div[contains(@class,'itemBlock borderless')]/div", 
+          "python": "html_to_text(re.sub('Description|Description:|Course Description|Course Description:|Course contents','',data))", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//*[@id='contentText']//div[@id]//text()", 
+          "python": "' '.join(data)", 
+          "level": "1"
+        }
+      ], 
+      "name": {
+        "xpath": "//div[@class='course_header']//h1/text()|//h1/text()", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//*[@id='contentText']//iframe/@src", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//*[@class='course_header']//img/@src|//div[@class='content']//div[contains(@class,'csc-textpic-imagewrap')]/img/@src", 
+        "python": "urljoin('http://ocw.tudelft.nl',data)", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "xpath": "//*[@id='contentText']/*[contains(.,'Instructors')]", 
+        "fields": {
+          "name": {
+            "xpath": ".//p[not(contains(.,'Instructors'))]/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "//*[@id='contentText']//p[contains(.,'Prerequisites')]", 
+        "re": "re.sub('Prerequisites','',data)", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('http://ocw.tudelft.nl/courses',)), callback='parse_product'),Rule(lxml(allow=('/ocw/courses$',)),follow=True)]"
+    }
+  }
+}

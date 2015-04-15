@@ -1,0 +1,92 @@
+{
+  "base_url": "http://www.marketmotive.com", 
+  "start_url": "http://www.marketmotive.com/internet-marketing-training-course-catalog/", 
+  "levels": {
+    "1": "./div/a/@href", 
+    "1_1": {
+      "xpath": "//div[@class='tabs-content'][2]//a[contains(.,'Learn more')]/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "239", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(//div[@class='tabs-content'][1]/div[@class='row-fluid']/preceding-sibling::p[4]//text(),//div[@class='tabs-content'][1]/div[@class='row-fluid']/preceding-sibling::p[3]//text(),//div[@class='tabs-content'][1]/div[@class='row-fluid']/preceding-sibling::p[2]//text(),//div[@class='tabs-content'][1]/div[@class='row-fluid']/preceding-sibling::p[1]//text())", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h2//text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='tabs-content'][1]/div[@class='row-fluid']/div[@class='span6'][1]/ul", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='single-portfolio-element row-fluid']/div[@class='post-img']/img/@src", 
+        "level": "1"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "substring-before(//p[contains(.,'hours to complete')],' to complete')", 
+        "re": "\\d+.{1}hours", 
+        "level": "1", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "//td[contains(.,'Monthly Membership')]/text()[1]", 
+        "re": "\\d+", 
+        "level": "1_1", 
+        "python": "get_price_float(data)"
+      }, 
+      "duration_display": {
+        "xpath": "substring-before(//p[contains(.,'hours to complete')],' to complete')", 
+        "re": "\\d.*", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "xpath": "//div[@class='tabs-content'][3]", 
+        "fields": {
+          "bio": [
+            {
+              "xpath": "./p[contains(./strong,' ')]/following-sibling::p[1]//text()"
+            }, 
+            {
+              "xpath": "./p[contains(./strong,' ')]/following-sibling::p[2]//text()"
+            }
+          ], 
+          "image": [
+            {
+              "xpath": ".//img/@src", 
+              "re": "http.*"
+            }, 
+            {
+              "xpath": ".//img/@src", 
+              "python": "urljoin('http://www.marketmotive.com/',data) if data else None"
+            }
+          ], 
+          "link": {
+            "xpath": ".//a/@href", 
+            "python": "urljoin('http://www.marketmotive.com/',data) if data else None"
+          }, 
+          "name": {
+            "xpath": ".//strong//text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "substring-after(./@id,'-')"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='portfolio-ajax']/article[@id]"
+  }
+}

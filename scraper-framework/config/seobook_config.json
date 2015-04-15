@@ -1,0 +1,59 @@
+{
+  "base_url": "http://video.seobook.com",
+  "levels": {
+    "1": {
+      "xpath": "substring-before(substring-after(./@onclick,'=\\''),';')",
+      "python": "selector.extract()[0].replace('\\'','')"
+    }
+  },
+  "start_url": [
+    "http://training.seobook.com/"
+  ],
+  "output_config": {
+    "fields": {
+      "provider_id": "466",
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      },
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "name": {
+        "xpath": "//h1//text()"
+      },
+      "product_image_url": {
+        "xpath": "//div[@class='field-item even']//img/@src"
+      },
+      "product_video_url": {
+        "xpath": "//div[@class='field-item even']//iframe/@src"
+      },
+      "description": [
+        {
+          "xpath": "substring-before(//div[@class='field-item even'],'Many of the concepts that relate')",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "substring-after(substring-before(//div[@class='field-item even'],'Why Use Pay-Per-Click?'),'What is Pay-Per-Click?')",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "substring-after(substring-before(//div[@class='field-item even'],'Pushing Yourself Up the Value Chain'),'The Leading Ways to Make Money Online')",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "//div[@class='field-item even']//text()",
+          "python": "html_to_text(data)"
+        }
+      ],
+      "toc": {
+        "xpath": ""
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        " Rule(lxml(allow=('.*',), restrict_xpaths=('//div[@class=\\'course\\'][contains(position()>1,position()<7)]'),tags=('div'), attrs=('onclick'), process_value=seobook.extract_links_cat), callback='parse_product')"
+      ]
+    }
+  }
+}

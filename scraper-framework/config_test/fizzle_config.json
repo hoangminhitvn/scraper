@@ -1,0 +1,28 @@
+{
+    "base_url": "http://fizzle.co/",
+    "start_url": "http://fizzle.co/course-library",
+    "levels": {
+
+    },
+    "login": {
+        "formname": "loginform",
+        "formdata": {
+            "log": "skilledup",
+            "pwd": "lightspeed123"
+        },
+        "start_url": "https://fizzle.co/wp-login.php",
+        "from_response": true
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "194",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "language": "eng"
+        },
+        "type": "Product",
+        "xpath": "//li[contains(@data-location,'library') and .//strong[contains(.,'Workshop')] | .//strong[contains(.,'Course')]]"
+
+    }
+}

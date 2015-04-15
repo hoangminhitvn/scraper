@@ -1,0 +1,21 @@
+{
+  "base_url": "https://www.elance.com/", 
+  "start_url": "https://www.elance.com/q/eol_university/search?terms[]=54", 
+  "levels": {
+    "0": {
+      "callback": "elanceuniversity.parse_product"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "119", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng"
+    }, 
+    "type": "Product"
+  }
+}

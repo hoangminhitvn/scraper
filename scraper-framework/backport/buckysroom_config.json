@@ -1,0 +1,26 @@
+{
+    "base_url": "https://buckysroom.org",
+    "levels": {
+    },
+    "start_url": "https://buckysroom.org",
+    "output_config": {
+        "fields": {
+            "description": {
+                "xpath": {
+                    "value": ["//*[@id='right_side']/span/text()"],
+                    "operator": "or"
+                },
+                "level": "1"
+            },
+              "product_video_url": {
+                "xpath": "//div[@id='youtube_video']/iframe/@src",
+                "python":"data.replace('//','')",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": "[Rule(lxml(allow=('cat=\\d+&video=\\d+$',)), callback='parse_product'),Rule(lxml(allow=('videos\\.php\\?cat=\\d+$|videos\\.php$', )), follow=True),]"
+        }
+    }
+}

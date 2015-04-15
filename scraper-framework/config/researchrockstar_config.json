@@ -1,0 +1,96 @@
+{
+  "base_url": "http://training.researchrockstar.com/", 
+  "start_url": [
+    "http://training.researchrockstar.com/collections/mra-certificates"
+  ], 
+  "levels": {
+    "1": {
+      "xpath": ".//a[@class='product-link']/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "277", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[@class='description']/p//text()", 
+            "//div[@class='description']/div[2]/text()", 
+            "//div[@class='description']//span/text()"
+          ]
+        }, 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h1[@id='product-title']//text()", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//select[@id='product-select']/option", 
+        "fields": {
+          "price_currency": "USD", 
+          "language": "eng", 
+          "start_date_local": {
+            "xpath": ".//text()", 
+            "re": ".*AM|.*PM", 
+            "python": "convert_date(data)"
+          }, 
+          "duration_filter": {
+            "xpath": "//div[@class='description']/p//text()", 
+            "python": "duration_filter(selector.re('[\\d\\.]+ (?:minutes|hours)')[0])", 
+            "level": "1"
+          }, 
+          "price_display_float": {
+            "xpath": ".//text()", 
+            "re": "\\$[\\d\\,]+", 
+            "python": "get_price_float(data.replace('$','').replace(',','')) if get_price_float(data.replace('$','')) else \"0.00\""
+          }, 
+          "duration_display": {
+            "xpath": "//div[@class='description']/p//text()", 
+            "python": "selector.re('[\\d\\.]+ (?:minutes|hours)')[0]", 
+            "level": "1"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[@id='large-thumb']/@src", 
+        "python": "urljoin('http:',data) if data else None", 
+        "level": "1"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//div[@class='description']/p//text()", 
+        "python": "duration_filter(selector.re('[\\d\\.]+ (?:minutes|hours)')[0])", 
+        "level": "1"
+      }, 
+      "price_display_float": {
+        "xpath": ".//a[@class='product-link']//span[@class='product-price']/text()", 
+        "re": "\\$[\\d\\,]+", 
+        "python": "get_price_float(data.replace('$','').replace(',','')) if get_price_float(data.replace('$','')) else \"0.00\""
+      }, 
+      "duration_display": {
+        "xpath": "//div[@class='description']/p//text()", 
+        "python": "selector.re('[\\d\\.]+ (?:minutes|hours)')[0]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//section/ul/li/div[contains(@class,'product-grid-item')]", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('4-week-power-programs$|mra-certificates$|online-self-paced$|private-group-training$|virtual-classroom-instructor-led$',)), callback='parse',follow=True)"
+      ]
+    }
+  }
+}

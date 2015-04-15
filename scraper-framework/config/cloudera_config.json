@@ -1,0 +1,144 @@
+{
+  "base_url": "http://www.cloudera.com/", 
+  "start_url": "http://www.cloudera.com/content/cloudera/en/training/course-listing.html?course=all&loc=all", 
+  "levels": {
+    "1": ".//a/@href", 
+    "0": {
+      "selenium_function": "slm.get(response.url)"
+    }, 
+    "1_1": {
+      "xpath": "//a[contains(.,'complete schedule')]/@href", 
+      "python": "urljoin('http://university.cloudera.com',data)"
+    }
+  }, 
+  "selenium_config": {
+    "driver": "phantomjs"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "43", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": {
+        "xpath": "//*[@id='content-section-language']/div/p/text()", 
+        "re": "re.compile('in (.*).')", 
+        "level": "1", 
+        "python": "data.split()[0]"
+      }, 
+      "description": {
+        "xpath": "//h2[contains(.,'Summary')]/following-sibling::div[@class='content-section']", 
+        "python": "html_to_text(data)", 
+        "level": "1_1"
+      }, 
+      "name": {
+        "xpath": ".//a/text()"
+      }, 
+      "toc": {
+        "xpath": "//h2[contains(.,'You Will Learn')]/following-sibling::div[@class='content-section']", 
+        "level": "1_1"
+      }, 
+      "product_events": {
+        "fields": {
+          "location_city": {
+            "xpath": "//*[@id='content-section-location']/div/address//text()", 
+            "python": "(None if 'Japan' in data else str(data[2]) if len(data) > 3 else str(data[1]) if len(data) == 3 else str(data[0])).split(',')[0]", 
+            "level": "1"
+          }, 
+          "price_currency": {
+            "xpath": ".//li[contains(.,'Cost')][contains(.,'$')]/text()", 
+            "python": "get_price_currency(data.replace('Cost:',''))"
+          }, 
+          "end_date_local": {
+            "xpath": ".//li[contains(.,'Date')]/text()", 
+            "python": "get_end_date(data.replace('Date:',''))"
+          }, 
+          "location_country": {
+            "xpath": "//*[@id='content-section-location']/div/address//text()[last()]", 
+            "level": "1"
+          }, 
+          "language": {
+            "xpath": "//*[@id='content-section-language']/div/p/text()", 
+            "re": "re.compile('in (.*).')", 
+            "level": "1", 
+            "python": "data.split()[0]"
+          }, 
+          "location_state": {
+            "xpath": "//*[@id='content-section-location']/div/address//text()", 
+            "python": "(str(None if 'Japan' in data else data[2]) if len(data) > 3 else str(data[1]) if len(data) == 3 else str(data[0])).split(' , ')[1].split(' ')[0]", 
+            "level": "1"
+          }, 
+          "duration_filter": {
+            "xpath": "string(//h2[contains(.,'Duration')]/following-sibling::div[@class='content-section'])", 
+            "python": "str(duration_filter(data))", 
+            "level": "1_1"
+          }, 
+          "start_date_local": {
+            "xpath": ".//li[contains(.,'Date')]/text()", 
+            "python": "get_start_date(data.replace('Date:',''))"
+          }, 
+          "price_display_float": {
+            "xpath": ".//li[contains(.,'Cost')][contains(.,'$')]/text()", 
+            "python": "get_price_float(data.replace('Cost:',''))"
+          }, 
+          "location_display": {
+            "xpath": "//*[@id='content-section-location']/div/address//text()", 
+            "python": "' '.join('Japan' if 'Japan' in data else data[:3] if len(data) > 3 else data[:1] if len(data) == 2 else data)", 
+            "level": "1"
+          }, 
+          "location_name": {
+            "xpath": "//p[contains(.,'This training is taking place in')]/a/text()", 
+            "re": "re.compile('\\((.*)\\)',re.I|re.S)", 
+            "level": "1"
+          }, 
+          "location_postal": [
+            {
+              "xpath": "//*[@id='content-section-location']/div/address//text()", 
+              "re": "E1 1LP|K1P 5Z9|M4P 3A2|10004|27560|28217", 
+              "level": "1"
+            }, 
+            {
+              "xpath": "//*[@id='content-section-location']/div/address//text()", 
+              "python": "(str(None if 'United Arab Emirates' in data else None if 'Japan' in data else data[2]) if len(data) > 3 else str(data[1]) if len(data) == 3 else str(data[0])).split(' , ')[1].split(' ')[1]", 
+              "level": "1"
+            }
+          ], 
+          "location_addr": {
+            "xpath": "//*[@id='content-section-location']/div/address//text()", 
+            "python": "html_to_text(None if 'Japan' in data else data[:2] if len(data) > 3 else data[0] if len(data) == 3 else none)", 
+            "level": "1"
+          }, 
+          "duration_display": {
+            "xpath": "//h2[contains(.,'Duration')]/following-sibling::div[@class='content-section']", 
+            "python": "html_to_text(data)", 
+            "level": "1_1"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "audience": {
+        "xpath": "//h2[contains(.,'Audience')]/following-sibling::div[@class='content-section']", 
+        "python": "html_to_text(data)", 
+        "level": "1_1"
+      }, 
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": "//*[contains(.,'Who is providing this training')]/ancestor::div/div[@class='content-section']/p/a/text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::div[@class='content-section']", 
+        "python": "html_to_text(data)", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//*[@id='course-feed']/div[@class='item']"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "base_url": "http://www.learnquest.com", 
+  "start_url": "http://www.learnquest.com/course-catalog.aspx", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "278", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "language": "eng", 
+      "description": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[@id='description']/p[1]//text()", 
+            "//div[@id='description']/p//text()"
+          ]
+        }, 
+        "python": "None if 'ull text online' in data else ' '.join(normalize_space(selector.extract()))"
+      }, 
+      "name": {
+        "xpath": "//div[@class='course_detail_box']/h3//text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='course-topics']"
+      }, 
+      "product_events": {
+        "xpath": "//div[@id='upcoming-classes']/div[@class='upcoming-schedule']/div[@class='row3'][contains(.//div/a/text(),'Register')]", 
+        "fields": {
+          "price_currency": "USD", 
+          "end_date_local": {
+            "xpath": "./div[@class='col10'][1]/text()", 
+            "python": "convert_date(data[(data.rfind('- ')+1):].replace('-',' ',1).replace('-',' 20',1))"
+          }, 
+          "language": {
+            "xpath": "substring-before(./div[@class='col10'][1]/text(),' - ')", 
+            "python": "language(data)"
+          }, 
+          "start_date_local": {
+            "xpath": "./div[@class='col10'][1]/text()", 
+            "python": "convert_date(data[:data.rfind(' - ')].replace('-',' ',1).replace('-',' 20',1))"
+          }, 
+          "price_display_float": {
+            "xpath": "//td[contains(./h4//text(),'Price')]/following-sibling::td[1]//text()", 
+            "re": "[\\d\\.\\,]+"
+          }, 
+          "location_name": {
+            "xpath": "./div[@class='col9'][1]/div[@class='mainx']/text()"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//td[contains(./h4//text(),'Duration')]/following-sibling::td[1]//text()", 
+        "python": "duration_filter(data) if data else None"
+      }, 
+      "price_display_float": {
+        "xpath": "//td[contains(./h4//text(),'Price')]/following-sibling::td[1]//text()", 
+        "re": "[\\d\\.\\,]+"
+      }, 
+      "duration_display": {
+        "xpath": "//td[contains(./h4//text(),'Duration')]/following-sibling::td[1]//text()"
+      }, 
+      "requirements": {
+        "xpath": "//div[@id='description']//h3[contains(.,'Requirements')]/following-sibling::text()", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None"
+      }, 
+      "certificates": {
+        "xpath": "//div[@id='certifications']/h4/following-sibling::*//text()"
+      }, 
+      "audience": {
+        "xpath": "//div[@id='audience']/h4/following-sibling::*//text()"
+      }, 
+      "prerequisites": {
+        "xpath": "//div[@id='prereq']//h4[contains(.,'PreRequisites')]/following-sibling::*//text()", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None"
+      }, 
+      "partner_prod_id": {
+        "xpath": "//td[contains(./h4//text(),'Course')]/following-sibling::td[1]//text()"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('categoryid=\\d+',),restrict_xpaths=('//div[@class=\\'catalog_row\\']//h4[@class=\\'main\\']/a')),follow=True)", 
+        "Rule(lxml(allow=('course-detail.aspx\\?cnum=[\\dA-Z]+',),restrict_xpaths=('//div[contains(@class,\\'catalog_row\\')]//div[@class=\\'mainx\\']/a')),callback='parse_product')"
+      ]
+    }
+  }
+}

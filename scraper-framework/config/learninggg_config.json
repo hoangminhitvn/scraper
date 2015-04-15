@@ -1,0 +1,64 @@
+{
+  "base_url": "http://www.learninggg.com/", 
+  "start_url": "http://www.learninggg.com/products/", 
+  "levels": {
+    "1": "./td[1]/a/@href", 
+    "1_1": "//a[contains(@href,'/view-instructor')]/@href",
+    "1_2": "//div[@id='tabs']/ul//a[contains(.,'Summary')]/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "135", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='course-summary']//text()",
+        "python": "html_to_text(data)",
+        "level": "1_2"
+      }, 
+      "name": {
+        "xpath": "./td[1]/a/text()"
+      }, 
+      "duration_filter": {
+        "xpath": "./td[3]/text()", 
+        "python": "str(duration_filter(data))"
+      }, 
+      "duration_display": {
+        "xpath": "./td[3]/text()"
+      }, 
+      "published_date": {
+        "xpath": "./td[4]/text()"
+      },
+      "difficulty": {
+        "xpath": "//text()[contains(.,' | Level: ')]/following-sibling::b[1]//text()",
+        "python": "difficulty(data)",
+        "level": "1"
+      },
+      "instructors": {
+        "fields": {
+          "bio": {
+            "xpath": "//div[@class='course-instructor']/text()", 
+            "level": "1_1"
+          },
+          "name": [
+            {
+              "xpath": "//a[contains(@href,'/instructor')]/text()"
+            }, 
+            {
+              "xpath": "//div[contains(@class,'entry-content')]", 
+              "python": "selector.re('Instructor:(.*)<br>')[0].strip()"
+            }
+          ]
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='entry-content']/div/table//tr[td[@class='bb']]"
+  }
+}

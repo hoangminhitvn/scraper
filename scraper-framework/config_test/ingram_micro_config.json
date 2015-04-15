@@ -1,0 +1,18 @@
+{
+  "base_url": "https://www.im-plus.be",
+  "start_url": "https://www.im-plus.be/site/?id=6572",
+  "levels": {
+    "0": {
+      "callback": "ingram_micro.parse"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "269",
+      "time_lock": "Y",
+      "space_lock": "B",
+      "language": "eng"
+    },
+    "type": "Product"
+  }
+}

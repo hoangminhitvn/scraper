@@ -1,0 +1,89 @@
+{
+  "base_url": "http://www.nyvs.com", 
+  "start_url": "http://www.nyvs.com/courses/filter/all", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "208", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "description": {
+        "xpath": "//div[@class='courseText'][1]/p//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "string(//h1//text())", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='lessonsContent']/table[@class='courseTable lessonTable']", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='info']/img/@src", 
+        "level": "1"
+      }, 
+      "duration_filter": {
+        "xpath": "string(//div[@class='misc'])", 
+        "re": "\\d+\\:\\d+", 
+        "level": "1", 
+        "python": "duration_filter(data)"
+      }, 
+      "duration_display": {
+        "xpath": "string(//div[@class='misc'])", 
+        "re": "\\d+\\:\\d+", 
+        "level": "1"
+      }, 
+      "published_date": {
+        "xpath": "normalize-space(substring-after(//div[@class='misc'],'Released'))", 
+        "python": "convert_date(data) if data else None", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "xpath": "//div[@class='instructorInfo']", 
+        "fields": {
+          "bio": {
+            "xpath": "./div/div//text()", 
+            "python": "html_to_text(data)"
+          }, 
+          "image": {
+            "xpath": "./img/@src", 
+            "python": "urljoin('http://www.nyvs.com/',data) if data else None"
+          }, 
+          "link": {
+            "xpath": "./div/a/@href"
+          }, 
+          "name": [
+            {
+              "xpath": "./div/span//text()"
+            }, 
+            {
+              "xpath": "./div/a//text()"
+            }
+          ]
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::*[1]//text()", 
+        "level": "1"
+      }, 
+      "prod_keywords": {
+        "xpath": "//div[@class='tags']/a//text()", 
+        "type": "[str]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/\\w.*',),restrict_xpaths=('//table[@id=\\'coursesTable\\']//tr[@class=\\'odd\\']/td[@class=\\'tooltip tpt\\']/a')), callback='parse_product')"
+      ]
+    }
+  }
+}

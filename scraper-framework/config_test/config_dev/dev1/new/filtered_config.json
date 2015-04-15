@@ -1,0 +1,66 @@
+{
+  "base_url": "http://learn.filtered.com/",
+  "levels": {
+    "1_1": {
+      "python": "filtered.request_toc(response)"
+    }
+  },
+  "start_url": "http://learn.filtered.com/courses",
+  "output_config": {
+    "fields": {
+      "provider_id": "136",
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      },
+      "language": "eng",
+      "name": {
+        "xpath": "//h1[@class='course-title']/text()"
+      },
+      "product_image_url": {
+        "xpath": "//ul[contains(@class, 'hs_cos_flex-slides-main')]/li/img/@src",
+        "re": "\\w.*"
+      },
+      "description": {
+        "xpath": "//div[@class='course-content']/*[not(contains(./@class, 'more-toggle'))]//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "toc": {
+        "level": "1_1",
+        "python": "filtered.toc_field(source)"
+      },
+      "audience": {
+        "xpath": "//span[contains(./h2, 'Target Audience')]/h2/following-sibling::*//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "prerequisites": {
+        "xpath": "//span[contains(./h2, 'Prerequisites')]/h2/following-sibling::*//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": ".//p[@class='author-name']/text()"
+          },
+          "bio": {
+            "xpath": ".//div[@class='description-content']//text()",
+            "python": "html_to_text(data) if data else None"
+          },
+          "image": {
+            "xpath": ".//div[@class='author-img-wrapper']/img/@src",
+            "re": "\\w.*"
+          }
+        },
+        "type": "[Instructor]",
+        "xpath": "//div[contains(@class, 'course-author-wrapper')]"
+      },
+      "price_currency": "USD",
+      "price_display_float": "12.00"
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*',), restrict_xpaths=(\"//div[@class='courseWrapper']//div[contains(@class, 'course-wrap')]/a\")), callback='parse_product')"
+      ]
+    }
+  }
+}

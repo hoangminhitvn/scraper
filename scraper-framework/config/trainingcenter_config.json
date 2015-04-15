@@ -1,0 +1,50 @@
+{
+  "base_url": "http://www.trainingcenter.com/", 
+  "start_url": "http://www.trainingcenter.com/search.php?view=all", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "374", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='shorten']/p[@class='pdesc'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='courselist']", 
+        "level": "1"
+      }, 
+      "formats": [
+        "video"
+      ], 
+      "duration_filter": {
+        "xpath": "substring-after(substring-before(//p[contains(.,'in only')]/text()[2],')'),'only ')", 
+        "python": "duration_filter(data)", 
+        "level": "1"
+      }, 
+      "duration_display": {
+        "xpath": "substring-after(substring-before(//p[contains(.,'in only')]/text()[2],')'),'only ')", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='text-box']/ul[@class='ul2']/li"
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "substring-before(//ul[@id='suOptionsList']/li[1]/span,'(')", 
+      "start_url": "https://www.vtc.com/modules/onlineu/signup.php?affiliate=ordernow"
+    }
+  }
+}

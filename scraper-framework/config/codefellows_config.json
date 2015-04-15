@@ -1,0 +1,92 @@
+{
+  "base_url": "https://www.codefellows.org/", 
+  "start_url": "https://www.codefellows.org/calendar", 
+  "levels": {
+    "1": ".//a[contains(.,'Learn more')]/@href", 
+    "1_1": "//div[@class='sidebar_bg']//strong/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "66",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//h2[contains(.,'Overview')]/following-sibling::p[1]//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./header/h1//text()", 
+        "re": "\\w.*"
+      }, 
+      "toc": {
+        "xpath": "//h2[contains(.,'Course Curriculum')]/following-sibling::*", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "//div[@class='sidebar_bg']/p[contains(.,'Tuition')]/text()", 
+            "re": "\\d.*", 
+            "python": "get_price_float(data)", 
+            "level": "1"
+          }, 
+          "price_currency": "USD", 
+          "duration_display": {
+            "xpath": "//div[@class='sidebar_bg']/p[contains(.,'Length')]/text()", 
+            "re": "\\w.*", 
+            "level": "1"
+          }, 
+          "end_date_local": {
+            "xpath": "./header/h2[1]//text()", 
+            "python": "get_end_date(data)"
+          }, 
+          "start_date_local": [
+            {
+              "xpath": "./header/h2[1]//text()", 
+              "python": "get_start_date(data)"
+            }, 
+            {
+              "xpath": "./header/h2[1]//text()", 
+              "python": "convert_date(data)"
+            }
+          ]
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='custom-page-header']/@style", 
+        "re": "http.*jpg", 
+        "level": "1"
+      }, 
+      "price_currency": "USD", 
+      "price_display_float": {
+        "xpath": "//div[@class='sidebar_bg']/p[contains(.,'Tuition')]/text()", 
+        "re": "\\d.*", 
+        "python": "get_price_float(data)", 
+        "level": "1"
+      }, 
+      "duration_display": {
+        "xpath": "//div[@class='sidebar_bg']/p[contains(.,'Length')]/text()", 
+        "re": "\\w.*", 
+        "level": "1"
+      }, 
+      "requirements": {
+        "xpath": "//h2[contains(.,'Requirements')]/following-sibling::*//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "//h2[contains(.,'Prerequisites')]/following-sibling::*//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//article[contains(./@class,'calendar-event')]"
+  }
+}

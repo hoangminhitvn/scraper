@@ -1,0 +1,48 @@
+{
+    "base_url": "http://ragantraining.com",
+    "start_url": "http://ragantraining.com/browse",
+    "levels": {},
+    "output_config": {
+        "fields": {
+            "provider_id": "218",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": {
+                "xpath": "string(//div[@class='group-left']/div[contains(@class,'field-name-body')]/div[@class='field-items'])"
+            },
+            "name": {
+                "xpath": "//h1/text()"
+            },
+            "price_display_float": {
+                "xpath": "string(//div[@class='price-left']/text())"
+            },
+            "price_currency": "USD",
+            "product_video_url": {
+                "xpath": "//p/iframe/@src"
+            },
+            "formats": [
+                "video"
+            ],
+            "product_image_url": {
+                "xpath": "//div[@class='field-items']/div[@class='field-item even']/img/@src"
+            },
+            "published_date": {
+                "xpath": "string(//div[contains(./text(),'Broadcast:')]/following-sibling::*)",
+                "python": "convert_date(str(data))"
+            },
+            "prod_keywords": {
+                "xpath": "//div[contains(./text(),'Tags:')]/following-sibling::div//a/text()",
+                "python": "normalize_space(data).split(',')",
+                "type": "[str]"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": "[Rule(lxml(allow=('/video/',)), callback='parse_product'), Rule(lxml(allow=('/browse.*items_per_page.*', )), follow=True),]"
+        }
+    }
+}

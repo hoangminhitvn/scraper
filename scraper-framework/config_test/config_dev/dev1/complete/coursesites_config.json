@@ -1,0 +1,94 @@
+{
+    "baseUrl": "https://www.coursesites.com",
+    "levels": {
+        "1": {
+            "xpath": ".//div[@class='details']/a/@href",
+            "re": ".*www.coursesites.com/.*",
+            "dont_filter": true
+        },
+        "1_1": {
+            "xpath": "//div[contains(@class, 'chp-inst')]//li/a/@href",
+            "dont_filter": true,
+            "levels": "1"
+        }
+    },
+    "start_url": "https://www.coursesites.com/webapps/Bb-sites-course-creation-BBLEARN/pages/mooccatalog.html",
+    "output_config": {
+        "fields": {
+            "provider_name": "CourseSites",
+            "provider_id": "164",
+            "product_type_name": "Courses",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "Y",
+            "name": {
+                "xpath": ".//div[contains(@class, 'txt')]/h5//text()",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            "prod_image": {
+                "xpath": ".//div[@class='university']/img/@src",
+                "python": "urljoin('https://www.coursesites.com/webapps/Bb-sites-course-creation-BBLEARN/pages/',data) if data else None"
+            },
+            "short_desc": {
+                "xpath": ".//p[@class='txt1']",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+            },
+            "description": {
+                "xpath": "//div[@class='post-description']",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "start_date_local": {
+                        "xpath": "substring-before(.//p[@class='courseDuration'][1], '-')",
+                        "re": "(?:January|February|March|April|May|June|July|August|September|October|November|December|Oct|Jan)+.*",
+                        "python": "convert_date(data)"
+                    },
+                    "end_date_local": {
+                        "xpath": "substring-after(.//p[@class='courseDuration'][1], '-')",
+                        "re": "(?:January|February|March|April|May|June|July|August|September|October|November|December|Oct|Jan)+.*",
+                        "python": "convert_date(data)"
+                    },
+                    "instructors": {
+                        "fields": {
+                            "name": {
+                                "xpath": ".//li/a//text()"
+                            },
+                            "image": {
+                                "xpath": ".//li[contains(@class, 'instructor-thumbnail')]//img/@src",
+                                "python": "urljoin('https://www.coursesites.com/',data) if data else None"
+                            },
+                            "bio": {
+                                "xpath": "//div[@id='descriptiondiv']",
+                                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))",
+                                "levels": "1_1"
+                            },
+                            "link": {
+                                "xpath": ".//li/a/@href"
+                            }
+                        },
+                        "type": "[Instructor]",
+                        "xpath": "//div[contains(@class, 'chp-inst')]",
+                        "level": "1"
+                    }
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "Product",
+        "xpath": "//div[@class='course-details']/div[@class='course']",
+        "preFilters": {
+            "filtersNot": [
+                {
+                    "level": "1",
+                    "python": "'/moocSignup.form'  in response.url"
+                },
+                {
+                    "level": "1",
+                    "python": "'/webapps/login/'  in response.url"
+                }
+            ]
+        }
+    }
+}

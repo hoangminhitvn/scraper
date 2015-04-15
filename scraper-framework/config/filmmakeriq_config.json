@@ -1,0 +1,60 @@
+{
+  "base_url": "http://filmmakeriq.com/", 
+  "start_url": "http://filmmakeriq.com/courses", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "193", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@class='entry-text']", 
+          "re": "re.compile('(.*)<h2>Course Material',re.S)", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+        }, 
+        {
+          "xpath": "//div[@class='entry-text']", 
+          "re": "re.compile('(.*)<b>Lessons',re.S)", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+        }, 
+        {
+          "xpath": "//div[@class='entry-text']//text()", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+        }
+      ], 
+      "name": {
+        "xpath": "//h1[@class='entry-title']/a/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='entry-text']//p[@id='learndash_lessons']/following-sibling::*", 
+        "python": "' '.join(data)"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@class='post-content']//iframe/@src"
+      }, 
+      "product_image_url": {
+        "xpath": "//a[@class='featured-image']/img/@src"
+      }, 
+      "published_date": {
+        "xpath": "//div[@class='date-meta']/a/text()", 
+        "python": "convert_date(data)"
+      }, 
+      "prod_keywords": {
+        "xpath": "//span[@class='tags']/following-sibling::a/text()"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=('//h2[@class=\\'entry-title\\']/a')), callback='parse_product')", 
+        "Rule(lxml(allow=('page/\\d+/$'), restrict_xpaths=('//div[contains(@class,\\'post-nav\\')]//a')), follow=True)", 
+        "Rule(lxml(allow=('articles/$')), follow=True)"
+      ]
+    }
+  }
+}

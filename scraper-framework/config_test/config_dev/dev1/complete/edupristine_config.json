@@ -1,0 +1,99 @@
+{
+    "baseUrl": "http://www.edupristine.com/",
+    "levels": {},
+    "start_url": "http://www.edupristine.com/ca/online-courses/",
+    "output_config": {
+        "fields": {
+            "provider_name": "Edu Pristine",
+            "provider_id": "120",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//div[@class='city_txt_heading']/h1/text()"
+            },
+            "prod_image": {
+                "xpath": "//div[@class='video_left_pristine']/img/@src"
+            },
+            "description": [
+                {
+                    "xpath": "//div[@class='pristine_course_sedule_container'][1]//h2[contains(., 'ABOUT')]/parent::div/following-sibling::div//text()",
+                    "python": "''.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                },
+                {
+                    "xpath": "//div[@class='video_institute_container']/following-sibling::div[contains(@class, 'pristine_course_sedule_container')][1]/div[2]//text()",
+                    "python": "''.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                }
+            ],
+            "audience": [
+                {
+                    "xpath": "//h2[contains(., 'AUDIENCE')]/parent::div/following-sibling::div//text()",
+                    "python": "''.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                },
+                {
+                    "xpath": "//h2[contains(., 'udience')]/parent::div/following-sibling::div//text()",
+                    "python": "''.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                }
+            ],
+            "prerequisites": [
+                {
+                    "xpath": "//h2[contains(., 'EQUISITES')]/parent::div/following-sibling::div//text()",
+                    "python": "''.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                },
+                {
+                    "xpath": "//h2[contains(., 'equisites')]/parent::div/following-sibling::div//text()",
+                    "python": "''.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                },
+                {
+                    "xpath": "//div[@class='course_txt_heading'][contains(., 'EQUISITES')]/following-sibling::div//text()",
+                    "python": "''.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                }
+            ],
+            "toc": [
+                {
+                    "xpath": "//h2[contains(., 'HIGHLIGHTS')]/parent::div/following-sibling::div"
+                },
+                {
+                    "xpath": "//h2[contains(., 'ighlights')]/parent::div/following-sibling::div"
+                }
+            ],
+            "product_events": {
+                "fields": {
+                    "instructors": {
+                        "fields": {
+                            "name": {
+                                "xpath": ".//span[contains(@class, 'hompage_profile_show_txt')]//span/b/text()"
+                            },
+                            "image": {
+                                "xpath": ".//span[@class='main_user_profile_male']/img/@src"
+                            },
+                            "link": {
+                                "xpath": ".//a[@class='span_txt_pos']/@href"
+                            }
+                        },
+                        "type": "[Instructor]",
+                        "xpath": "//div[@class='testimonial_container_pristine_mar']/div[contains(@class, 'col-md-6')]"
+                    },
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": "//div[contains(@class, 'ui-accordion-icons')][contains(.,'asic')]//text()",
+                        "re": "\\d+",
+                        "python": "getPriceFloat(data)"
+                    },
+                    "price_filter": {
+                        "xpath": "//div[contains(@class, 'ui-accordion-icons')][contains(.,'asic')]//text()",
+                        "re": "\\d+",
+                        "python": "getPriceFloat(data)"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "xpath": "//div[@class='testimonial_container_pristine_mar']/div[contains(@class, 'col-md-6')]"
+            }
+        },
+        "type": "[Product]",
+        "extractorRules": {
+            "rules": "[Rule(lxml(allow=('.*'), restrict_xpaths=('//div[@class=\\'akordeon\\']//div[@class=\\'akordeon-item-content\\']/ul/li/a')), callback='parseItemExtractors')]"
+        }
+    }
+}

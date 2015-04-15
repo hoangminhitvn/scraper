@@ -1,0 +1,101 @@
+{
+    "base_url": "http://www.greycampus.com/",
+    "start_url": "http://www.greycampus.com/getworkshops?page=1",
+    "levels": {
+        "0": {
+            "callback": "greycampus.parse_cat"
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "114",
+            "product_type_id": {
+                "python": "product_type_id('courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "string(//*[@id='tab-content'])",
+                    "re": "re.compile('.*Course Description(.*)Course Inclusion',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "string(//*[@id='tab-content'])",
+                    "re": "re.compile('.*Course Description(.*)Variants',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "string(//*[@id='tab-content'])",
+                    "re": "re.compile('.*Course Description(.*)Salient Features',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "string(//*[@id='tab-content'])",
+                    "re": "re.compile('FAQs(.*)Variants',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "string(//*[@id='course-content'])",
+                    "re": "re.compile('Overview(.*)Curriculum',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "string(//*[@id='course-content'])",
+                    "re": "re.compile('Course Objectives(.*)Curriculum',re.S|re.I)",
+                    "level": "1"
+                }
+            ],
+            "name": {
+                "xpath": [
+                    "//h1[contains(@class,'product-title')]/text()",
+                    "//div[@class='product-meta']/h1/text()"
+                ],
+                "level": "1"
+            },
+            "product_image_url": {
+                "xpath": [
+                    "//div[@class='single-product']//ul[@class='slides']/img/@src",
+                    "//div[contains(@class,'thumb-slider')]/img/@src"
+                ],
+                "python": "urljoin('http://www.greycampus.com/',data)",
+                "level": "1"
+            },
+            "price_currency": {
+                "xpath": "//tr[contains(.,'Price')]/td[@class='tdprice'][1]/text()",
+                "re": "USD|usd",
+                "level": "1"
+            },
+            "price_display_float": {
+                "xpath": "//tr[contains(.,'Price')]/td[@class='tdprice'][1]/text()",
+                "python": "get_price_float(data)",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "duration_filter": {
+                        "xpath": "./td[2]/text()[1]",
+                        "python": "str(duration_filter(data))"
+                    },
+                    "duration_display": {
+                        "xpath": "./td[2]/text()[1]"
+                    },
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": "./td[5]/span[@class='usd']/text()[1]",
+                        "python": "get_price_float(data)"
+                    },
+                    "start_date_local": {
+                        "xpath": "./td[1]/span/text()",
+                        "python": "convert_date_special(data)"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "xpath": "//div[@class='product-meta']/table//tr[contains(@class,'active')]",
+                "level": "1"
+            }
+        },
+        "type": "Product"
+    }
+}

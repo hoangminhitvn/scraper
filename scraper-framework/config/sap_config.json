@@ -1,0 +1,69 @@
+{
+  "base_url": "https://training.sap.com",
+  "start_url": "https://training.sap.com/g/en/courses-and-curricula",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "368",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "description": {
+        "xpath": {
+          "operator": "or",
+          "value": [
+            "//h2[contains(.,'Description')]/following-sibling::ul[1]//text()",
+            "//h2[contains(.,'Course announcements')]/following-sibling::ul[1]//text()",
+            "//h2[contains(.,'Goals')]/following-sibling::ul[1]//text()"
+          ]
+        },
+        "python": "html_to_text(data) if data else None"
+      },
+      "name": {
+        "xpath": "//h1[@class='course-title']/text()"
+      },
+      "toc": {
+        "xpath": "//h2[contains(.,'Content')]/following-sibling::ul[1]"
+      },
+      "duration_display": {
+        "xpath": "//dt[contains(.,'Duration')]/following-sibling::dd[1]/text()"
+      },
+      "duration_filter": {
+        "xpath": "//dt[contains(.,'Duration')]/following-sibling::dd[1]/text()",
+        "python": "duration_filter(data)"
+      },
+      "language": {
+        "xpath": "//dt[contains(.,'Language')]/following-sibling::dd[1]/text()",
+        "python": "language(data)"
+      },
+      "requirements": {
+        "xpath": {
+          "operator": "or",
+          "value": [
+            "string(//h3[contains(.,'Recommended')]/following-sibling::ul[1])"
+          ]
+        }
+      },
+      "audience": {
+        "xpath": "//h2[contains(.,'Audience')]/following-sibling::ul[1]//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "prerequisites": {
+        "xpath": "string(//h2[contains(.,'Prerequisites')]/following-sibling::ul[1])"
+      },
+      "partner_prod_id": {
+        "xpath": "//div[@class='course-code']/text()"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//ul[@class='nav nav-list nav-list-heavy']/li//a\")),follow=True)",
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//ul[@class='nav nav-list']/li/a\")),follow=True)",
+        "Rule(lxml(allow=('/shop/course/.*',), restrict_xpaths=(\"//area\")), callback='parse_product')"
+      ]
+    }
+  }
+}

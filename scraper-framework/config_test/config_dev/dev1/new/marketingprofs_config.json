@@ -1,0 +1,89 @@
+{
+  "base_url": "http://www.marketingprofs.com/",
+  "start_url": "http://www.marketingprofs.com/marketing/library/seminars/",
+  "levels": {
+    "1_1": "//span[@itemprop='author']/a/@href"
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "297",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "name": {
+        "xpath": "//div[@id='seminar-summary']//h1/text()"
+      },
+      "product_image_url": {
+        "xpath": "//img[contains(@class, 'seminar-image')]/@src",
+        "python": "urljoin('http://www.marketingprofs.com/', data) if 'http' not in data else data"
+      },
+      "description": {
+        "xpath": "//div[@id='seminar-desc']//text()",
+        "python": "html_to_text(data)"
+      },
+      "duration_display": {
+        "xpath": "//dt[contains(./text(), 'Length')]/following-sibling::dd[1]/text()"
+      },
+      "duration_filter": {
+        "xpath": "//dt[contains(./text(), 'Length')]/following-sibling::dd[1]/text()",
+        "python": "duration_filter(data) if data else None"
+      },
+      "start_date_local": {
+        "xpath": "substring-before(//dt[contains(./text(), 'Broadcast')]/following-sibling::dd[1]/text(), 'ET')",
+        "re": "Jan.*|Feb.*|Mar.*|Apr.*|May.*|Jun.*|Jul.*|Aug.*|Sep.*|Oct.*|Nov.*|Dec.*",
+        "python": "convert_date(data) if data else None"
+      },
+      "audience": {
+        "xpath": "//*[contains(./text(), 'Who Should Attend')]/following-sibling::*//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "//li[@class='option1']//div[@class='price']//text()",
+        "re": "\\d+.*",
+        "python": "get_price_float(data) if data else '0'"
+      },
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "./strong/text()"
+          },
+          "bio": {
+            "xpath": ".//text()",
+            "python": "html_to_text(data) if data else None"
+          },
+          "image": {
+            "xpath": "./img[1]/@src",
+            "python": "urljoin('http://www.marketingprofs.com/', data) if data else None"
+          }
+        },
+        "type": "[Instructor]",
+        "xpath": "//h2[contains(./text(), 'Presenter')]/following-sibling::p"
+      },
+      "ProductRating": {
+        "xpath": "//dt[contains(./text(), 'Rating')]/following-sibling::dd[1]",
+        "fields": {
+          "rating_only": "1",
+          "pub_status": "L",
+          "user_id": null,
+          "overall_rating": {
+            "xpath": "./img/@alt",
+            "re": "\\d+\\.?\\d?",
+            "python": "int(round(float(data))) if data else None"
+          }
+        },
+        "type": "[ProductRating]"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/marketing/library/seminars/.*'), restrict_xpaths=(\"//div[@class='librarypager']/a\")), follow=True)",
+        "Rule(lxml(allow=('/marketing/online-seminars/'), restrict_xpaths=(\"//div[@class='listGeneral']//div[@class='cntlisttitle']/a\")), callback='parse_product')"
+      ]
+    }
+  }
+}

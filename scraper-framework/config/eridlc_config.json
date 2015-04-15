@@ -1,0 +1,62 @@
+{
+  "base_url": "http://dlc.erieri.com", 
+  "start_url": "http://dlc.erieri.com/?#List", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "165", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "substring-after(concat(string(//div[contains(.,'Overview')]),string(//div[contains(.,'Overview')][2])),'Overview:')", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "string(//span[@class='largest_SC']/a/b)", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(.,'Learning Objectives')]", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": 0.0, 
+          "price_currency": "USD"
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[contains(.,'Course#:')]/preceding-sibling::div/img[1]/@src", 
+        "python": "urljoin('http://dlc.erieri.com/',data)", 
+        "level": "1"
+      }, 
+      "difficulty": {
+        "xpath": "//div[contains(.,'Level of Difficulty')]/text()[2]", 
+        "python": "difficulty(data)", 
+        "level": "1"
+      }, 
+      "audience": {
+        "xpath": "substring-after(string(//div[contains(.,'Audience')]),':')", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "substring-after(string(//div[contains(.,'Prerequisites')]),':')", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "substring-after(string(//div[contains(.,'Course#:')]),':')", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//tr[contains(.,'Foundation Courses')]/following-sibling::tr/td[1]/a"
+  }
+}

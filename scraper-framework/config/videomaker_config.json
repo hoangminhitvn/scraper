@@ -1,0 +1,60 @@
+{
+  "base_url": "http://www.videomaker.com",
+  "start_url": "http://www.videomaker.com/video/tutorials",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "405",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "description": {
+        "xpath": {
+          "operator": "or",
+          "value": [
+            "string(//article/div[@class='body']/p[1])",
+            "//div[@class='body']/text()",
+            "string(//div[@class='paywall paywall-video']/div[1]/p)"
+          ]
+        }
+      },
+      "name": {
+        "xpath": "string(//div[@class='inner']/h1[@class])"
+      },
+      "toc": {
+        "xpath": "//h2[contains(.,'Course outline')]/following-sibling::div[1]"
+      },
+      "product_video_url": [
+        {
+          "xpath": "//div[@class='media-youtube-video media-youtube-1']/iframe/@src",
+          "python": "urljoin('https:',data) if data else None"
+        },
+        {
+          "xpath": "//div[@class='field-external-video']/iframe/@src",
+          "python": "urljoin('https:',data) if data else None"
+        }
+      ],
+      "product_image_url": {
+        "xpath": "//div[@class='paywall paywall-video']/div[1]",
+        "re": "/misc.*jpg",
+        "python": "urljoin('http://www.videomaker.com/',data) if data else None"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/',),deny=('/search/google/.*'),restrict_xpaths=('//h2[@class=\\'node-title\\']/a[@class=\\'node-title\\']')), callback='parse_product')",
+        "Rule(lxml(allow=('/video/tutorials\\?page=\\d+',),restrict_xpaths=('//div[@class=\\'item-list\\']/ul[@class=\\'pager\\']/li[@class]/a')), follow=True)"
+      ]
+    }
+  },
+  "pre_run": {
+    "price": {
+      "xpath": "substring-before(//div[@class='benefitsgrid'][1]/h4,'or')",
+      "start_url": "https://www.videomaker.com/plus/sign-up"
+    }
+  }
+}

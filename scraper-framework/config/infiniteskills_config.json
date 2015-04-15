@@ -1,0 +1,70 @@
+{
+  "base_url": "http://infiniteskills.com", 
+  "start_url": "http://learn.infiniteskills.com/", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "268", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='example2'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "string(//h1/text())", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='example1']/ul[@id='menu1']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "substring-before(substring-after(//p/strong[contains(.,'$')],'$'),'per')"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "substring-before(//strong[contains(.,'Duration:')]/following-sibling::text()[1],'-')", 
+            "re": "(\\d+\\.?\\d*).*", 
+            "python": "duration_filter(data +' hours')"
+          }, 
+          "duration_display": {
+            "xpath": "substring-before(//strong[contains(.,'Duration:')]/following-sibling::text()[1],'-')", 
+            "python": "data.replace('Hours hours','hours')"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "formats": {
+        "xpath": "substring-before(//strong[contains(.,'Format:')]/following-sibling::text()[1],'|')", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='main_content_left_inr_text']/img/@src", 
+        "python": "urljoin('http://infiniteskills.com/',data)", 
+        "level": "1"
+      }, 
+      "published_date": {
+        "xpath": "//strong[contains(.,'Date Released:')]/following-sibling::text()[1]", 
+        "python": "convert_date(data)", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "//strong[contains(.,'SKU:')]/following-sibling::text()[1]", 
+        "re": "\\d+", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='titles']/div[@class='modal-body']/ul[@class='unstyled']/li"
+  }
+}

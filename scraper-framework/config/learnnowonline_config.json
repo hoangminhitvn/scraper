@@ -1,0 +1,99 @@
+{
+  "base_url": "http://www.learnnowonline.com",
+  "start_url": "http://www.learnnowonline.com/courses/developer",
+  "levels": {
+      "1_1": "//div[contains(@class,'bluebox')]/a/@href"
+  },
+  "selenium_config": {
+    "driver": "phantomjs",
+    "click_multi": {
+      "sleep": 4,
+      "timeout": 60
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "274",
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      },
+      "time_lock": "Y",
+      "space_lock": "N",
+      "description": {
+        "xpath": "//article[@id='outline']/h4[contains(.,'Course description')]/following-sibling::p//text()[count(.|//article[@id='outline']/h4[contains(.,'Course description')]/following-sibling::h4[1]/preceding-sibling::*//text())=count(//article[@id='outline']/h4[contains(.,'Course description')]/following-sibling::h4[1]/preceding-sibling::*//text())]",
+        "python": "' '.join(normalize_space(selector.extract()))"
+      },
+      "name": {
+        "xpath": "//article[@id='outline']/h3//text()"
+      },
+      "toc": {
+        "xpath": "//article[@id='outline']/h4[contains(.,'Course outline')]/following-sibling::div"
+      },
+      "product_video_url": {
+        "xpath": "//body",
+        "re": "re.compile('hasHtmlVideo.*attr\\(\"src\"\\, \"(.*)\".*else if \\(hasSl\\)',re.S|re.I)",
+        "level": "1_1"
+      },
+      "duration_filter": {
+        "xpath": "//tr[contains(./td/text(),'Runtime')]/td[3]/text()",
+        "python": "duration_filter(data)"
+      },
+      "difficulty": {
+        "xpath": "//tr[contains(./td/text(),'Level')]/td[3]/text()",
+        "re": "Beginner|Intermediate|Expert"
+      },
+      "duration_display": {
+        "xpath": "//tr[contains(./td/text(),'Runtime')]/td[3]/text()"
+      },
+      "certificates": {
+        "xpath": "//article[@id='outline']/p[contains(.,'This course will help you earn:')]/a",
+        "fields": {
+          "link": {
+            "xpath": "./@href"
+          },
+          "name": {
+            "xpath": ".//text()"
+          },
+          "short_name": {
+            "xpath": ".//text()",
+            "re": "[\\dA-Z]+:",
+            "python": "data.replace(':','')"
+          }
+        },
+        "type": "[Certificate]"
+      },
+      "published_date": {
+        "xpath": "//tr[contains(./td/text(),'Release date')]/td[3]/text()",
+        "python": "convert_date(data)"
+      },
+      "instructors": {
+        "xpath": "//article[@id='outline']/h4[contains(.,'Meet the expert')]/following-sibling::p",
+        "fields": {
+          "bio": {
+            "xpath": ".//text()",
+            "python": "' '.join(normalize_space(selector.extract()))"
+          },
+          "image": {
+            "xpath": "./img/@src",
+            "python": "urljoin('http://www.learnnowonline.com/',data.replace('../','')) if data else None"
+          },
+          "name": {
+            "xpath": "//article[@id='outline']/h5/a/text()"
+          }
+        },
+        "type": "[Instructor]"
+      },
+      "prerequisites": {
+        "xpath": "//article[@id='outline']/h4[contains(.,'Prerequisites')]/following-sibling::p[1]//text()",
+        "python": "' '.join(normalize_space(selector.extract()))"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/developer.*')), callback=learnnowonline.click_multi_and_follow)",
+        "Rule(lxml(allow=('learnnowonline\\.com/course'), restrict_xpaths=(\"//div[contains(@class,'grid-container')]/div/table//td//a\")), callback='parse_product')"
+      ]
+    }
+  }
+}

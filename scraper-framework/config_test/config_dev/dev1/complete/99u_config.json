@@ -1,0 +1,119 @@
+{
+  "base_url": "hhttp://99u.com/",
+  "levels": {
+    "0": {
+      "selenium_function": "slm.schroll_down_and_get_response(response)"
+    },
+    "1": {
+      "xpath": ".//h2[@class='post-title']/a/@href"
+    }
+  },
+  "start_url": ["http://99u.com/videos"],
+  "selenium_config": {
+    "driver": "phantomjs",
+    "schroll_down": {
+      "xpath": "//article",
+      "sleep": 3,
+      "retry_after_failed": 3,
+      "repeat": 100
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_name": "99U",
+      "provider_id": "1",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "product_type_name": "Courses",
+      "name": {
+        "xpath": ".//h2[@class='post-title']/a/text()"
+      },
+      "prod_image": {
+        "xpath": ".//div[contains(@class, 'article-img-wrap')]//img/@src"
+      },
+      "description": [
+        {
+          "xpath": "//div[@class='entry-content']/div[@class='fullquote'][1]/following-sibling::*//text()[count(.|//div[@class='entry-content']/div[@class='fullquote'][2]/preceding-sibling::*//text()) = count(//div[@class='entry-content']/div[@class='fullquote'][2]/preceding-sibling::*//text())]",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))",
+          "level": "1"
+        },
+        {
+          "xpath": "//div[@class='entry-content']/div[@class='header'][1]/following-sibling::*//text()[count(.|//div[@class='entry-content']/div[@class='header'][2]/preceding-sibling::*//text()) = count(//div[@class='entry-content']/div[@class='header'][2]/preceding-sibling::*//text())]",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))",
+          "level": "1"
+        },
+        {
+          "xpath": "//span[@class='header'][contains(text(), 'About this')]/following-sibling::text()[1]",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))",
+          "level": "1"
+        }
+      ],
+      "authors": {
+        "fields": {
+          "name": [
+            {
+              "xpath": "substring-after(.//*[@class='fullquote'][contains(.,'About')][not(contains(., 'presentation'))]/text(), 'About')",
+              "python": "data if data else None"
+            },
+            {
+              "xpath": "substring-after(.//*[@class='header'][contains(.,'About')][not(contains(., 'presentation'))]/text(), 'About')",
+              "python": "data if data else None"
+            }
+          ],
+          "bio": [
+            {
+              "xpath": "./div[@class='fullquote'][2]/following-sibling::p/text()[count(.|//div[@class='entry-content']/div[@class='fullquote'][3]/preceding-sibling::p//text()) = count(//div[@class='entry-content']/div[@class='fullquote'][3]/preceding-sibling::p//text())]",
+              "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            {
+              "xpath": "./div[@class='header'][2]/following-sibling::p/text()[count(.|//div[@class='entry-content']/div[@class='header'][3]/preceding-sibling::p//text()) = count(//div[@class='entry-content']/div[@class='header'][3]/preceding-sibling::p//text())]",
+              "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            {
+              "xpath": "./div[@class='fullquote'][2]/following-sibling::p[1]//text()",
+              "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+            },
+            {
+              "xpath": "./div[@class='header'][2]/following-sibling::p[1]//text()",
+              "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+            },
+            {
+              "xpath": ".//div[@class='header'][2]/following-sibling::div[1]//text()",
+              "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            {
+              "xpath": ".//div/span[@class='header'][2][contains(text(), 'About')]/following-sibling::text()",
+              "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            {
+              "xpath": ".//p/span[@class='header'][contains(text(), 'About')]/following-sibling::text()",
+              "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            {
+              "xpath": ".//*[@class='fullquote'][contains(.,'About')][not(contains(., 'presentation'))]/following-sibling::div[1]//text()",
+              "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            }
+          ],
+          "link": [
+            {
+              "xpath": ".//a[contains(@href, '.com')]/@href",
+              "re": ".*[com/]$"
+            },
+            {
+              "xpath": ".//em[contains(text(), '.com')]/parent::a/@href"
+            },
+            {
+              "xpath": ".//a[contains(text(), '.com')]//@href"
+            }
+          ]
+        },
+        "type": "[Author]",
+        "xpath": "//div[@class='entry-content']",
+        "level": "1"
+      }
+    },
+    "type": "Product",
+    "xpath": "//div[@id='post-archive']//article"
+  }
+}

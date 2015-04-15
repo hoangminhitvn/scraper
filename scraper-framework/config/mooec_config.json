@@ -1,0 +1,72 @@
+{
+  "base_url": "http://www.mooec.com", 
+  "start_url": "http://www.mooec.com/courses", 
+  "levels": {
+    "1": ".//div[@class='go-button']/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "244", 
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(//div[@class='well']//text(),//*[@id='unit_content']/p[1]//text(),//*[@id='unit_content']/p[2]//text(),//*[@id='unit_content']/p[3]//text())", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./h4[@class='title']/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='course-menu']", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": ".//img/@src"
+      }, 
+      "duration_filter": {
+        "xpath": "substring-before(substring-after(//p[contains(.,'hours of content')],'and '),' of content')", 
+        "python": "duration_filter(str(data))", 
+        "level": "1"
+      }, 
+      "duration_display": {
+        "xpath": "substring-before(substring-after(//p[contains(.,'hours of content')],'and '),' of content')", 
+        "level": "1"
+      }, 
+      "requirements": {
+        "xpath": "//strong[contains(.,'requirements')]/following::p[1]/text()", 
+        "level": "1"
+      }, 
+      "authors": {
+        "xpath": "//div[@class='col-xs-12 col-sm-12 col-md-8 col-lg-8']/div[@class='panel panel-default']/div[@class='panel-body']", 
+        "fields": {
+          "bio": {
+            "xpath": "./p/text()"
+          }, 
+          "image": {
+            "xpath": "./div[@class='col-sm-2 hidden-xs']/img/@src"
+          }, 
+          "link": {
+            "xpath": "./strong/a/@href", 
+            "python": "urljoin('http://www.mooec.com/',data)"
+          }, 
+          "name": {
+            "xpath": "./strong/a/text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1"
+      }, 
+      "prod_keywords": {
+        "xpath": "//span[contains(.,'Subject')]/following-sibling::a//text()", 
+        "type": "[str]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='courses']/div[contains(@class,'course-item')]/div[@class='item-container']"
+  }
+}

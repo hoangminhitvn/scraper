@@ -1,0 +1,77 @@
+{
+  "base_url": "http://kelbyone.com", 
+  "start_url": "http://kelbyone.com/courses", 
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@id='instructor']/div[@class='col-md-2']/a[1]/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "211", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='course-description']/p)"
+      }, 
+      "name": {
+        "xpath": "//h1[@class='product-title entry-title']/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(@class,'panel-group')]"
+      }, 
+      "product_image_url": [
+        {
+          "xpath": "//img[contains(@class,'attachment-page-feature wp-post-image')]/@src", 
+          "python": "data.replace('//','')"
+        }
+      ], 
+      "duration_filter": {
+        "xpath": "string(//div[@class='col-md-2 meta-info'][contains(.,'Duration')]/div[@class='meta-value'])", 
+        "python": "str(duration_filter(data))"
+      }, 
+      "difficulty": {
+        "xpath": "//div[contains(./text(),'Difficulty')]/following-sibling::div[1]/text()", 
+        "python": "difficulty(data)"
+      }, 
+      "duration_display": {
+        "xpath": "string(//div[@class='col-md-2 meta-info'][contains(.,'Duration')]/div[@class='meta-value'])"
+      }, 
+      "instructors": {
+        "xpath": "//div[@id='content']", 
+        "fields": {
+          "bio": {
+            "xpath": "string(//div[@id='content']/div[@class='row'][2]/div[@class='col-md-12'])"
+          }, 
+          "image": {
+            "xpath": "concat('http:',string(//div[@id='item-header']/div[@class='col-md-9']/img/@src))"
+          }, 
+          "link": {
+            "xpath": "//header[@class='page-header']/hgroup/h1[@class='page-title container']/a/@href"
+          }, 
+          "name": {
+            "xpath": "//h3/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/course/'), restrict_xpaths=('///div[@class=\\'course\\']'),),callback='parse_product')"
+      ]
+    }
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "//div[contains(@class,'subscribe-box')][3]/div[2]/p[1]/text()", 
+      "start_url": "http://kelbyone.com/subscribe/"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "base_url": "http://www.pimsleur.com", 
+  "start_url": "http://www.pimsleur.com/list-of-languages",
+  "levels": {
+    "1_1": {
+      "selenium_function": "pimsleur.click_and_get_response(response.url)"
+    }
+  }, 
+  "selenium_config": {
+    "driver": "phantomjs", 
+    "click": {
+      "xpath": "//a[contains(.,'Next')]", 
+      "repeat": -1, 
+      "sleep": 2
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "416", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='program-description'])", 
+        "python": "re.sub('[!()[\\]*()/]|http[^)]+','',html_to_text(data))"
+      }, 
+      "name": {
+        "xpath": "//*[@id='product-info']//h3/text()"
+      }, 
+      "formats": {
+        "xpath": "string(//*[@id='product-info']//ul//li[contains(.,'This Editio')])", 
+        "re": "MP3", 
+        "python": "data.strip().split(' ')"
+      }, 
+      "product_image_url": {
+        "xpath": "//*[@id='product-info']//div[@class='product-image']/img/@data-src", 
+        "python": "urljoin('http:',data)"
+      }, 
+      "price_currency": {
+        "xpath": "//*[@id='product-info']//ul//span[@class='price']/text()", 
+        "python": "get_price_currency(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "//*[@id='product-info']//ul//span[@class='price']/text()", 
+        "python": "get_price_float(data)"
+      }, 
+      "ProductRating": {
+        "xpath": "//div[@class='reviews']//div[contains(@class,'pr-review-wrap')]", 
+        "fields": {
+          "username": {
+            "xpath": ".//p[contains(.,'By')]/span/text()"
+          }, 
+          "rating_only": "0", 
+          "user_id": "0", 
+          "review": {
+            "xpath": ".//p[@class='pr-comments']", 
+            "python": "html_to_text(data)"
+          }, 
+          "pub_status": "L", 
+          "overall_rating": {
+            "xpath": ".//*[contains(@class,'pr-rating')]/text()"
+          }
+        }, 
+        "type": "[ProductRating]", 
+        "level": "1_1"
+      }, 
+      "pub_status": "L"
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/learn.*/\\d+$')), callback='parse_product')",
+        "Rule(lxml(allow=('/learn.*',), restrict_xpaths='//div[contains(@class,\\'tab-content\\')]//ul/li[contains(@class,\\'language-list-item\\')]/a'),follow=True)"
+      ]
+    }
+  }
+}

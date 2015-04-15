@@ -1,0 +1,63 @@
+{
+    "baseUrl": "http://www.cadmasters.com/",
+    "levels": {},
+    "start_url": "http://www.cadmasters.com/training1.asp",
+    "output_config": {
+        "fields": {
+            "provider_name": "CAD Masters",
+            "provider_id": "115",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": ".//a[@class='bheader_sm']/text()"
+            },
+            "description": [
+                {
+                    "xpath": ".//div[@class='class_description_tr']//text()",
+                    "re": "re.compile('(.*)Prerequisite',re.S)",
+                    "python": "' '.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                },
+                {
+                    "xpath": ".//div[@class='class_description_tr']//text()",
+                    "python": "' '.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                }
+            ],
+            "prerequisites": {
+                "xpath": ".//div[@class='class_description_tr']//text()",
+                "re": "re.compile('Prerequisite:(.*)',re.S)",
+                "python": "' '.join([normalizeSpace(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            "product_events": {
+                "fields": {
+                    "duration_filter": {
+                        "xpath": "substring-before(.//span[@class='see_text']/text(), 'Day')",
+                        "python": "duration_filter(re.sub('-','',data))"
+                    },
+                    "duration_display": {
+                        "xpath": "substring-before(.//span[@class='see_text']/text(), 'Day')",
+                        "python": "re.sub('-','',data)"
+                    },
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": "substring-after(.//span[@class='see_text']/text(), '$')",
+                        "re": "(\\d+\\,?\\d+)",
+                        "python": "getPriceFloat(data)"
+                    },
+                    "price_filter": {
+                        "xpath": "substring-after(.//span[@class='see_text']/text(), '$')",
+                        "re": "(\\d+\\,?\\d+)",
+                        "python": "getPriceFloat(data)"
+                    }
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "[Product]",
+        "xpath": "//tr[contains(.//span/@class,'bheader_sm')]",
+        "extractorRules": {
+            "rules": "[Rule(lxml(allow=('.*'), restrict_xpaths=\"'//a[@class=\\'soft_style5\\']'\"), callback='parse', follow=True)]"
+        }
+    }
+}

@@ -1,0 +1,70 @@
+{
+  "base_url": "http://www.onlinemarketinginstitute.org", 
+  "start_url": "http://www.onlinemarketinginstitute.org/classes/", 
+  "levels": {
+    "1_1": {
+      "xpath": "//text()[contains(.,'Instructor: ')]/following-sibling::a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "209", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(string(//h2[@class='class-primer-header']),string(//div[@id='object-abstract']/p))"
+      }, 
+      "name": {
+        "xpath": "string(//h1[@class='class-title'])"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='playlist']"
+      }, 
+      "product_video_url": {
+        "xpath": "//video[@id]/src/@url", 
+        "type": "[str]"
+      }, 
+      "duration_filter": {
+        "xpath": "string(//dt[contains(.,'Duration')]/following-sibling::dd)", 
+        "python": "duration_filter(data)"
+      }, 
+      "difficulty": {
+        "xpath": "string(//dt[contains(.,'Level')]/following-sibling::dd)", 
+        "re": "Beginner|Intermediate|Advanced"
+      }, 
+      "duration_display": {
+        "xpath": "string(//dt[contains(.,'Duration')]/following-sibling::dd)"
+      }, 
+      "instructors": {
+        "fields": {
+          "bio": {
+            "xpath": "string(//div[@class='bio'])"
+          }, 
+          "image": {
+            "xpath": "//div[@class='thumbnail']/img/@src", 
+            "python": "urljoin('http://www.onlinemarketinginstitute.org',data)"
+          }, 
+          "name": {
+            "xpath": "string(//h1)"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('/classes/.*/.*/',)), callback='parse_product'), Rule(lxml(allow=('/classes/.*/', )), follow=True),]"
+    }
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "string(//div[@id='individual']//div[@class='col-md-3 col-sm-6'][1]//div[@class='sub-price'])", 
+      "start_url": "http://www.onlinemarketinginstitute.org/signup"
+    }
+  }
+}

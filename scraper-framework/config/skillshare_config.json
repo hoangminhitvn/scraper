@@ -1,0 +1,58 @@
+{
+  "base_url": "http://www.skillshare.com", 
+  "start_url": "http://www.skillshare.com/classes", 
+  "levels": {
+    "1_1": {
+      "python": "skillshare.get_response_instructors(response)"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "266", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "description": {
+        "python": "skillshare.description(response)"
+      }, 
+      "name": {
+        "xpath": "//h1[@class='class-title']//text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='unit-list-wrapper']"
+      }, 
+      "product_video_url": {
+        "python": "skillshare.video(response)"
+      }, 
+      "product_image_url": {
+        "python": "skillshare.product_image_url(response)"
+      }, 
+      "duration_filter": {
+        "xpath": "substring-after(substring-before(//div[@class='playlist']/div[@class='summary']/text(),')'),'(')", 
+        "python": "duration_filter(data)"
+      }, 
+      "duration_display": {
+        "xpath": "substring-after(substring-before(//div[@class='playlist']/div[@class='summary']/text(),')'),'(')"
+      }, 
+      "published_date": {
+        "python": "skillshare.published_date(response)"
+      }, 
+      "instructors": {
+        "python": "skillshare.instructors(response)", 
+        "level": "1_1"
+      }, 
+      "prod_keywords": {
+        "python": "skillshare.prod_keywords(response)"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/classes\\?page=\\d+',)),follow=True)", 
+        "Rule(lxml(allow=('\\d+\\?via=browse-popular-all',),restrict_xpaths='//ul[contains(@class,\\'classes-list-grid\\')]/li'),callback='parse_product')"
+      ]
+    }
+  }
+}

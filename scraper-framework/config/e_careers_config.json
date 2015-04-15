@@ -1,0 +1,58 @@
+{
+    "base_url": "http://www.e-careers.com/",
+    "start_url": "http://www.e-careers.com/browse-courses",
+    "levels": {},
+    "output_config": {
+        "fields": {
+            "provider_id": "107",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//h3[contains(.,'Course Introduction')]/following-sibling::p//text()[count(.|//h3[contains(.,'Course Introduction')]/following-sibling::h3[1]/preceding-sibling::p//text()) = count(//h3[contains(.,'Course Introduction')]/following-sibling::h3[1]/preceding-sibling::p//text())]",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "//div[@class='course-description']/div[1]/p[1]//text()",
+                    "python": "html_to_text(data)"
+
+                }
+            ],
+            "name": {
+                "xpath": "string(//h1[@class='course-title'])",
+                "re": "\\w.*"
+            },
+            "toc": {
+                "xpath": "//*[@id='CourseInfoTab']"
+            },
+            "partner_prod_id": {
+                "xpath": "//tr[contains(.,'Course Code')]/following-sibling::tr[1]//text()",
+                "re": "\\w.*"
+            },
+            "product_image_url": {
+                "xpath": "//div[@class='course-img']/img[@class='img-responsive']/@src"
+            },
+            "price_currency": "GBP",
+            "price_display_float": {
+                "xpath": "//div[@class='course-price-new']//text()",
+                "re": "\\d+.*",
+                "python": "get_price_float(data)"
+            },
+            "requirements": {
+                "xpath": "//table[@class='product_course_specification min_width about_product_course_specification']//td/text()",
+                "type": "[str]"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('.*'), restrict_xpaths=('//li[@class=\\'product-item\\']/a'),), callback='parse_product')",
+                "Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[@class=\\'ec_prod_cat\\']/li/a'),), follow=True)"
+            ]
+        }
+    }
+}

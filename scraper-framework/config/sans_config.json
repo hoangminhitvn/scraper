@@ -1,0 +1,145 @@
+{
+    "base_url": "https://www.sans.org",
+    "start_url": "https://www.sans.org/find-training/index/5531957/search/",
+    "levels": {
+        "1_2": {
+            "xpath": "//ul/li/a[contains(.,'Location')]/@href"
+        },
+        "1_1": {
+            "xpath": "//span[contains(.,'Instructor')]/following-sibling::a/@href"
+        }
+    },
+    "settings": {
+        "DOWNLOADER_MIDDLEWARES": {
+            "scrapy_balloons.useragent.RandomUserAgentMiddleware": 500
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "345",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "Y",
+            "space_lock": "Y",
+            "description": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "substring-before(//div[@id='course_overview_section'],'Hide')",
+                        "//h2/following-sibling::p[1]//text()",
+                        "string(//div[@id='course_overview_section'])"
+                    ]
+                },
+                "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            "name": {
+                "xpath": "string(//h2)"
+            },
+            "toc": {
+                "xpath": "//div[@id='course_sections_section']"
+            },
+            "product_events": {
+                "fields": {
+                    "location_city": [
+                        {
+                            "xpath": "string(//span[@class='locality'])",
+                            "level": "1_2"
+                        },
+                        {
+                            "xpath": "substring-before(substring-before(//h1/following-sibling::span,'|'),',')"
+                        }
+                    ],
+                    "price_currency": {
+                        "xpath": "concat(substring('USD', 1 div contains(//td[@class='table_data table_data_price'],'$')),substring('EUR', 1 div contains(//td[@class='table_data table_data_price'],'\u20ac')))",
+                        "re": "[A-Z]{3}"
+                    },
+                    "location_addr": {
+                        "xpath": "string(//div[@class='adr'])",
+                        "level": "1_2"
+                    },
+                    "location_country": {
+                        "xpath": "concat(substring(substring-after(substring-before(//h1/following-sibling::span,'|'),', '),1 div boolean(string-length(substring-after(substring-before(//h1/following-sibling::span,'|'),', '))>3)),substring('',1 div boolean(string-length(substring-after(substring-before(//h1/following-sibling::span,'|'),', '))<4)))"
+                    },
+                    "language": "eng",
+                    "location_state": [
+                        {
+                            "xpath": "string(//abbr[@class='region'])",
+                            "level": "1_2"
+                        },
+                        {
+                            "xpath": "concat(substring(substring-after(substring-before(//h1/following-sibling::span,'|'),', '),1 div boolean(string-length(substring-after(substring-before(//h1/following-sibling::span,'|'),','))=4)),substring('',1 div boolean(string-length(substring-after(substring-before(//h1/following-sibling::span,'|'),','))>4)))"
+                        }
+                    ],
+                    "location_postal": {
+                        "xpath": "string(//span[@class='postal-code'])",
+                        "level": "1_2"
+                    },
+                    "start_date_local": {
+                        "xpath": "concat(substring(substring-before(substring-after(substring-after(//h1/following-sibling::span,'|'),', '),'-'), 1 div boolean(string-length(substring-before(substring-after(substring-after(//h1/following-sibling::span,'|'),', '),'-'))>12)),substring(concat(substring-after(substring-before(//h1/following-sibling::span,'-'),' '),substring-after(//h1/following-sibling::span,', ')),1 div boolean(string-length(substring-before(substring-after(substring-after(//h1/following-sibling::span,'|'),', '),'-'))=0)),substring(concat(substring-after(substring-before(substring-after(//h1/following-sibling::span,'|'),'-'),', '),substring-after(substring-after(substring-after(//h1/following-sibling::span,'-'),','),', ')),1 div contains(string-length(substring-before(substring-after(substring-after(//h1/following-sibling::span,'|'),', '),'-'))>0,string-length(substring-before(substring-after(substring-after(//h1/following-sibling::span,'|'),', '),'-'))<10)))",
+                        "python": "convert_date(data) if data else None"
+                    },
+                    "price_display_float": {
+                        "xpath": "string(//td[@class='table_data table_data_price'])",
+                        "re": "\\d*",
+                        "python": "get_price_float(data) if data else '0.00'"
+                    },
+                    "location_display": [
+                        {
+                            "xpath": "concat(//div[@class='org fn'],' ',//div[@class='adr'])",
+                            "level": "1_2"
+                        },
+                        {
+                            "xpath": "substring-before(//h1/following-sibling::span,'|')"
+                        }
+                    ],
+                    "end_date_local": {
+                        "xpath": "substring-after(substring-after(//h1/following-sibling::span,'- '),' ')",
+                        "python": "convert_date(data) if data else None"
+                    },
+                    "location_name": {
+                        "xpath": "string(//div[@class='org fn'])",
+                        "level": "1_2"
+                    },
+                    "duration_filter": {
+                        "xpath": "string(//ul[@class='details']/li[contains(.,'Study Time')])",
+                        "re": "\\d.*",
+                        "python": "duration_filter(data)"
+                    },
+                    "duration_display": {
+                        "xpath": "string(//ul[@class='details']/li[contains(.,'Study Time')])",
+                        "re": "\\d.*"
+                    }
+                },
+                "type": "[ProductEvent]"
+            },
+            "product_video_url": {
+                "xpath": "//div[@id='course_video']/object/@data"
+            },
+            "product_image_url": {
+                "xpath": "//div[@id='course_content']/div[@id='course_image']/img/@src",
+                "python": "urljoin('http://www.sans.org/',data) if data else None"
+            },
+            "requirements": {
+                "xpath": "string(//tr[@id='section_details_laptop_description']/td)",
+                "python": "data if data else None"
+            },
+            "audience": {
+                "xpath": "//tr[@id='section_details_who_should_attend']/td//text()",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            "prerequisites": {
+                "xpath": "string(//tr[@id='section_details_prerequisites']/td)",
+                "python": "data if data else None"
+            },
+            "partner_prod_id": {
+                "xpath": "substring-before(//h2,':')",
+                "re": "[A-Z]+[0-9]+"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": "[Rule(lxml(allow=('//www.sans.org/\\w.*',),deny=('/event-downloads/','/onsite/','/cyber-defense-initiative-2014'),restrict_xpaths=('//div[@class=\\'table_mini_nav\\']/following-sibling::table[1]/tr[position()>1]/td[1]/a')), callback='parse_product'),]"
+        }
+    }
+}

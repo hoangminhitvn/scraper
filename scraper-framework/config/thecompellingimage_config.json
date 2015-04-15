@@ -1,0 +1,99 @@
+{
+  "base_url": "http://www.thecompellingimage.com", 
+  "start_url": "http://www.thecompellingimage.com/courses?page=1", 
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@id='course_photo']/dl[@class='course_meta_new']/dd[1]/a/@href", 
+      "python": "urljoin('http://www.thecompellingimage.com',data) if data else None"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "309", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[contains(@class,'courses')]/p[1]//text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//h1/text()"
+      }, 
+      "product_events": {
+        "xpath": "//div[@class='sessions']/ul/li", 
+        "fields": {
+          "price_display_float": {
+            "xpath": "//h1/span/text()", 
+            "re": "[\\d\\.]+", 
+            "python": "get_price_float(data) if data else None"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "//*[contains(./text(),'Duration:')]/following-sibling::dd[1]/text()", 
+            "python": "duration_filter(data) if data else None"
+          }, 
+          "start_date_local": {
+            "xpath": "./a//text()", 
+            "python": "convert_date(data)"
+          }, 
+          "duration_display": {
+            "xpath": "//*[contains(./text(),'Duration:')]/following-sibling::dd[1]/text()", 
+            "python": "data if data else None"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='course_image']/iframe/@src"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@id='course_image']/img/@src", 
+        "python": "urljoin('http://www.thecompellingimage.com',data) if data else None"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//*[contains(./text(),'Duration:')]/following-sibling::dd[1]/text()", 
+        "python": "duration_filter(data) if data else None"
+      }, 
+      "price_display_float": {
+        "xpath": "//h1/span/text()", 
+        "re": "[\\d\\.]+", 
+        "python": "get_price_float(data) if data else None"
+      }, 
+      "duration_display": {
+        "xpath": "//*[contains(./text(),'Duration:')]/following-sibling::dd[1]/text()", 
+        "python": "data if data else None"
+      }, 
+      "instructors": {
+        "xpath": "//body[contains(@id,'instructor')]", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[contains(@class,'instructors')]/p//text()", 
+            "python": "' '.join(normalize_space(selector.extract())) if data else None"
+          }, 
+          "image": {
+            "xpath": ".//div[contains(@id,'instructor_photo')]/a/img/@src", 
+            "python": "urljoin('http://www.thecompellingimage.com',data) if data else None"
+          }, 
+          "name": {
+            "xpath": "./dl[@class='course_meta_new']/dd[1]/a//text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('com/(courses/)?(\\w+-)+',),restrict_xpaths=('//div[contains(@class,\\'course\\')]/div[contains(@class,\\'alpha\\')]/h3')), callback='parse_product')", 
+        "Rule(lxml(allow=('/courses\\?page=[0-9]+',)),follow=True)"
+      ]
+    }
+  }
+}

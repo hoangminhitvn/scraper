@@ -1,0 +1,67 @@
+{
+    "base_url": "https://www.packtpub.com",
+    "levels": {
+        "1":".//div[@class='book-block-overlay']/a/@href"
+    },
+    "start_url": "https://www.packtpub.com/web-development",
+    "output_config": {
+        "fields": {
+            "provider_id": "433",
+            "product_type_id": {
+                "xpath": "//div[@class='book-type-select-ebook']",
+                "python": "product_type_id('books') if data else product_type_id('courses')",
+                "level": "1"
+            },
+            "language": "eng",
+            "pub_status":"L",
+            "name": {
+                "xpath": "//h1/text()",
+                "level": "1"
+            },
+            "product_image_url": {
+                "xpath": "//div[contains(@class,'book-top-block-image')]//img/@src[contains(.,'jpg')]",
+                "python": "urljoin('https:',data)",
+                "level": "1"
+            },
+            "description": {
+                "xpath": "//div[@class='book-info-about-text']//text()",
+                "level": "1"
+            },
+            "duration_filter": {
+                "xpath": "string(//div[@class='book-info-nb-page'])",
+                "python": "duration_filter(data.replace('Course Length','').replace('Paperback',''))",
+                "level": "1"
+            },
+            "duration_display": {
+                "xpath": "string(//div[@class='book-info-nb-page'])",
+                "python": "data.replace('Course Length','').replace('Paperback','')",
+                "level": "1"
+            },
+            "price_currency": {
+                "xpath": "string(//div[@class='book-top-pricing-main-ebook-price '])",
+                "python": "get_price_currency(data)",
+                "level": "1"
+            },
+            "price_display_float": {
+                "xpath": [
+                    "string(//div[@class='book-top-pricing-main-ebook-price '])",
+                    "string(//div[@class='book-top-pricing-main-book-price '])"
+                ],
+                "python": "get_price_float(data)",
+                "level": "1"
+            },
+            "formats": {
+                "xpath": "string(//div[@class='book-type-select-ebook'])",
+                "python": "'eBook' if data else 'Video'",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "xpath": "//div[contains(@class,'panel-col-last')]//div[@class='content']/div[contains(@class,'book-block-outer')]",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('.*',), restrict_xpaths=('//div[@class=\\'content\\']/div[@class=\\'solr-pager cf\\'][1]/div[@class=\\'solr-pager-page-selector\\']/a'), attrs=('data-offset'), process_value=packtpub.extract_links_cat), follow=True, callback='parse')"
+            ]
+        }
+    }
+}

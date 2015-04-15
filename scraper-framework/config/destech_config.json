@@ -1,0 +1,148 @@
+{
+  "base_url": "http://www.destech.com/", 
+  "start_url": "http://www.destech.com/education/courses/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "83", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "N", 
+      "description": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "substring-after(//p[contains(.,'Description')],':')"
+          ]
+        }
+      }, 
+      "name": {
+        "xpath": "string(//h1[@class='title'])"
+      }, 
+      "toc": {
+        "xpath": "//p[contains(.,'Topics')]/following-sibling::*"
+      }, 
+      "product_events": [
+        {
+          "xpath": "//table[@class='dt_parse_classTable_selector'][1]//tr[@class='dt_parse_rowSelect']", 
+          "fields": {
+            "price_currency": "USD", 
+            "language": "eng", 
+            "start_date_local": {
+              "xpath": "./td[1]//text()", 
+              "python": "convert_date(data)"
+            }, 
+            "duration_filter": [
+              {
+                "xpath": "./td[2]//text()", 
+                "python": "duration_filter(data + ' Days')"
+              }, 
+              {
+                "xpath": "//i[contains(.,'Duration')]/following-sibling::text()", 
+                "python": "duration_filter(data)"
+              }
+            ], 
+            "price_display_float": {
+              "xpath": "./td[3]//text()", 
+              "python": "get_price_float(data) if data else '0.00'"
+            }, 
+            "duration_display": [
+              {
+                "xpath": "./td[2]//text()", 
+                "python": "data + ' Day' if data=='1' else data + ' Days'"
+              }, 
+              {
+                "xpath": "//i[contains(.,'Duration')]/following-sibling::text()"
+              }
+            ]
+          }, 
+          "type": "[ProductEvent]"
+        }, 
+        {
+          "fields": {
+            "price_currency": "USD", 
+            "duration_filter": {
+              "xpath": "//i[contains(.,'Duration')]/following-sibling::text()", 
+              "python": "duration_filter(data)"
+            }, 
+            "language": "eng", 
+            "duration_display": {
+              "xpath": "//i[contains(.,'Duration')]/following-sibling::text()"
+            }
+          }, 
+          "type": "[ProductEvent]"
+        }
+      ], 
+      "requirements": {
+        "xpath": "//i[contains(.,'Recommended:')]/following-sibling::text()[1]"
+      }, 
+      "audience": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "string(//p[contains(.,'Audience:')]/following-sibling::ul)", 
+            "//td[contains(.,'Audience:')]/following-sibling::td//text()", 
+            "//i[contains(.,'Audience: ')]/following-sibling::ul[1]//text()"
+          ]
+        }, 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "prerequisites": [
+        {
+          "xpath": "//p[contains(.,'Required Prerequisites')]/following-sibling::ul[1]//text() | //p[contains(.,'Suggested Preerquisites')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//i[contains(.,'Required Prerequisites')]/following-sibling::ul[1]//text() | //i[contains(.,'Suggested Preerquisites')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//td[contains(.,'Prerequisites:')]/following-sibling::td//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//em[contains(.,'Prerequisites: ')]/following-sibling::text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//p[contains(.,'Prerequisites:')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//p[contains(.,'Prerequisities:')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//p[contains(.,'Prequisites:')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//em[contains(.,'Prerequisites: ')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//p[contains(.,'Required Prerequisites')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//i[contains(.,'Prerequisites:')]/following-sibling::ul[1]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//i[contains(.,'Prerequisites')]/following-sibling::text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//i[contains(.,'Prequisites')]/following-sibling::text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }
+      ]
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('.*',),restrict_xpaths=('//h2[contains(.,\\'Courses\\')]/following-sibling::ul[1]/li/a')), callback='parse_product'),Rule(lxml(allow=('.*',),restrict_xpaths=('//h2[contains(.,\\'Categories\\')]/following-sibling::ul[1]/li//a',)), follow=True)]"
+    }
+  }
+}

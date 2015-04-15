@@ -1,0 +1,65 @@
+{
+    "baseUrl": "http://www.e-careers.com/",
+    "levels": {},
+    "start_url": "http://www.e-careers.com/",
+    "output_config": {
+        "fields": {
+            "provider_name": "E-careers",
+            "provider_id": "107",
+            "product_type_name": "Courses",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "name": {
+                "xpath": "string(//div[@class='fullproducttitle']/h1)"
+            },
+            "prod_image": {
+                "xpath": "//div[@class='outterborder']//td[@class='col1']//img/@src"
+            },
+            "formats": "video",
+            "preview_video": {
+                "xpath": "//div[@class='jshop_prod_description']//iframe/@src",
+                "python": "data if 'http' in data else None"
+            },
+            "description": [
+                {
+                    "xpath": "normalize-space(substring(//div[@class='jshop_prod_description'], 0, 520))",
+                    "python": "normalizeSpace(html2text.html2text(data)) if data else None"
+                },
+                {
+                    "xpath": "string(//div[@id='tabbox']/div[@id='tab1']//td[contains(., 'Description:')])",
+                    "python": "data.replace('Description:', '')"
+                }
+            ],
+            "requirements": {
+                "xpath": "//div[@id='tabbox']/div[@id='tab2']//strong[contains(., 'Entry Requirements')]/following-sibling::text()[1]"
+            },
+            "toc": {
+                "xpath": "//div[@id='tabbox']/div[@id='tab1']"
+            },
+            "duration_filter": {
+                "xpath": "//div[@id='tabbox']/div[@id='tab2']//strong[contains(., 'Learning Hours')]/following-sibling::text()[1]",
+                "python": "duration_filter(data)"
+            },
+            "duration_display": {
+                "xpath": "//div[@id='tabbox']/div[@id='tab2']//strong[contains(., 'Learning Hours')]/following-sibling::text()[1]",
+                "python": "duration_filter(data)"
+            },
+            "price_currency": "USD",
+            "price_display_float": {
+                "xpath": "//span[@id='block_price']/text()",
+                "re": "\\d+.*d*",
+                "python": "getPriceFloat(str(round(int(data.replace(',',''))*1.68)))"
+            },
+            "price_filter": {
+                "xpath": "//span[@id='block_price']/text()",
+                "re": "\\d+,?\\d*",
+                "python": "getPriceFloat(str(round(int(data.replace(',',''))*1.68)))"
+            }
+        },
+        "type": "[Product]",
+        "extractorRules": {
+            "rules": "[Rule(lxml(allow=('.*'),restrict_xpaths=('//div[@class=\\'image_block\\']/a')), callback='parseItemExtractors'), Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[contains(@class, \\'maximenuck\\')]/li[2]//div[@class=\\'maxidrop-main\\']//a')), follow=True)]"
+        }
+    }
+}

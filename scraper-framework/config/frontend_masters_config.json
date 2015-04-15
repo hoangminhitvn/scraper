@@ -1,0 +1,72 @@
+{
+  "base_url": "", 
+  "start_url": "https://frontendmasters.com/courses/", 
+  "levels": {
+    "1": "./div[@class='content three-quarters']/div[1]/h2/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "202", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='description'])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./div[@class='content three-quarters']/div[1]/h2/a/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='toc']", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='main']/div[@class]/div[@class='dialog']/a[@class='button']/@href", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "./div[@class='image quarter']/img/@src"
+      }, 
+      "duration_filter": {
+        "xpath": "substring-before(.//p[@class='meta'],'|')", 
+        "python": "duration_filter(data)"
+      }, 
+      "duration_display": {
+        "xpath": "substring-before(.//p[@class='meta'],'|')"
+      }, 
+      "published_date": {
+        "xpath": "substring-after(.//p[@class='meta'],'on ')", 
+        "python": "convert_date(data)"
+      }, 
+      "instructors": {
+        "xpath": "//div[@class='quarter']/div[@class]", 
+        "fields": {
+          "bio": {
+            "xpath": "./div//p[@class='bio']/text()"
+          }, 
+          "link": {
+            "xpath": "./div//p[@class='links']/a/@href", 
+            "type": "[str]"
+          }, 
+          "name": {
+            "xpath": "./p[@class='name']/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='course-list']/div[@class='container']/div"
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "//div[@class='entry-content']/div[@class='enroll-text']/p/span[@class='line2']/text()", 
+      "start_url": "https://frontendmasters.com/enroll2/"
+    }
+  }
+}

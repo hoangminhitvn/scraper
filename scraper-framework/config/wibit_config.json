@@ -1,0 +1,43 @@
+{
+  "base_url": "https://www.wibit.net/", 
+  "start_url": "https://www.wibit.net/courses", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "409", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//*[@class='project-description']/span", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//div[contains(@class,'delay_3')]/h2/text()"
+      }, 
+      "toc": {
+        "xpath": "//*[@class='project-description']/div[@class='row'][2]"
+      }, 
+      "product_image_url": {
+        "xpath": "//*[@class='gallery-inner']/li/img/@src"
+      }, 
+      "duration_filter": {
+        "xpath": "//*[@class='project-info']/ul/li[1]/p/text()", 
+        "python": "str(duration_filter(data))"
+      }, 
+      "duration_display": {
+        "xpath": "//*[@class='project-info']/ul/li[1]/p/text()"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('courses')), follow=True)", 
+        "Rule(lxml(allow=('/course/')), callback='parse_product')"
+      ]
+    }
+  }
+}

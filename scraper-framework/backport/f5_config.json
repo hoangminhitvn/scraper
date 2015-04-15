@@ -1,0 +1,81 @@
+{
+
+    "base_url": "https://f5.com",
+    "levels": {
+        "1": "./h3/a/@href"
+    },
+    "start_url": "https://f5.com/education/training/courses",
+    "output_config": {
+        "fields": {
+            "provider_name": "f5",
+            "provider_id": "514",
+            "product_type_name": "Courses",
+            "language": "eng",
+            "space_lock": "Y",
+            "time_lock": "Y",
+            "name": {
+                "xpath": "./h3/a/text()"
+            },
+            "prod_keywords": {
+                "xpath": "./div[@class='topics']/span[2]/a/text()",
+                "type": "[str]",
+                "python": "normalize_space(data)"
+            },
+            "partner_prod_id": {
+                "xpath": "substring-after(//aside/div[@class='articleDetails']/section/ul/li[1],'SKU: ')",
+                "level": "1"
+            },
+            "toc": {
+                "xpath": "//section[@class='content']/div/ul[@class='TOC']",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "price_currency": {
+                        "xpath": "substring-before(substring-after(//aside/div[@class='articleDetails']/section/ul/li[2],'('),')')"
+                    },
+                    "price_display_text": {
+                        "xpath": "substring-after(//aside/div[@class='articleDetails']/section/ul/li[2],'Price: ')"
+                    },
+                    "price_display_float": {
+                        "xpath": "substring-before(substring-after(//aside/div[@class='articleDetails']/section/ul/li[2],'Price: $'),' (')"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "level": "1"
+            },
+            "description": {
+                "xpath": "//section[@class='content']/p[1]/text()",
+                "level": "1"
+            },
+            "audience": {
+                "xpath": "//section[@class='content']/p[3]/text()",
+                "level": "1"
+            },
+            "prerequisites": {
+                "xpath": {
+                    "value": ["//section[@class='content']/h2[contains(.,'Prerequisites')]/following-sibling::ul/li/text()",
+                        "//section[@class='content']/h2[contains(.,'Prerequisites')]/following-sibling::ul/li//text()"
+                    ],
+                    "operator": "and"
+                },
+                "level": "1",
+                "type": "[str]"
+            }
+        },
+        "type": "Product",
+        "xpath": "//div[@class='listing-item']"
+    },
+    "pre_run": {
+        "price": {
+            "start_url": "https://teamtreehouse.com/subscribe/plans?trial=yes",
+            "xpath": "concat(//div[@class='plan-meta-silver']/span/text(),//div[@class='plan-meta-silver']/span/small/text())"
+        },
+        "all_events": {
+            "start_url": "https://f5.com/education/training/schedule",
+            "extractor_rules": {
+                "rules": ["Rule(lxml(allow=('.*'),restrict_xpaths=\"//span[@id='dnn_ContentPane']//ul//li/a\"), callback=pre_run_service.parse)"]
+            }
+        }
+    }
+}

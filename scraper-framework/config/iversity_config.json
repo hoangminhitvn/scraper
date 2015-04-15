@@ -1,0 +1,130 @@
+{
+  "base_url": "https://iversity.org",
+  "start_url": "https://iversity.org/en/courses",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "252",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "Y",
+      "space_lock": "N",
+      "language": "eng",
+      "name": {
+        "xpath": "//h1[@class='course-title']//text()"
+      },
+      "product_video_url": {
+        "xpath": "//div[contains(@class,'youtube')]/iframe/@src"
+      },
+      "product_image_url": {
+        "xpath": "//div[contains(@class,'course-cover-header')]/@style",
+        "re": "http(?:[\\w.*:/-]*)"
+      },
+      "description": [
+        {
+          "xpath": "//div[contains(./h1/text(), 'About this course')]/h4[1]/following-sibling::p[not(contains(., 'Sign up now'))]//text()[count(.|//div[contains(./h1/text(), 'About this course')]/h4[2]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text()) = count(//div[contains(./h1/text(), 'About this course')]/h4[2]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text())]",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "//div[contains(./h1/text(), 'About this course')]/h3[contains(., 'Course Description')]/following-sibling::p[not(contains(., 'Sign up now'))]//text()[count(.|//div[contains(./h1/text(), 'About this course')]/h3[2]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text()) = count(//div[contains(./h1/text(), 'About this course')]/h3[2]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text())]",
+          "re": "\\w+.*",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "//div[contains(./h1/text(), 'About this course')]/h3[contains(., 'Why Gamification')]/following-sibling::p[not(contains(., 'Sign up now'))]//text()[count(.|//div[contains(./h1/text(), 'About this course')]/h3[2]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text()) = count(//div[contains(./h1/text(), 'About this course')]/h3[2]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text())]",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "//div[contains(./h1/text(), 'About this course')]/h3[contains(., 'Learn how to measure')]/following-sibling::p[not(contains(., 'Sign up now'))]//text()[count(.|//div[contains(./h1/text(), 'About this course')]/h3[2]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text()) = count(//div[contains(./h1/text(), 'About this course')]/h3[2]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text())]",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": "//div[contains(./h1/text(), 'About this course')]/h1/following-sibling::p[not(contains(., 'Sign up now'))]//text()[count(.|//div[contains(./h1/text(), 'About this course')]/h3[1]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text()) = count(//div[contains(./h1/text(), 'About this course')]/h3[1]/preceding-sibling::p[not(contains(., 'Sign up now'))]//text())]",
+          "python": "html_to_text(data)"
+        }
+      ],
+      "toc": [
+        {
+          "xpath": "//h3[contains(.,'Course Content')]/following-sibling::*[count(.|//h3[contains(.,'Course Content')]/following-sibling::h3[1]/preceding-sibling::*) = count(//h3[contains(.,'Course Content')]/following-sibling::h3[1]/preceding-sibling::*)]"
+        },
+        {
+          "xpath": "//h4[contains(.,'Course Structure')]/following-sibling::*[count(.|//h4[contains(.,'Course Structure')]/following-sibling::h4[1]/preceding-sibling::*) = count(//h4[contains(.,'Course Structure')]/following-sibling::h4[1]/preceding-sibling::*)]"
+        },
+        {
+          "xpath": "//h3[contains(.,'Course Structure')]/following-sibling::*[count(.|//h3[contains(.,'Course Structure')]/following-sibling::h3[1]/preceding-sibling::*) = count(//h3[contains(.,'Course Structure')]/following-sibling::h3[1]/preceding-sibling::*)]"
+        },
+        {
+          "xpath": "//h3[contains(.,'Course Schedule')]/following-sibling::*[count(.|//h3[contains(.,'Course Schedule')]/following-sibling::h3[1]/preceding-sibling::*) = count(//h3[contains(.,'Course Schedule')]/following-sibling::h3[1]/preceding-sibling::*)]"
+        },
+        {
+          "xpath": "//h3[contains(.,'Content of the course')]/following-sibling::*[count(.|//h3[contains(.,'Content of the course')]/following-sibling::h3[1]/preceding-sibling::*) = count(//h3[contains(.,'Content of the course')]/following-sibling::h3[1]/preceding-sibling::*)]"
+        },
+        {
+          "xpath": "//h4[contains(.,'Course Structure')]/following-sibling::*"
+        },
+        {
+          "xpath": "//h4[contains(.,'Course Schedule')]/following-sibling::*"
+        }
+      ],
+      "product_events": {
+        "fields": {
+          "start_date_local": {
+            "xpath": ".//li[contains(@title, 'date')]//text()",
+            "re": "\\w.*",
+            "python": "convert_date(data)"
+          },
+          "duration_display": {
+            "xpath": ".//li[contains(./*/@class, 'fa-bell')]//text()",
+            "python": "html_to_text(data) if data else None"
+          },
+          "duration_filter": {
+            "xpath": ".//li[contains(./*/@class, 'fa-bell')]//text()",
+            "python": "duration_filter(html_to_text(data)) if data else None"
+          }
+        },
+        "type": "[ProductEvent]",
+        "xpath": "//div[contains(@class, 'course-aditional')]"
+      },
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": ".//h2[contains(@class, 'instructor-name')]/text()"
+          },
+          "bio": {
+            "xpath": ".//div[contains(@class, 'instructor-description')]/p//text()",
+            "python": "html_to_text(data) if data else None"
+          },
+          "image": [
+            {
+              "xpath": "./preceding-sibling::*[1]/@src",
+              "python": "data if data else None"
+            },
+            {
+              "xpath": ".//img[contains(@class, 'avatar')]/@src",
+              "python": "data if data else None"
+            }
+          ]
+        },
+        "type": "[Instructor]",
+        "xpath": "//div[@class='instructor-card']"
+      },
+      "price_currency": "EUR",
+      "price_display_float": "0.00"
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/en/courses/'), restrict_xpaths=(\"//article[@class='courses-list-item']//div[@class='hover-card']/a\")), callback='parse_product')"
+      ]
+    },
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'English' not in str(response.xpath(\"//div[contains(@class, 'course-aditional')]/ul/li[contains(., 'English')]//text()\").extract())",
+          "level": "1"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+    "base_url": "http://www.quickstart.com/",
+    "levels": {
+        "1_1": {
+            "xpath": "//a[contains(.,'Read more reviews')]/@href",
+            "level": "1"
+        }
+    },
+    "start_url": "http://www.quickstart.com/",
+    "settings": {
+        "handle_httpstatus_list": [
+            500
+        ]
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "421",
+            "product_type_id": {
+                "python": "product_type_id('courses')"
+            },
+            "language": "eng",
+            "pub_status": "L",
+            "name": {
+                "xpath": "string(//h1[@class='topTitle'])"
+            },
+            "partner_prod_id": {
+                "xpath": "//h2[contains(.,'Course')]/span/text()"
+            },
+            "description": {
+                "xpath": "string(//*[@id='courseDescription'])",
+                "re": "re.compile('.*Description(.*)',re.S|re.I)",
+                "python": "html_to_text(data.split('Return to Top')[0])"
+            },
+            "toc": {
+                "xpath": "//*[@id='courseDescription']//h3[contains(.,'Course Outline')]/following-sibling::*"
+            },
+            "audience": {
+                "xpath": "string(//*[@id='courseDescription'])",
+                "re": "re.compile('Audience(.*)',re.S|re.I)",
+                "python": "html_to_text(data.split('Return to Top')[0])"
+            },
+            "prerequisites": {
+                "xpath": "//*[@id='courseDescription']//h3[contains(.,'Prerequisites')]/following-sibling::div[1]//text()",
+                "python": "data[0:len(data)-1]"
+            },
+            "ProductRating": [
+                {
+                    "fields": {
+                        "pub_status": "L",
+                        "rating_only": "0",
+                        "overall_rating": {
+                            "xpath": "./div[@id='star-image']/img/@src",
+                            "re": "0|1|2|3|4|5"
+                        },
+                        "review": {
+                            "xpath": "./span[@id='lblAnswer']/text()",
+                            "python": "html_to_text(data)"
+                        },
+                        "user_id": "0"
+                    },
+                    "type": "[ProductRating]",
+                    "xpath": "//ul[contains(@class,'courseReviews')]/li",
+                    "level": "1_1"
+                },
+                {
+                    "fields": {
+                        "pub_status": "L",
+                        "rating_only": "0",
+                        "overall_rating": {
+                            "xpath": ".//span[@id='star-image']/img/@src",
+                            "re": "0|1|2|3|4|5"
+                        },
+                        "review": {
+                            "xpath": "./span[@id]",
+                            "python": "html_to_text(data)"
+                        },
+                        "user_id": "0"
+                    },
+                    "type": "[ProductRating]",
+                    "xpath": "//*[@id='testimonialCourses']/div[@class='minitestimonials']"
+                },
+                {
+                    "fields": {
+                        "pub_status": "L",
+                        "rating_only": "1",
+                        "overall_rating": {
+                            "xpath": ".//span[@itemprop='ratingValue']/text()",
+                            "python": "round(float(data))"
+                        },
+                        "user_id": "0"
+                    },
+                    "type": "[ProductRating]",
+                    "xpath": "//*[@id='student-rating']"
+                }
+            ],
+            "duration_filter": {
+                "xpath": "string(//div[@class='courseInfo'][contains(.,'Duration')])",
+                "re": "re.compile('Duration:(.*)',re.S|re.I)",
+                "python": "duration_filter(html_to_text(data))"
+            },
+            "duration_display": {
+                "xpath": "string(//div[@class='courseInfo'][contains(.,'Duration')])",
+                "re": "re.compile('Duration:(.*)',re.S|re.I)"
+            },
+            "price_currency": {
+                "xpath": "string(//*[@class='price'])",
+                "python": "get_price_currency(data)"
+            },
+            "price_display_float": {
+                "xpath": "string(//*[@class='price'])",
+                "python": "get_price_float(data)"
+            }
+        },
+        "type": "Product",
+        "pre_filters": {
+            "filters_not": [
+                {
+                    "python": "'Error' in response.url",
+                    "level": "1"
+                }
+            ]
+        },
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('/courses/.*\\d+.aspx$')), callback='parse_product')",
+                "Rule(lxml(allow=('.*',), restrict_xpaths='//div[@class=\\'category-list\\']/ul/li/a'),follow=True)"
+            ]
+        }
+    }
+}

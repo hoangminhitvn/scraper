@@ -1,0 +1,113 @@
+{
+  "base_url": "http://www.fastlaneus.com/", 
+  "start_url": "http://www.fastlaneus.com/", 
+  "levels": {
+    "1_1_1": {
+      "xpath": "//td[contains(@class,'enrolltd')]//a/@href", 
+      "python": "['/event/%s'%(re.search('eventid=(\\d+)',i).group(1))  for i in data] "
+    }, 
+    "1_1": {
+      "xpath": "//*[@id='maincolumn_coursedetails']//a[contains(.,'Schedule')]/@href", 
+      "python": "urljoin('http://www.fastlaneus.com',data)"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "323", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//*[@id='course-content']/following-sibling::div[1])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//*[@id='maincolumn_coursedetails']/h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='course-objectives']/following-sibling::div[1]", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//div[@class='subcolumns']", 
+        "fields": {
+          "location_city": {
+            "xpath": ".//div[@class='subcr']/h5/following-sibling::p[1]/text()", 
+            "python": "data[2] if len(data) >= 4 else data[1] if len(data) == 3 else data[0] if len(data) == 2 else None"
+          }, 
+          "location_state": {
+            "xpath": ".//div[@class='subcr']/h5/following-sibling::p[1]/text()", 
+            "python": "data[3] if len(data) == 5 else None"
+          }, 
+          "end_date_local": {
+            "xpath": ".//div[@class='subcl']/strong/text()", 
+            "python": "get_end_date(data)"
+          }, 
+          "location_country": {
+            "xpath": ".//div[@class='subcr']/h5/following-sibling::p[1]/text()[last()]"
+          }, 
+          "language": {
+            "xpath": "//div[@class='subcolumns']/div[1]/div[@class='subcl']/p/text()[contains(.,'Course language:')]", 
+            "python": "data.replace('Course language: ','')"
+          }, 
+          "start_date_local": {
+            "xpath": ".//div[@class='subcl']/strong/text()", 
+            "python": "get_start_date(data)"
+          }, 
+          "duration_filter": {
+            "xpath": "//div[@class='subcolumns']/div[1]/div[@class='subcl']/p/text()[contains(.,'Duration')]", 
+            "python": "str(duration_filter(data.replace('Duration:','')))"
+          }, 
+          "location_display": {
+            "xpath": ".//div[@class='subcr']/h5/following-sibling::p[1]", 
+            "python": "html_to_text(data)"
+          }, 
+          "tz": {
+            "xpath": ".//div[@class='subcr']/p[@class='timezone']/text()", 
+            "python": "data.replace('Time zone:','')"
+          }, 
+          "duration_display": {
+            "xpath": "//div[@class='subcolumns']/div[1]/div[@class='subcl']/p/text()[contains(.,'Duration')]", 
+            "python": "data.replace('Duration:','')"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1_1_1"
+      }, 
+      "formats": {
+        "xpath": "//*[@id='maincolumn_coursedetails']/div[@class='pdflink']/a[2]/text()", 
+        "re": "PDF|Kindle|iPad|Nook"
+      }, 
+      "price_currency": {
+        "xpath": "normalize-space(//div[@class='boxcontent']/ul)", 
+        "python": "get_price_currency(data)", 
+        "level": "1"
+      }, 
+      "price_display_float": {
+        "xpath": "normalize-space(//div[@class='boxcontent']/ul)", 
+        "python": "get_price_float(data)", 
+        "level": "1"
+      }, 
+      "audience": {
+        "xpath": "string(//*[@id='course-audience']/following-sibling::div[1])", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "string(//*[@id='course-prerequisites']/following-sibling::div[1])", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "normalize-space(//h4[@class='boxtitle'])", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/course/',), deny='/course/category.php'), callback='parse_product'),Rule(lxml(allow=('.*',), restrict_xpaths='//*[@id=\\'col1_content\\']//div[@class=\\'menu\\']/ul//li'),follow=True)]"
+    }
+  }
+}

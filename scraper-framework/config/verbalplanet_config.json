@@ -1,0 +1,49 @@
+{
+  "base_url": "http://www.verbalplanet.com/", 
+  "start_url": [
+    "http://www.verbalplanet.com/"
+  ], 
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='bluelink']/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "318", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='TabbedPanelsContentGroup']/div[1]/table//text()", 
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "name": {
+        "xpath": "//div[@class='topboxcontent']//h2/text()"
+      }, 
+      "product_events": {
+        "xpath": "//div[@class='wrapper']", 
+        "fields": {}, 
+        "type": "[ProductEvent]", 
+        "level": "1_1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='topbox']//script[contains(.,'Slideshow')]", 
+        "re": "Slideshow/\\w+\\.jpg|Slideshow/\\w+\\.png", 
+        "python": "urljoin('http://www.verbalplanet.com/',data[0])"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": {}
+    }, 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=('//a[contains(., \\'Pick a Language\\')]/following-sibling::ul/li/ul/li/a')), callback='parse_product')"
+      ]
+    }
+  }
+}

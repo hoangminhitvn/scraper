@@ -1,0 +1,21 @@
+{
+  "base_url": "http://www.howdesignuniversity.com", 
+  "start_url": "https://www.howdesignuniversity.com/learn/courseGroups", 
+  "levels": {
+    "0": {
+      "callback": "howdesignuniversity.parse_categories"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "183", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng"
+    }, 
+    "type": "Product"
+  }
+}

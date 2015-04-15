@@ -1,0 +1,72 @@
+{
+  "base_url": "http://catalystmlm.com", 
+  "start_url": "http://catalystmlm.com/mlm-training", 
+  "levels": {
+    "1": ".//h3/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "41", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='entry-content']/div[@style='text-align: justify;'][position()<3]//text()", 
+        "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "name": {
+        "xpath": "//h1[@class='post-title']//text()"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@class='entry-content']/center//iframe/@src", 
+        "python": "urljoin('https:',data) if data else None"
+      }, 
+      "product_image_url": [
+        {
+          "xpath": "//div[@class='entry-content']/div[1]//img[@class]/@src"
+        }, 
+        {
+          "xpath": "//div[@class='entry-content']/div[2]//img[@class]/@src"
+        }
+      ], 
+      "published_date": {
+        "xpath": "substring-before(//h1[@class='post-title']/following-sibling::small[1],'by')", 
+        "python": "convert_date(data)"
+      }, 
+      "authors": {
+        "xpath": "//div[@id='cab-author']/div[1]", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[@class='cab-author-name']/following-sibling::p//text()", 
+            "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          }, 
+          "image": {
+            "xpath": "./div[@class='cab-author-image']//img/@src"
+          }, 
+          "link": {
+            "xpath": ".//div[@class='cab-author-name']/a/@href"
+          }, 
+          "name": {
+            "xpath": ".//div[@class='cab-author-name']//text()"
+          }
+        }, 
+        "type": "[Author]"
+      }, 
+      "prod_keywords": {
+        "xpath": "//small[@class='post-tags']/a//text()", 
+        "python": "normalize_space(data).split(',')", 
+        "type": "[str]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'),restrict_xpaths=('//h2[@class=\\'post-title\\']/a'),), callback='parse_product')", 
+        "Rule(lxml(allow=('/category/',),), follow=True)"
+      ]
+    }
+  }
+}

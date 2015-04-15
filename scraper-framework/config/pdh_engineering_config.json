@@ -1,0 +1,92 @@
+{
+  "base_url": "http://www.pdhengineer.com/", 
+  "start_url": "http://www.pdhengineer.com/catalog/get_products.php", 
+  "levels": {
+    "1_1": {
+      "xpath": "//*[contains(./text(), 'Subject Matter Expert')]/parent::span[1]/following-sibling::a[1]/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "414", 
+      "product_type_id": {
+        "xpath": "//div[@id='content']/h1/text()", 
+        "python": "product_type_id('Webinars' if 'WEBINAR' in data else 'Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@id='tab-description']//*[contains(./text(), 'Overview')]/following-sibling::*[count(.|//div[@id='tab-description']//*[contains(./text(), 'Specific Knowledge or Skill')]/preceding-sibling::*[not(contains(@class, 'auto-style1'))])=count(//div[@id='tab-description']//*[contains(./text(), 'Specific Knowledge or Skill')]/preceding-sibling::*[not(contains(@class, 'auto-style1'))])]", 
+          "python": "html_to_text(data) if data else None"
+        }, 
+        {
+          "xpath": "//div[@id='tab-description']/p[contains(./text(), 'This package')][1]//text()", 
+          "python": "html_to_text(data) if data else None"
+        }, 
+        {
+          "xpath": "//div[@id='tab-description']/*[not(contains(@class, 'auto-style1'))]//text()", 
+          "python": "html_to_text(data) if data else None"
+        }
+      ], 
+      "name": {
+        "xpath": "//div[@id='content']/h1/text()", 
+        "python": "html_to_text(data) if data else None"
+      }, 
+      "price_currency": "USD", 
+      "price_display_float": [
+        {
+          "xpath": ".//div[@class='price']/*[@class='price-new']/text()", 
+          "re": "\\$\\d+\\.\\d+", 
+          "python": "data.replace('$', '')"
+        }, 
+        {
+          "xpath": ".//div[@class='price']/text()", 
+          "re": "\\$\\d+\\.\\d+", 
+          "python": "data.replace('$', '')"
+        }
+      ], 
+      "instructors": {
+        "xpath": "//div[@id='content']", 
+        "fields": {
+          "bio": {
+            "xpath": ".//div[@class='description']//text()", 
+            "python": "html_to_text(data) if data else None"
+          }, 
+          "name": {
+            "xpath": "./h1/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "//*[contains(./text(), 'Course Number')]/parent::span[1]/following-sibling::text()[1]", 
+        "python": "html_to_text(data) if data else None"
+      }, 
+      "end_date_local": [
+        {
+          "xpath": "substring-after(substring-before(.//*[contains(./text(), 'Scheduled:')]/parent::div[1]/text()[contains(., 'am')], 'ET'), ',')", 
+          "python": "get_end_date(data)"
+        }, 
+        {
+          "xpath": "substring-after(substring-before(.//*[contains(./text(), 'Scheduled:')]/parent::div[1]/text()[contains(., 'am')], '('), ',')", 
+          "python": "get_end_date(data)"
+        }
+      ], 
+      "start_date_local": [
+        {
+          "xpath": "substring-after(substring-before(.//*[contains(./text(), 'Scheduled:')]/parent::div[1]/text()[contains(., 'am')], 'ET'), ',')", 
+          "python": "get_start_date(data)"
+        }, 
+        {
+          "xpath": "substring-after(substring-before(.//*[contains(./text(), 'Scheduled:')]/parent::div[1]/text()[contains(., 'am')], '('), ',')", 
+          "python": "get_start_date(data)"
+        }
+      ]
+    }, 
+    "type": "Product", 
+    "python": "[HTMLParser.HTMLParser().unescape(item['href']) for item in json.loads(response.body)]"
+  }
+}

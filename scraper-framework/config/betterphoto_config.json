@@ -1,0 +1,58 @@
+{
+  "base_url": "http://www.betterphoto.com", 
+  "start_url": "http://www.betterphoto.com/online-photography-courses-all.asp", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "32", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='boxMain']/h3/following-sibling::text()[2])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "substring-after(//div[@id='boxMain']/h2,'...')", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//h3[contains(.,'Outline')]/following-sibling::*", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "substring-before(substring-after(//text()[contains(.,'$')],'$'),'USD')"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "substring-before(//font/strong[contains(.,'weeks')],'!')", 
+            "re": "\\d.*", 
+            "python": "duration_filter(data)"
+          }, 
+          "duration_display": {
+            "xpath": "substring-before(//font/strong[contains(.,'weeks')],'!')"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@id='boxMain']/a[2]/img/@src", 
+        "level": "1"
+      }, 
+      "requirements": {
+        "xpath": "string(//h3[contains(.,'Requirements')]/following-sibling::table[1])", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//table[@border='0']/tr/td/a[font]"
+  }
+}

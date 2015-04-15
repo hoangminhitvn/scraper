@@ -1,0 +1,70 @@
+{
+  "base_url": "http://supersummit.co/downloads", 
+  "start_url": "http://supersummit.co/downloads/page/1/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "399", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@class='entry-content']/div/p[contains(./strong/text(),'Content')]//text()", 
+          "python": "' '.join(normalize_space(selector.extract())) if data else None"
+        }, 
+        {
+          "xpath": "//div[@class='entry-content']/div/p[contains(./strong/text(),'Content')]//text()", 
+          "python": "' '.join(normalize_space(selector.extract())) if data else None"
+        }
+      ], 
+      "name": {
+        "xpath": "//h1[@class='entry-title']/span/text()"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[contains(@class,'embed-container')]/iframe/@src", 
+        "python": "urljoin('http:',data) if data else None"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='entry-content']//img[contains(@class,'image')]/@src", 
+        "python": "urljoin('http:',data) if data else None"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//div[contains(@class,'info-section')]//p[contains(.//text(),' Duration')]/text()", 
+        "python": "duration_filter(data) if data else None"
+      }, 
+      "price_display_float": "0.00", 
+      "duration_display": {
+        "xpath": "//div[contains(@class,'info-section')]//p[contains(.//text(),' Duration')]/text()"
+      }, 
+      "published_date": {
+        "xpath": "//time[@class='published']//text()", 
+        "python": "convert_date(data)"
+      }, 
+      "authors": {
+        "xpath": "//p[contains(@class,'author')]", 
+        "fields": {
+          "name": {
+            "xpath": "./a/text()"
+          }
+        }, 
+        "type": "[Author]"
+      }, 
+      "prod_keywords": {
+        "xpath": "//div[contains(@class,'info-section')]/p[contains(.,' Tag')]/a/text()", 
+        "type": "[str]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('downloads/(\\w+-)+',)), callback='parse_product')", 
+        "Rule(lxml(allow=('/page/[0-9]+/',)),follow=True)"
+      ]
+    }
+  }
+}

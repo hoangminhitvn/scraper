@@ -1,0 +1,188 @@
+{
+  "base_url": "http://nycdatascience.com/",
+  "start_url": "http://nycdatascience.com/courses/",
+  "levels": {
+    "1": {
+      "xpath": ".//div[@class='course-content-title']/a[1]/@href"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "431",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "Y",
+      "space_lock": "Y",
+      "language": "eng",
+      "name": {
+        "xpath": "//div[contains(@class, 'title_01')]/text()",
+        "level": "1"
+      },
+      "product_image_url": {
+        "xpath": "//div[contains(@class, 'thumbnail')]/img/@src",
+        "level": "1"
+      },
+      "description": [
+        {
+          "xpath": "//div[@class='section_title'][contains(./h1/text(), 'Course Overview')]/following-sibling::div[1]//text()",
+          "python": "html_to_text(data) if data else None",
+          "level": "1"
+        },
+        {
+          "xpath": "//div[@class='section_title'][contains(./h1/text(), 'Syllabus')]/following-sibling::div[1]//text()",
+          "python": "html_to_text(data) if data else None",
+          "level": "1"
+        },
+        {
+          "xpath": "//div[@class='section_title'][contains(./h1/text(), 'Project Demo Day')]/following-sibling::div[1]//text()",
+          "python": "html_to_text(data) if data else None",
+          "level": "1"
+        }
+      ],
+      "audience": {
+        "xpath": "//div[contains(./h1/text(), 'Intended Audience')]/following-sibling::div[1]//text()",
+        "python": "html_to_text(data) if data else None",
+        "level": "1"
+      },
+      "difficulty": {
+        "xpath": ".//li[contains(./span/text(), 'Level')]/span[2]/text()",
+        "re": " Beginner|Intermediate|Expert",
+        "python": "difficulty(data) if isinstance(data,list) == False else None"
+      },
+      "product_events": {
+        "fields": {
+          "location_display": [
+            {
+              "xpath": "//li[contains(./span/text(), 'Venue')]//a/@title",
+              "python": "html_to_text(data) if data else None",
+              "level": "1"
+            },
+            {
+              "xpath": "//li[contains(./span/text(), 'Venue')]//a/text()",
+              "python": "html_to_text(data) if data else None",
+              "level": "1"
+            }
+          ],
+          "location_addr": [
+            {
+              "xpath": "//li[contains(./span/text(), 'Venue')]//a/@title",
+              "python": "data.split(',')[0] if data else None",
+              "level": "1"
+            },
+            {
+              "xpath": "//li[contains(./span/text(), 'Venue')]//a/text()",
+              "python": "data.split(',')[0] if data else None",
+              "level": "1"
+            }
+          ],
+          "location_city": [
+            {
+              "xpath": "//li[contains(./span/text(), 'Venue')]//a/@title",
+              "python": "selector.extract()[0].split(',')[1]",
+              "level": "1"
+            },
+            {
+              "xpath": "//li[contains(./span/text(), 'Venue')]//a/text()",
+              "python": "selector.extract()[0].split(',')[1]",
+              "level": "1"
+            }
+          ],
+          "location_state": {
+            "xpath": {
+              "operator": "or",
+              "value": [
+                "substring-before(//li[contains(./span/text(), 'Venue')]//a/@title, '(')",
+                "//li[contains(./span/text(), 'Venue')]//a/@title",
+                "substring-before(//li[contains(./span/text(), 'Venue')]//a/text(), '(')",
+                "//li[contains(./span/text(), 'Venue')]//a/text()"
+              ]
+            },
+            "re": "[A-Z]{2}",
+            "level": "1"
+          },
+          "location_postal": {
+            "xpath": {
+              "operator": "or",
+              "value": [
+                "substring-before(//li[contains(./span/text(), 'Venue')]//a/@title, '(')",
+                "//li[contains(./span/text(), 'Venue')]//a/@title",
+                "substring-before(//li[contains(./span/text(), 'Venue')]//a/text(), '(')",
+                "//li[contains(./span/text(), 'Venue')]//a/text()"
+              ]
+            },
+            "re": "\\d{5}",
+            "level": "1"
+          },
+          "start_date_local": {
+            "xpath": "substring-before(.//li[contains(./span/text(), 'Date')]/span[2]/text(), '-')",
+            "python": "convert_date(data) if data else None"
+          },
+          "end_date_local": {
+            "xpath": "substring-after(.//li[contains(./span/text(), 'Date')]/span[2]/text(), '-')",
+            "python": "convert_date(data) if data else None"
+          },
+          "price_currency": "USD",
+          "price_display_float": {
+            "xpath": "//span[@class='course-price']/text()",
+            "re": "\\d+.*",
+            "level": "1"
+          }
+        },
+        "type": "[ProductEvent]"
+      },
+      "instructors": [
+        {
+          "fields": {
+            "name": [
+              {
+                "xpath": "./b/span/text()",
+                "python": "html_to_text(data) if data else None"
+              },
+              {
+                "xpath": "./b/text()",
+                "python": "data.split(',')[0] if data else None"
+              }
+            ],
+            "bio": {
+              "xpath": "./text()",
+              "python": "html_to_text(data) if data else None"
+            }
+          },
+          "type": "[Instructor]",
+          "xpath": "//div[contains(./h1/text(), 'Instructor')]/following-sibling::div[1]",
+          "level": "1"
+        },
+        {
+          "fields": {
+            "name": [
+              {
+                "xpath": "substring-before(.//text(), '(')",
+                "python": "html_to_text(data) if data else None"
+              },
+              {
+                "xpath": ".//text()",
+                "python": "data.split(',')[0] if data else None"
+              }
+            ],
+            "bio": [
+              {
+                "xpath": "substring-before(substring-after(.//text(), '('), ')')",
+                "python": "html_to_text(data) if data else None"
+              },
+              {
+                "xpath": ".//text()",
+                "python": "html_to_text(data) if data else None"
+              }
+            ]
+          },
+          "type": "[Instructor]",
+          "xpath": "//li[contains(./span/text(), 'Instructor')]/*[@class='tailer']",
+          "level": "1"
+        }
+      ]
+    },
+    "type": "Product",
+    "xpath": "//div[@class='col-md-4']"
+  }
+}

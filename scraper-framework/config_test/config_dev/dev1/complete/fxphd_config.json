@@ -1,0 +1,50 @@
+{
+    "baseUrl": "http://www.fxphd.com/",
+    "levels": {
+        "1": {
+            "xpath": "./a[1]/@href",
+            "python": "'http://www.fxphd.com/fxphd/courseDetails.php?idCourse='+re.search('id=(\\d+)',data).group(1)",
+            "dont_filter": true
+        }
+    },
+    "start_url": "http://www.fxphd.com/fxphd/courseInfo.php",
+    "output_config": {
+        "fields": {
+            "provider_name": "fxphd",
+            "provider_id": "167",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//div[@id='fxphd']/h2/text()",
+                "level": "1"
+            },
+            "prod_image": {
+                "xpath": "//div[@id='fxphd']//video/@poster",
+                "level": "1"
+            },
+            "preview_video": {
+                "xpath": "//div[@id='fxphd']//a[contains(@class, 'colorbox')]/@href",
+                "level": "1",
+                "python": "urljoin('http://www.fxphd.com/', data) if data else None"
+            },
+            "description": {
+                "xpath": "//div[@id='fxphd']/h2/following-sibling::div[2]",
+                "level": "1",
+                "python": "normalizeSpace(html2text.html2text(data)).replace('*','')"
+            },
+            "toc": {
+                "xpath": "//div[@id='fxphd']/h3/following-sibling::*",
+                "level": "1"
+            },
+            "published_date": {
+                "xpath": "//div[@class='coursestats']/strong[contains(., 'Run Date')]/following-sibling::text()",
+                "level": "1",
+                "python": "convertDate(data)"
+            }
+        },
+        "type": "[Product]",
+        "xpath": "//div[@class='courseListing']"
+    }
+}

@@ -1,0 +1,78 @@
+{
+  "base_url": "http://iccp.org", 
+  "start_url": [
+    "http://iccp.org/certification/training/selfstudy", 
+    "http://iccp.org/certification/training/online"
+  ], 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "179", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "./following-sibling:://h2[contains(.,'Course Descriptions')]/following-sibling::p[position()<3]//text()", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "./following-sibling::p[1]//text()", 
+          "python": "html_to_text(data)"
+        }
+      ], 
+      "name": {
+        "xpath": ".//text()"
+      }, 
+      "toc": {
+        "xpath": "./following-sibling::h2[contains(.,'Course Descriptions')]/following-sibling::div[@class='hidefaq']"
+      }, 
+      "product_events": {
+        "xpath": "./following-sibling::p[2]/sup", 
+        "fields": {
+          "duration_filter": {
+            "xpath": "./ancestor-or-self::p/preceding-sibling::h1[1]//text()", 
+            "re": ".*eek", 
+            "python": "duration_filter(data)"
+          }, 
+          "duration_display": {
+            "xpath": "./ancestor-or-self::p/preceding-sibling::h1[1]//text()", 
+            "re": ".*eek"
+          }, 
+          "language": "eng", 
+          "start_date_local": {
+            "xpath": "substring-after(./preceding-sibling::text()[1],'about ')", 
+            "python": "convert_date(data + ' 2015')"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "./following-sibling::p[1]//text()", 
+        "re": "\\d+\\shour|\\d+\\sday", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": [
+        {
+          "xpath": "./following-sibling::div[@id='paypal'][1]//select/option//text()", 
+          "re": "\\d+\\.?\\d+", 
+          "python": "str(min_price(data)) if data else None"
+        }, 
+        {
+          "xpath": "./following-sibling::div[@id='paypal'][1]/form/text()[contains(.,'$')]", 
+          "re": "\\d.*"
+        }
+      ], 
+      "duration_display": {
+        "xpath": "./following-sibling::p[1]//text()", 
+        "re": "\\d+\\shour|\\d+\\sday"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='art-article']/h1"
+  }
+}

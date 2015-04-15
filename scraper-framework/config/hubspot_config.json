@@ -1,0 +1,421 @@
+{
+    "base_url": "http://www.hubspot.com/",
+    "start_url": "https://api.hubapi.com/library/v1/assets/page?options=%7B%22pageSize%22%3A8%7D",
+    "levels": {
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "124",
+            "product_type_id": {
+                "xpath": ".//*[@class='title']/div/text()",
+                "python": "product_type_id('Webinars' if 'Webinar' in data else 'Talks' if 'Marketing Kit' in data else 'Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "string(//*[@id='hs_cos_wrapper_middle_column'])",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "//h3[contains(.,'Table of Contents')]/ancestor-or-self::div[contains(@class,'row-fluid-wrapper')]/preceding-sibling::div[1]",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "//*[@id='dnn_ContentPane']//div[@class='instructions']",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(//div[contains(@id,'hs_cos_wrapper_widget')])",
+                    "re": "re.compile('(.*)(?:In this ebook|Your Kit Will Include|About the Presenters|About the Speakers|You.*ll learn|Meet the Author|Webinar Details|WEBINAR PRESENTERS|Meet the presenters|Download the Webinar Now)',re.I|re.S)",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(//*[@id='hs_cos_wrapper_left_column'])",
+                    "re": "re.compile('(.*)In this ebook',re.I|re.S)",
+                    "python": "html_to_text(data) if data else None"
+                },
+                {
+                    "xpath": "string(//*[@id='hs_cos_wrapper_left_column'])",
+                    "re": "re.compile('(.*)(?:In this ebook|Your Kit Will Include|About the Presenters|About the Speakers|You.*ll learn|Meet the Author|Webinar Details|WEBINAR PRESENTERS|Meet the presenters|Download the Webinar Now)',re.I|re.S)",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(//span[@id='hs_cos_wrapper_right_column'])",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "string(//*[@id='hs_cos_wrapper_left_column'])",
+                    "python": "data if data else None"
+                },
+                {
+                    "xpath": "string(//*[contains(@id,'hs_cos_wrapper_widget')])",
+                    "re": "re.compile('(.*)This webinar will cover',re.I|re.S)",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_main']/p[1]/text()",
+                    "python": "html_to_text(data)"
+                }
+            ],
+            "name": {
+                "python": "hubspot.hubspot_title(response.url)"
+            },
+            "toc": {
+                "xpath": [
+                    "//h3[contains(.,'ll learn')]/following-sibling::ul",
+                    "//p[contains(.,'ll learn')]/following-sibling::ul",
+                    "//h3[contains(.,'Table of Contents')]/ancestor-or-self::div[contains(@class,'row-fluid-wrapper')][1]/following-sibling::div[contains(@class,'row-fluid-wrapper')]",
+                    "//p[contains(.,'This webinar will cover')]/following-sibling::ul"
+                ]
+            },
+            "duration_filter": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "//p[contains(.,'Length')]/text()",
+                        "//strong[contains(.,'DURATION')]/following-sibling::text()[1]",
+                        "//strong[contains(.,'Duration')]/following-sibling::text()[1]",
+                        "//p[contains(.,'Duration')]/text()[contains(.,'Duration')]",
+                        "//p[contains(.,'Duration')]/text()"
+                    ]
+                },
+                "python": "str(duration_filter(data.replace(':','').replace('with Q&A','').replace(', including Q&A','').replace('Duration:','')))"
+            },
+            "duration_display": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "//p[contains(.,'Length')]/text()",
+                        "//strong[contains(.,'DURATION')]/following-sibling::text()[1]",
+                        "//strong[contains(.,'Duration')]/following-sibling::text()[1]",
+                        "//p[contains(.,'Duration')]/text()[contains(.,'Duration')]",
+                        "//p[contains(.,'Duration')]/text()"
+                    ]
+                },
+                "python": "data.replace('Duration: ','')"
+            },
+            "product_video_url": [
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column']/div/a[contains(@class,'playerColor')]/@href",
+                    "python": "data.replace('//','')"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column']//iframe[contains(@src,'video')]/@src"
+                }
+            ],
+            "product_image_url": {
+                "python": "hubspot.hubspot_img(response.url)"
+            },
+            "requirements": {
+                "xpath": [
+                    "//p[contains(.,'TECHNICAL REQUIREMENTS:')]/text()",
+                    "//p[contains(.,'Technical Requirements')]/text()"
+                ],
+                "python": "html_to_text(data)"
+            },
+            "instructors": [
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column'][contains(.,'author')]",
+                    "fields": {
+                        "bio": {
+                            "xpath": ".//p[contains(.,'PRESENTER')]/following-sibling::p[contains(.,'author')]//text()",
+                            "python": "' '.join(data)"
+                        },
+                        "image": {
+                            "xpath": ".//p[contains(.,'PRESENTER')]/following-sibling::p[1]/img/@src",
+                            "python": "data.replace('//','')"
+                        },
+                        "name": {
+                            "xpath": ".//p[contains(.,'PRESENTER')]/text()"
+                        }
+                    },
+                    "type": "[Author]"
+                },
+                {
+                    "xpath": "//div[contains(@id,'hs_cos_wrapper_widget')]//p[contains(.,'Presenters')]/following-sibling::p[contains(.,'author')]",
+                    "fields": {
+                        "bio": {
+                            "xpath": ".//text()",
+                            "python": "' '.join(data)"
+                        },
+                        "image": {
+                            "xpath": "./img/@src",
+                            "python": "data.replace('//','')"
+                        }
+                    },
+                    "type": "[Author]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column'][contains(.,'MEET YOUR SPEAKERS')]//div[@class='row-fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": "./p[last()]//text()",
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": "./p[2]/img/@src",
+                            "python": "data.replace('//','')"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_main'][contains(.,'PRESENTERS')]//div[@class='row-fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": "./p[3]//text()",
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": {
+                                "operator": "or",
+                                "value": [
+                                    ".//p[1]/img/@src",
+                                    "./img/@src"
+                                ]
+                            },
+                            "python": "data.replace('//','')"
+                        },
+                        "name": {
+                            "xpath": {
+                                "operator": "or",
+                                "value": [
+                                    "./p[1]/strong/text()",
+                                    "./strong[1]/text()"
+                                ]
+                            }
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column'][contains(.,'Webinar Presenters:')]//div[@class='row-fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": "./p[last()]//text()",
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": "./p[2]/img/@src",
+                            "python": "data.replace('//','')"
+                        },
+                        "name": {
+                            "xpath": "./p[1]//text()"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column'][contains(.,'WEBINAR PRESENTERS:')]//div[@class='row-fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": "./p[last()]//text()",
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": {
+                                "operator": "or",
+                                "value": [
+                                    "./p[1]/img/@src",
+                                    "./p[2]/img/@src",
+                                    "./p[1]//img/@src"
+                                ]
+                            },
+                            "python": "data.replace('//','')"
+                        },
+                        "name": {
+                            "xpath": "./p[1]//text()"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column'][contains(.,'PRESENTERS')]//div[@class='row-fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": ".//text()",
+                            "python": "' '.join(data)"
+                        },
+                        "image": {
+                            "xpath": "./p[1]//img/@src",
+                            "python": "data.replace('//','')"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column']/p[contains(.,'SPEAKERS')]/following-sibling::div[@class='row=fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": ".//text()",
+                            "python": "' '.join(data)"
+                        },
+                        "image": {
+                            "xpath": ".//img/@src"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column']/p[contains(.,'SPEAKERS')]/following-sibling::div[@class='row-fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": ".//text()",
+                            "python": "' '.join(data)"
+                        },
+                        "image": {
+                            "xpath": ".//img/@src"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column']//div[@class='row-fluid']/div[@class='span4']",
+                    "fields": {
+                        "bio": {
+                            "xpath": "./p//text()",
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": ".//img/@src",
+                            "python": "data.replace('//','')"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column'][contains(.,'SPEAKERS')]//div[@class='row-fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": "./p[last()]//text()",
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": ".//img/@src",
+                            "python": "data.replace('//','')"
+                        },
+                        "name": {
+                            "xpath": {
+                                "operator": "or",
+                                "value": [
+                                    "./p[1]//text()",
+                                    ".//strong/text()"
+                                ]
+                            }
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//h3[contains(.,'About the Presenters')]/ancestor-or-self::div[contains(@class,'row-fluid-wrapper')][1]/following-sibling::div[contains(@class,'row-fluid-wrapper')]//div[contains(@class,'span6')]",
+                    "fields": {
+                        "bio": {
+                            "xpath": "./div[3]",
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": "./div[2]//img/@src",
+                            "python": "data.replace('//','')"
+                        },
+                        "name": {
+                            "xpath": "./div[1]//p/span//text()"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//p/span[contains(.,'About the')]/ancestor-or-self::div[contains(@class,'row-fluid-wrapper')][1]/following-sibling::div[contains(@class,'row-fluid-wrapper')][2]//div[contains(@class,'span6')]",
+                    "fields": {
+                        "bio": [
+                            {
+                                "xpath": "./div[contains(@class,'row-fluid-wrapper')][3]//span",
+                                "python": "html_to_text(data) if data else None"
+                            },
+                            {
+                                "xpath": ".//span/p[1]",
+                                "python": "html_to_text(data) if data else None"
+                            }
+                        ],
+                        "image": {
+                            "xpath": ".//span//img/@src",
+                            "python": "data.replace('//','')"
+                        },
+                        "name": {
+                            "xpath": ".//span/div[1]//text()"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//h3[contains(.,'Presented by')]/following-sibling::div[@class='row-fluid']/div[@class='span4']",
+                    "fields": {
+                        "bio": {
+                            "xpath": "./p[3]",
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": "./p[2]/img/@src",
+                            "python": "data.replace('//','')"
+                        }
+                    },
+                    "type": "[Instructor]"
+                },
+                {
+                    "xpath": "//*[@id='hs_cos_wrapper_left_column'][contains(.,'WEBINAR SPEAKERS')]//div[@class='row-fluid']/div[@class='span6']",
+                    "fields": {
+                        "bio": {
+                            "xpath": {
+                                "operator": "or",
+                                "value": [
+                                    "./p[last()]",
+                                    "./text()"
+                                ]
+                            },
+                            "python": "html_to_text(data)"
+                        },
+                        "image": {
+                            "xpath": ".//img/@src",
+                            "python": "data.replace('//','')"
+                        },
+                        "name": {
+                            "xpath": "./strong/text()"
+                        }
+                    },
+                    "type": "[Instructor]"
+                }
+            ],
+            "audience": {
+                "xpath": [
+                    "//p[contains(.,'Who should view')]/text()",
+                    "//p[contains(.,'Who Should View')]/text()",
+                    "//p[contains(.,'WHO SHOULD')]/following-sibling::p[1]/text()"
+                ]
+            }
+        },
+        "type": "Product",
+        "pre_filters": {
+            "filters_not": [
+                {
+                    "python": "'http://www.hubspot.com/podcast' in response.url",
+                    "level": "1"
+                },
+                {
+                    "python": "'http://offers.hubspot.com/sales-kickoff-playbook' or 'http://www.hubspot.com/cmos-guide-to-impressing-investors' in response.url",
+                    "level": "1"
+                },
+                {
+                    "python": "'http://www.hubspot.com/cmos-guide-to-impressing-investors' or 'http://offers.hubspot.com/marketing-agency-horror-stories' in response.url",
+                    "level": "1"
+                }
+            ]
+        },
+        "extractor_rules": {
+            "rules": [
+                "Rule(lrgl(allow=('\"url\":\"([^\"]+)')),callback='parse_product')",
+                "Rule(lrgl(allow=('containsMore.*'),process_value=hubspot.extract_next_url_cat))"
+            ]
+        }
+    }
+}

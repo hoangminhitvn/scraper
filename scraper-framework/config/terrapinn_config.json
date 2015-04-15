@@ -1,0 +1,103 @@
+{
+  "base_url": "http://www.terrapinntraining.com/", 
+  "start_url": "http://www.terrapinntraining.com/", 
+  "levels": {
+    "1_1_1": "//div[@id='CourseTrainerArea']//div[@class='Link']/a/@href", 
+    "1_1": "//*[@id='CourseSessionsArea']/div[contains(.,'Scheduled courses')]/following-sibling::div/div[contains(.,'more')]/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "400", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "Y", 
+      "description": [
+        {
+          "xpath": "//h1/following-sibling::*//text()[count(.|//h1/following-sibling::h1[1]/preceding-sibling::*//text()) = count(//h1/following-sibling::h1[1]/preceding-sibling::*//text())]", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//h1/following-sibling::*//text()", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='col-md-8']/h3[1]/following-sibling::*//text()[count(.|//div[@class='col-md-8']/h3[1]/following-sibling::h3[1]/preceding-sibling::*//text()) = count(//div[@class='col-md-8']/h3[1]/following-sibling::h3[1]/preceding-sibling::*//text())]", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='col-md-8']/h3[1]/following-sibling::*//text()[count(.|//div[@class='col-md-8']/h3[1]/following-sibling::h2[1]/preceding-sibling::*//text()) = count(//div[@class='col-md-8']/h3[1]/following-sibling::h2[1]/preceding-sibling::*//text())]", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='col-md-8']/h3/following-sibling::*//text()", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//div[@class='row noMargin']/following-sibling::*//text()", 
+          "python": "html_to_text(data)"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//img[@class='img-responsive']/@alt)"
+      }, 
+      "product_events": {
+        "fields": {
+          "location_city": {
+            "xpath": "//td[@class='Header'][contains(.,'Location')]/following-sibling::td[1]//text()"
+          }, 
+          "price_currency": {
+            "xpath": "//td[@class='Header'][contains(.,'Fee')]/following-sibling::td[1]//text()", 
+            "python": "get_price_currency(selector.extract()[0])"
+          }, 
+          "end_date_local": {
+            "xpath": "substring-after(//td[@class='Header'][contains(.,'Dates')]/following-sibling::td[1],'-')", 
+            "python": "convert_date(data) if data else None"
+          }, 
+          "language": "eng", 
+          "start_date_local": {
+            "xpath": "//td[@class='Header'][contains(.,'Dates')]/following-sibling::td[1]//text()", 
+            "python": "get_start_date(data) if data else None"
+          }, 
+          "duration_filter": {
+            "xpath": "string(//img[@class='img-responsive']/@alt)", 
+            "re": "\\d.*Day", 
+            "python": "duration_filter(data)"
+          }, 
+          "price_display_float": {
+            "xpath": "//td[@class='Header'][contains(.,'Fee')]/following-sibling::td[1]//text()", 
+            "re": "\\d+,?\\d+", 
+            "python": "get_price_float(data) if get_price_float(data) else 0"
+          }, 
+          "location_display": {
+            "xpath": "//td[@class='Header'][contains(.,'Location')]/following-sibling::td[1]//text()"
+          }, 
+          "duration_display": null
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1_1"
+      }, 
+      "product_image_url": {
+        "xpath": "string(//img[@class='img-responsive']/@src)", 
+        "python": "urljoin('http://www.terrapinntraining.com/',data)"
+      }, 
+      "audience": {
+        "xpath": "//div[@class='box']/div[@id]/ul/li//text()", 
+        "type": "[str]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/training/',),restrict_xpaths=('//div[contains(./@class,\\'aCourse\\')]/div[1]/a'), deny=('/3-Day-MBA-in-Analytics-in-Telecommunications/','/3-Day-MBA-in-Shale-Gas/')),callback='parse_product')", 
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//div[@class=\\'TopicItem\\']/a')),follow=True)"
+      ]
+    }, 
+    "post_interceptors": [
+      {
+        "python": "for event in item['product_events']:event['instructors']= event['instructors'][0] if len(event['instructors'])> 1 else event['instructors']"
+      }
+    ]
+  }
+}

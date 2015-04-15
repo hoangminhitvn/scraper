@@ -1,0 +1,93 @@
+{
+  "baseUrl": "http://www.salesforce.com",
+  "levels": {
+    "1": {
+      "xpath": ".//a/@href",
+      "re": "/form/event/webinar.*"
+    }
+  },
+  "start_url": "http://www.salesforce.com/events/webinars/",
+  "output_config": {
+    "fields": {
+      "provider_name": "Salesforce",
+      "provider_id": "226",
+      "product_type_name": "webinars",
+      "space_lock": "N",
+      "time_lock": "N",
+      "name": {
+        "xpath": ".//a/span[1]//text()"
+      },
+      "prod_image": [
+        {
+          "xpath": "//div[@class='grid-row'][contains(.//h2,'')]/div[1]/img/@src",
+          "level": "1"
+        },
+        {
+          "xpath": "//div[@class='grid-row'][contains(.//h2,'')]/div[1]/p/img/@src",
+          "re": ".*jpg",
+          "level": "1"
+        },
+        {
+          "xpath": "//div[@class='only-scr4']//img/@src",
+          "level": "1"
+        },
+        {
+          "xpath": "//div[@class='show-min-scr3']/img[@class='flex']/@src",
+          "level": "1"
+        },
+        {
+          "xpath": "//img[@class='lazy show-min-scr3 flex']/@src",
+          "level": "1"
+        }
+      ],
+      "description": [
+        {
+          "xpath": "//div[@class='left-20 right-20 show-min-scr3']//text()",
+          "level": "1",
+          "re": "\\w.*",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        },
+        {
+          "xpath": "//text()[contains(.,'About the Webcast')]/following-sibling::*//text()",
+          "level": "1",
+          "re": "\\w.*",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        },
+        {
+          "xpath": "//div[@class='only-scr4']/following-sibling::div[@class='min-scr4']//text()",
+          "level": "1",
+          "re": "\\w.*",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        },
+        {
+          "xpath": "//p[@class='flush bottom-15 bold']/following-sibling::*/text()",
+          "level": "1",
+          "re": "\\w.*",
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }
+      ],
+      "product_events": {
+        "fields": {
+          "language": "eng",
+          "start_date_local": {
+            "xpath": "substring-after(//p[@class='flush bottom-15 bold'],',')",
+            "re": ".*am",
+            "level": "1",
+            "python": "convert_date(data)"
+          }
+        },
+        "type": "[ProductEvent]"
+      }
+    },
+    "preFilters": {
+      "filtersNot": [
+        {
+          "python": "'You are registering for:' in response.body",
+          "level": "1"
+        }
+      ]
+    },
+    "type": "Product",
+    "xpath": "//div[contains(./@class,'border-bottom')]"
+  }
+}

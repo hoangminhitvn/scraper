@@ -1,0 +1,92 @@
+{
+  "base_url": "http://magoosh.com/",
+  "levels": {
+    "1_1": {
+      "python": "magoosh.get_review_link(response)"
+    }
+  },
+  "start_url": "http://magoosh.com/",
+  "output_config": {
+    "fields": {
+      "provider_id": "231",
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      },
+      "language": "eng",
+      "price_currency": "USD",
+      "name": {
+        "xpath": "//h1//text()",
+        "python": "html_to_text(data)"
+      },
+      "description": {
+        "xpath": "//div[@class='hero-copy']/p[1]//text()",
+        "python": "html_to_text(data)"
+      },
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "./div[1]//text()",
+            "re": "\\w.*",
+            "python": "html_to_text(data)"
+          },
+          "image": {
+            "xpath": "./div[1]/img/@src"
+          },
+          "bio": {
+            "xpath": "./div[2]//text()",
+            "python": "html_to_text(data)"
+          }
+        },
+        "type": "[Instructor]",
+        "xpath": "//div[@id='tutors']/div[@class='row']/div"
+      },
+      "ProductRating": [
+        {
+          "fields": {
+            "pub_status": "L",
+            "rating_only": "1",
+            "overall_rating": null,
+            "user_id": "0",
+            "username": null,
+            "review": {
+              "xpath": ".//td[contains(./strong/text(), 'How did Magoosh help you?')]/text()",
+              "python": "html_to_text(data)"
+            }
+          },
+          "xpath": "//div[@class='section']/div[@class='row']",
+          "level": "1_1",
+          "type": "[ProductRating]"
+        },
+        {
+          "fields": {
+            "pub_status": "L",
+            "rating_only": "1",
+            "overall_rating": null,
+            "user_id": "0",
+            "username": {
+              "xpath": "./following-sibling::p[1]/text()"
+            },
+            "review": {
+              "xpath": ".//text()",
+              "python": "html_to_text(data).replace('\"','') if data else None"
+            }
+          },
+          "xpath": "//div[@id='testimonials']/blockquote",
+          "type": "[ProductRating]"
+        }
+      ]
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//div[@class='hero-patterned']//div[@class='container']//div[@class='span3']//a\")), callback='parse_product')"
+      ]
+    }
+  },
+  "pre_run": {
+    "price": {
+      "xpath": "concat(string(//div[@class='plan-cap plan-secondary'][1]/div[1]/span[@class='plan-price']),'/month')",
+      "start_url": "https://sat.magoosh.com/plans"
+    }
+  }
+}

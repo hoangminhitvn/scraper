@@ -1,0 +1,117 @@
+{
+  "base_url": "http://www.pearsonitcertification.com", 
+  "start_url": "http://www.pearsonitcertification.com/store/browse.aspx", 
+  "levels": {
+    "1_1": {
+      "xpath": "//a[contains(@rel,'author')]/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "216", 
+      "product_type_id": {
+        "xpath": "concat(substring('Book', 0 div boolean(//div[@class='buyOption clearfix']/h3[contains(.,'Book')])), substring('Course', 0 div boolean(//div[@class='buyOption clearfix']/h3[contains(.,'Video')])))"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='bssContent']/div[contains(.,'Description')]//following-sibling::span[@id]/following-sibling::*//text()", 
+        "python": "' '.join(data)"
+      }, 
+      "name": {
+        "xpath": "//div[contains(@id,\"bibCol\")]//h1/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@id='bssContent']//h3[contains(.,'Table of Contents')]/following-sibling::*|//div[@id='bssContent']//p[contains(.,'Table of Contents')]/following-sibling::*"
+      }, 
+      "product_video_url": {
+        "xpath": "//ul[@id='vidPlaylist']/li/a/@href"
+      }, 
+      "formats": [
+        {
+          "xpath": "//div[contains(@class,'buyOption')]//h3[contains(./text(),'Video')]", 
+          "re": "Video"
+        }, 
+        {
+          "xpath": "substring-after(//div[contains(@class,'buyOption')][1]/ul[@class='uppPricing']/li[contains(.,'Includes')]/text(),'Includes ')", 
+          "python": "data.replace(' and ','')", 
+          "type": "[str]"
+        }
+      ], 
+      "product_image_url": {
+        "xpath": "//div[@id='largeCover']//img/@src", 
+        "python": "urljoin('http://www.pearsonitcertification.com',data) if data else None"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": [
+        {
+          "xpath": "//div[@id=\"bssContent\"]", 
+          "re": "(\\d+(?:\\+)?(?: )+(?:Hours|HR|Minutes)+)", 
+          "python": "duration_filter(data)"
+        }, 
+        {
+          "xpath": "//p/*[contains(.,'Duration:')]/following-sibling::text()[1]", 
+          "python": "duration_filter(data)"
+        }
+      ], 
+      "price_display_float": {
+        "xpath": "substring-after(//div[contains(@class,'buyOption')][1]/ul[@class='uppPricing'][1]//li[@class='yours']/strong/text(),': $')", 
+        "python": "get_price_float(data)"
+      }, 
+      "duration_display": [
+        {
+          "xpath": "//ul[@id='bibPubInfo']//li[contains(.,'Pages')]", 
+          "re": "\\d+"
+        }, 
+        {
+          "xpath": "//div[@id=\"bssContent\"]", 
+          "re": "(\\d+(?:\\+)?(?: )+(?:Hours|HR|Minutes)+)"
+        }
+      ], 
+      "published_date": {
+        "xpath": "substring-before(substring-after(//ul[@class='bibliography']/li[2]/text()[1],'Published '),'by')", 
+        "python": "convert_date(data)"
+      }, 
+      "authors": {
+        "fields": {
+          "bio": {
+            "xpath": "//div[@class='longBioDescription']//p//text()", 
+            "python": "' '.join(data)"
+          }, 
+          "image": {
+            "xpath": "//div[@id='authorImage']//img/@src"
+          }, 
+          "name": {
+            "xpath": "//div[@class='longBioDescription']//h1/text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1_1"
+      }, 
+      "prod_keywords": {
+        "xpath": "//p[@id=\"this_posts_tags\"]/a/text()"
+      }, 
+      "publisher": {
+        "fields": {
+          "link": {
+            "xpath": "//ul[@class='bibliography']/li[2]//a[1]/@href"
+          }, 
+          "name": {
+            "xpath": "//ul[@class='bibliography']/li[2]//a[1]/text()"
+          }
+        }, 
+        "type": "[Publisher]"
+      }, 
+      "partner_prod_id": {
+        "xpath": "substring-after(//li[@class=\"bibIsbnLast\"],':')", 
+        "python": "data.replace('-','')"
+      }, 
+      "tz": "UTM"
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/store/[^/\\.]+$',)), callback='parse_product'),Rule(lxml(allow=('/store/browse\\.aspx?[^/\\.]+$', )), follow=True),]"
+    }
+  }
+}

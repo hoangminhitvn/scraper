@@ -1,0 +1,62 @@
+{
+  "base_url": "http://www.oreillyschool.com/", 
+  "start_url": "http://www.oreillyschool.com/browse-by-subject/", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "304", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//*[@id='main']//article", 
+        "re": "re.compile('</h1>(.*)Prerequisites',re.I|re.S)", 
+        "level": "1", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//article/h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//tr[contains(.,'Syllabus')]/td[2]", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//tr[contains(.,'Book')]//img/@src", 
+        "level": "1"
+      }, 
+      "price_currency": {
+        "xpath": "//article/text()[contains(.,'$')]", 
+        "python": "get_price_currency(data)", 
+        "level": "1"
+      }, 
+      "duration_filter": {
+        "xpath": "//p[contains(.,'hours')]/text()", 
+        "python": "str(duration_filter(data.replace('Clock-',' ')))", 
+        "level": "1"
+      }, 
+      "price_display_float": {
+        "xpath": "//article/text()[contains(.,'$')]", 
+        "python": "get_price_float(data)", 
+        "level": "1"
+      }, 
+      "duration_display": {
+        "xpath": "//p[contains(.,'hours')]/text()", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "string(//p[contains(.,'Prerequisites')])", 
+        "python": "data.replace('Prerequisites:','')", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='catalog_list']/div/a"
+  }
+}

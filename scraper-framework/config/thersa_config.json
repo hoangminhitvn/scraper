@@ -1,0 +1,79 @@
+{
+  "base_url": "https://www.thersa.org/",
+  "start_url": "https://www.thersa.org/events/search/?EventType=0&Country=1003&Date=1&Year=2015",
+  "levels": {
+    "1_1": {
+      "xpath": "//section[contains(@class, 'people-list')]/ul/li/div[1]/a/@href"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "283",
+      "product_type_id": {
+        "python": "product_type_id(Talks')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "name": {
+        "xpath": "//div[@id='main-content']//h1/text()"
+      },
+      "product_image_url": {
+        "xpath": "//div[contains(@class, 'image')]/img/@src",
+        "python": "urljoin('https://www.thersa.org/', data) if data else None"
+      },
+      "description": {
+        "xpath": "//div[contains(@class, 'content-wrapper')]/p//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "start_date_local": [
+        {
+          "xpath": "substring-before(//*[contains(@class, 'event-date')]/text(), 'at ')",
+          "re": "\\d+.*",
+          "python": "convert_date(data) if data else None"
+        },
+        {
+          "xpath": "//*[contains(@class, 'event-date')]/text()",
+          "re": "\\d+.*",
+          "python": "convert_date(data) if data else None"
+        }
+      ],
+      "location_display": {
+        "xpath": "//*[contains(@class, 'location')]/text()"
+      },
+      "instructors": {
+        "xpath": "//div[@id='main-content']",
+        "fields": {
+          "name": {
+            "xpath": ".//h1/text()"
+          },
+          "image": {
+            "xpath": ".//div[@class='profile-pic']/img/@src",
+            "python": "urljoin('https://www.thersa.org/', data) if data else None"
+          },
+          "bio": {
+            "xpath": ".//div[@class='two-column-left']//div[@class='content-wrapper']//text()",
+            "python": "html_to_text(data) if data else None"
+          },
+          "link": {
+            "xpath": ".//*[@class='two-column-right']//*[@class='profile-contact-details']//a/@href"
+          }
+        },
+        "type": "[Instructor]",
+        "level": "1_1"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('org/events/.*'), restrict_xpaths=(\"//ol[@class='search-results']//li//h3/a\")), callback='parse_product')",
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//div[@class='pagination']//li/a\")), follow=True)"
+      ]
+    },
+    "pre_filters": {
+      "filters_not": {
+        "level": "1",
+        "python": " 'login.aspx' in response.url"
+      }
+    }
+  }
+}

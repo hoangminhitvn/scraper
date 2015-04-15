@@ -1,0 +1,140 @@
+{
+  "base_url": "http://www.simplilearn.com/",
+  "levels": {
+    "1": {
+      "xpath": "./a/@href"
+    },
+    "1_1": {
+      "python": "simplilearn.request_comments(response)"
+    },
+    "1_2": {
+      "python": "simplilearn.request_duration(response)"
+    }
+  },
+  "start_url": "http://www.simplilearn.com/course-list",
+  "output_config": {
+    "fields": {
+      "provider_id": "249",
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      },
+      "language": "eng",
+      "name": {
+        "xpath": "//div[contains(@class, 'banner_container')]//h1/text()",
+        "level": "1"
+      },
+      "product_image_url": {
+        "xpath": "./a/img/@data-src"
+      },
+      "product_video_url": {
+        "xpath": "substring-before(substring-after(//div[contains(@class, 'about-course-video')]/@ng-init, 'course_video\",'), ',')",
+        "re": "\\w.*",
+        "python": "data.replace('\"', '')",
+        "level": "1"
+      },
+      "description": [
+        {
+          "xpath": "//ul[contains(@class, 'abt_course')]/li[contains(.//h4, 'What is this course about')]/div//text()",
+          "python": "html_to_text(data) if data else None",
+          "level": "1"
+        },
+        {
+          "xpath": "//ul[contains(@class, 'abt_course')]/li[contains(.//h4, 'What is the course about')]/div//text()",
+          "python": "html_to_text(data) if data else None",
+          "level": "1"
+        },
+        {
+          "xpath": "//ul[contains(@class, 'abt_course')]/li[1]/div//text()",
+          "python": "html_to_text(data) if data else None",
+          "level": "1"
+        }
+      ],
+      "toc": {
+        "xpath": "//div[contains(@class, 'course-preview')]//ul[contains(@class, 'course-preview-accord')]",
+        "level": "1"
+      },
+      "audience": {
+        "xpath": "//ul[contains(@class, 'abt_course')]/li[contains(.//h4, 'Who should do ')]/div//text()",
+        "python": "html_to_text(data) if data else None",
+        "level": "1"
+      },
+      "prerequisites": {
+        "xpath": "//ul/li[contains(.//h4, 'prerequisites')]/div[2]//text()",
+        "python": "html_to_text(data) if data else None",
+        "level": "1"
+      },
+      "duration_display": null,
+      "duration_filter": {
+        "level": "1_2",
+        "python": "simplilearn.get_duration(source)"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "//form[@id='frmOnlineCourses']//div[contains(@class, 'price')][1]/b/text()",
+        "re": "\\d+,?\\d+",
+        "level": "1"
+      },
+      "product_events": {
+        "fields": {
+          "start_date_local": {
+            "xpath": "concat(substring-before(./div[@class='schedule-head']/div[2]/text(), '-'), ./div[@class='schedule-head']/div[3]/text())",
+            "python": "get_start_date(data) if data else None"
+          },
+          "end_date_local": {
+            "xpath": "concat(substring-after(./div[@class='schedule-head']/div[2]/text(), '-'), ./div[@class='schedule-head']/div[3]/text())",
+            "python": "get_end_date(data) if data else None"
+          },
+          "location_display": {
+            "xpath": "./div[@class='schedule-head']/div[4]/text()"
+          },
+          "tz": {
+            "xpath": "substring-after(substring-before(//div[contains(@class, 'batch-header')]/div[contains(@class, 'time')]/text(), ')'), '(')"
+          },
+          "price_currency": "USD",
+          "price_display_float": {
+            "xpath": "./div[@class='schedule-head']/div[5]/text()",
+            "re": "\\d+,?\\d+"
+          }
+        },
+        "type": "[ProductEvent]",
+        "xpath": "//form[@id='frmClassroomCourses']/div/div[contains(@class, 'schedule-expand')]",
+        "level": "1"
+      },
+      "ProductRating": [
+        {
+          "fields": {
+            "pub_status": "L",
+            "rating_only": "0",
+            "user_id": "0"
+          },
+          "type": "[ProductRating]",
+          "python": "simplilearn.product_rating(source) if get_attr(simplilearn.product_rating(source)[0],'username') else None"
+        },
+        {
+          "fields": {
+            "pub_status": "L",
+            "rating_only": "0",
+            "user_id": "0",
+            "username": {
+              "xpath": ".//h5/text()"
+            },
+            "overall_rating": {
+              "xpath": ".//*[contains(@class, 'star_in')]/@style",
+              "re": "\\d+",
+              "python": "int(data[0])/11"
+            },
+            "review": {
+              "xpath": ".//*[contains(@class, 'review_wxpand')]//text()",
+              "python": "html_to_text(data) if data else None"
+            }
+          },
+          "type": "[ProductRating]",
+          "xpath": "//div[@class='review-section']",
+          "level": "1"
+        }
+      ]
+    },
+    "type": "Product",
+    "xpath": "//ul[@class='corse_list_one']/li"
+  }
+}

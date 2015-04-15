@@ -1,0 +1,79 @@
+{
+    "base_url": "http://www.ibm.com",
+    "start_url": "http://www-304.ibm.com/services/learning/ites.wss/zz/en?pageType=tp_search_results_new&searchString=&skillLevel=&freeFee=&sortBy=&noOfResultsPerPage=20&technologyArea=&task=&withinResults=true&deliveryType=&location=&classLanguage=&cntry=&lang=&dateAfter=&priceRange=&withinResults=true&combinedSearchString=&techarea1=&techarea2=&techarea3=&techarea4=&task1=&task2=&task3=&task4=&state=&city=&category_country=&category_language=&ssb=&cc=us&rowStart=0",
+    "levels": {},
+    "output_config": {
+        "fields": {
+            "provider_id": "27",
+            "product_type_id": {
+                "python": "product_type_id('Course')"
+            },
+            "time_lock": "B",
+            "space_lock": "B",
+            "description": {
+                "xpath": "//h2[contains(.,'Overview')]/following-sibling::*[position()>1]//text()[count(.|//h2[contains(.,'Overview')]/following-sibling::h2[1]/preceding-sibling::*//text())=count(//h2[contains(.,'Overview')]/following-sibling::h2[1]/preceding-sibling::*//text())]",
+                "python": "' '.join(normalize_space(selector.extract()))"
+            },
+            "name": {
+                "xpath": "//div[@id='ibm-content-main']//h2[@class='ibm-alternate']//text()",
+                "python": "' '.join(normalize_space(selector.extract()))"
+            },
+            "product_events": {
+                "xpath": "//div[@id='ajaxDataDiv']//*[contains(@id,'ajax-data')]/tr[contains(.,'English')]",
+                "fields": {
+                    "location_name": {
+                        "xpath": "./td[3]/text()"
+                    },
+                    "language": {
+                        "xpath": "./td[7]/text()",
+                        "python": "language(normalize_space(data))"
+                    },
+                    "location_country": {
+                        "xpath": "./td[4]/text()"
+                    },
+                    "start_date_local": {
+                        "xpath": "./td[2]/text()",
+                        "python": "convert_date(normalize_space(data))"
+                    },
+                    "duration_filter": {
+                        "xpath": "./td[5]/text()",
+                        "python": "duration_filter(data)"
+                    },
+                    "duration_display": {
+                        "xpath": "./td[5]/text()"
+                    }
+                },
+                "type": "[ProductEvent]"
+            },
+            "duration_filter": {
+                "xpath": "//p[contains(.,'duration')]/strong/following-sibling::text()",
+                "python": "duration_filter(data)"
+            },
+            "duration_display": {
+                "xpath": "//p[contains(.,'duration')]/strong/following-sibling::text()"
+            },
+            "audience": {
+                "xpath": "//h2[contains(.,'Audience')]/following-sibling::*//text()[count(.|//h2[contains(.,'Audience')]/following-sibling::h2[1]/preceding-sibling::*//text())=count(//h2[contains(.,'Audience')]/following-sibling::h2[1]/preceding-sibling::*//text())] | //h2[contains(.,'Audience')]/following-sibling::*//text()",
+                "python": "' '.join(normalize_space(selector.extract()))",
+                "level": "1"
+            },
+            "partner_prod_id": {
+                "xpath": "substring-before(//div[@id='ibm-content-main']//h2[@class='ibm-alternate']//text(),': ')"
+            }
+        },
+        "type": "Product",
+        "pre_filters": {
+            "filters_not": [
+                {
+                    "python": "'Gateway No Results' in response.body",
+                    "level": "1"
+                }
+            ]
+        },
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('rowStart=\\d+',), restrict_xpaths=('//span[@class=\\'ibm-table-navigation-links\\']/a[@id]'),), follow=True)",
+                "Rule(lxml(allow=('pageType=course_description',), restrict_xpaths=('//div[@class=\\'ibm-container-body\\']/strong/a'),), callback='parse_product')"]
+        }
+    }
+}

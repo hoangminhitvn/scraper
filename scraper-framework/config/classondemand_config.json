@@ -1,0 +1,150 @@
+{
+    "base_url": "http://www.classondemand.net/",
+    "start_url": "http://www.classondemand.net/media/catalog.aspx",
+    "levels": {
+        "1": "./td[1]/a[1]/@href"
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "55",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "string(//table[@id='bigbox1']//td[2]/p)",
+                    "re": "re.compile('(.*)Contents include:',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "string(//table[@id='bigbox1']//td[2]/p)",
+                    "re": "re.compile('(.*)Audience Level',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//table[@id='bigbox1']//td[2]/p[1]//text()",
+                    "python": "(html_to_text(data)).split('LESSONS:')[0]",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//table[@id='bigbox1']//td[2]/p[1]//text()",
+                    "python": "(html_to_text(data)).split('CHAPTERS INCLUDE:')[0]",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//table[@id='bigbox1']//td[2]/p[1]//text()",
+                    "python": "(html_to_text(data)).split('Section 1:')[0]",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//table[@id='bigbox1']//td[2]/p[1]//text()",
+                    "level": "1"
+                }
+            ],
+            "name": {
+                "xpath": "./td[1]/a[1]//text()"
+            },
+            "toc": [
+                {
+                    "xpath": "//table[@id='bigbox1']//td[2]",
+                    "re": "re.compile('LESSONS:(.*)',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//table[@id='bigbox1']//td[2]",
+                    "re": "re.compile('Content Outline(.*)',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//table[@id='bigbox1']//td[2]",
+                    "re": "re.compile('Contents include:(.*)',re.S|re.I)",
+                    "level": "1"
+                },
+                {
+                    "xpath": {
+                        "operator": "and",
+                        "value": [
+                            "//table[@id='bigbox1']//td[2]/p[contains(.,'LESSONS')]",
+                            "//table[@id='bigbox1']//td[2]/p[contains(.,'LESSONS')]/following-sibling::*",
+                            "//table[@id='bigbox1']//td[2]/p[contains(.,'LEARN')]",
+                            "//table[@id='bigbox1']//td[2]/p[contains(.,'SECTION')]",
+                            "//table[@id='bigbox1']//td[2]/p[contains(.,'Section')]"
+                        ]
+                    },
+                    "level": "1"
+                }
+            ],
+            "product_image_url": {
+                "xpath": "//table[@id='bigbox1']//table[1]//tr[1]/td/img/@src",
+                "python": "urljoin('http://www.classondemand.net',data)",
+                "level": "1"
+            },
+            "price_currency": {
+                "xpath": "//table[@id='bigbox1']//tr/td[1]/table[2]//tr[2]/td//td/*[1]//text()",
+                "python": "get_price_currency(data)",
+                "level": "1"
+            },
+            "duration_filter": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "//table[@id='bigbox1']//p[contains(.,'Approx')]",
+                        "//table[@id='bigbox1']//p[contains(.,'APPROX.')]",
+                        "//table[@id='bigbox1']//p[contains(.,'Approx. Run')]|//table[@id='bigbox1']//p[contains(.,'TRT:')]",
+                        "//table[@id='bigbox1']//p[contains(.,'Approx')]|//table[@id='bigbox1']//p[contains(.,'Approx TRT:')]",
+                        "//table[@id='bigbox1']//p[contains(.,'Approx')]|//table[@id='bigbox1']//p[contains(.,'approx')]"
+                    ]
+                },
+                "python": "classondemand.duration_filter(selector)",
+                "level": "1"
+            },
+            "price_display_float": {
+                "xpath": "//table[@id='bigbox1']//tr/td[1]/table[2]//tr[2]/td//td/*[1]//text()",
+                "python": "get_price_float(data)",
+                "level": "1"
+            },
+            "duration_display": {
+                "xpath": {
+                    "operator": "or",
+                    "value": [
+                        "string(//table[@id='bigbox1']//p[contains(.,'Approx')])",
+                        "string(//table[@id='bigbox1']//p[contains(.,'APPROX.')])",
+                        "string(//table[@id='bigbox1']//p[contains(.,'Approx. Run')])",
+                        "string(//table[@id='bigbox1']//p[contains(.,'TRT:')])",
+                        "string(//table[@id='bigbox1']//p[contains(.,'Approx')])",
+                        "string(//table[@id='bigbox1']//p[contains(.,'Approx TRT:')])",
+                        "string(//table[@id='bigbox1']//p[contains(.,'Approx')])",
+                        "string(//table[@id='bigbox1']//p[contains(.,'approx')])"
+                    ]
+                },
+                "level": "1"
+            },
+            "instructors": {
+                "xpath": "//table[@id='InsrtTable']//tr/td",
+                "fields": {
+                    "bio": {
+                        "xpath": "./p[2]//text()"
+                    },
+                    "image": {
+                        "xpath": "./p[1]/img/@src",
+                        "python": "urljoin('http://www.classondemand.net/',data)"
+                    },
+                    "link": {
+                        "xpath": "./a/@href",
+                        "python": "urljoin('http://www.classondemand.net/',data)"
+                    },
+                    "name": {
+                        "xpath": "./a//text()"
+                    }
+                },
+                "type": "[Instructor]",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "xpath": "//div[@id='container']//td[@id='right']/table[@id='selected_product_information']//tr"
+    }
+}

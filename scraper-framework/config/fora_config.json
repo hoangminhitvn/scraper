@@ -1,0 +1,121 @@
+{
+  "base_url": "http://library.fora.tv/", 
+  "start_url": "http://library.fora.tv/", 
+  "levels": {
+    "1_1": {
+      "xpath": "//*[@id='programinfo_content']/div[@class='information_left']//dd/a[contains(@href,'speaker')]/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "196", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//*[@id='programinfo_content']/div[contains(@class,'information_right')])", 
+        "python": "data.replace('Summary','')"
+      }, 
+      "name": {
+        "xpath": "//h1[@class='program_title']/span[@id='program_title_text']//text()"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='chapters']/dl"
+      }, 
+      "formats": {
+        "xpath": "//ul[@id='downloads_list']/li/a/span[1]/text()", 
+        "re": "Audio|Video", 
+        "type": "[str]", 
+        "python": "data if data else 'Video'"
+      }, 
+      "price_currency": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[@class='purchase_options'][2]//div[@class='option_price']//text()", 
+            "//div[@class='purchase_options']//div[@class='option_price']//text()"
+          ]
+        }, 
+        "python": "get_price_currency((''.join(data)))"
+      }, 
+      "duration_filter": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[contains(@class,'full_program')][1]//div[@id='xduration1']//text()", 
+            "//*[@id='chapters']/dl/div[@id='ch_01']//div[@class='duration_block']//text()"
+          ]
+        }, 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[@class='purchase_options'][2]//div[@class='option_price']//text()", 
+            "//div[@class='purchase_options']//div[@class='option_price']//text()"
+          ]
+        }, 
+        "python": "get_price_float((''.join(data)))"
+      }, 
+      "duration_display": {
+        "xpath": {
+          "operator": "or", 
+          "value": [
+            "//div[contains(@class,'full_program')][1]//div[@id='xduration1']//text()", 
+            "//*[@id='chapters']/dl/div[@id='ch_01']//div[@class='duration_block']//text()"
+          ]
+        }, 
+        "python": "' '.join(data)"
+      }, 
+      "published_date": {
+        "xpath": "//*[@id='programinfo_content']/div[@class='information_left']//dd[3]//text()", 
+        "python": "''.join(data)"
+      }, 
+      "instructors": {
+        "xpath": "//*[@id='common_body']", 
+        "fields": {
+          "bio": {
+            "xpath": "//div[@class='actor_bio']", 
+            "python": "html_to_text(data)"
+          }, 
+          "image": {
+            "xpath": ".//div[@class='full_image']/img/@src"
+          }, 
+          "name": {
+            "xpath": ".//h1/span/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }, 
+      "prod_keywords": {
+        "xpath": "//*[@id='programinfo_content']/div[@class='information_left']//dt[contains(.,'Tags')]/following-sibling::dd//text()", 
+        "type": "[str]"
+      }, 
+      "location_city": {
+        "xpath": "substring-before(//*[@id='programinfo_content']/div[@class='information_left']//dd[2]/text()[2],',')"
+      }, 
+      "location_name": {
+        "xpath": "//*[@id='programinfo_content']/div[@class='information_left']//dd[2]/text()[1]"
+      }, 
+      "location_display": {
+        "xpath": "//*[@id='programinfo_content']/div[@class='information_left']//dd[2]/text()", 
+        "python": "' '.join(data)"
+      }, 
+      "location_state": {
+        "xpath": "substring-after(//*[@id='programinfo_content']/div[@class='information_left']//dd[2]/text()[2],',')"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('library.fora\\.tv(/[^/]+){4}$')), callback='parse_product')", 
+        "Rule(lxml(allow=('page=\\d+|/payperview|/conference(/[^/]+){1}$|/series(/[^/]+){1}$|/programs(/[^/]+){1}$|/films(/[^/]+){1}$')), follow=True)"
+      ]
+    }
+  }
+}

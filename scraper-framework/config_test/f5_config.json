@@ -1,0 +1,103 @@
+{
+    "base_url": "https://f5.com",
+    "levels": {
+        "1": "./h3/a/@href"
+    },
+    "start_url": "https://f5.com/education/training/courses",
+    "output_config": {
+        "fields": {
+            "provider_name": "f5",
+            "provider_id": "184",
+            "language": "eng",
+            "space_lock": "Y",
+            "time_lock": "Y",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//header/h1/text()",
+                "level": "1"
+            },
+            "prod_keywords": {
+                "xpath": "//a[contains(@class,'post-tag')]/text()",
+                "type": "[str]",
+                "python": "normalize_space(data)",
+                "level": "1"
+            },
+            "partner_prod_id": {
+                "xpath": "substring-after(//aside/div[@class='articleDetails']/section/ul/li[1],'SKU: ')",
+                "level": "1"
+            },
+            "toc": {
+                "xpath": "//div[contains(@class,'soft-hide')]",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "price_currency": {
+                        "xpath": "substring-before(substring-after(//aside/div[@class='articleDetails']/section/ul/li[2],'('),')')",
+                        "level": "1"
+                    },
+                    "price_display_text": {
+                        "xpath": "substring-after(//aside/div[@class='articleDetails']/section/ul/li[2],'Price: ')",
+                        "level": "1"
+                    },
+                    "price_display_float": {
+                        "xpath": "substring-after(//aside/div[@class='articleDetails']/section/ul/li[2],'Price: ')",
+                        "python": "get_price_float(data)",
+                        "level": "1"
+                    },
+                    "duration_display": {
+                        "xpath": "substring-after(//aside/div[@class='articleDetails']/section/ul/li[3],'Course Length: ')",
+                        "level": "1"
+                    },
+                    "duration_filter": {
+                        "xpath": "substring-after(//aside/div[@class='articleDetails']/section/ul/li[3],'Course Length: ')",
+                        "level": "1",
+                        "python": "duration_filter(data)"
+                    }
+                },
+                "type": "[ProductEvent]",
+                "python": "f5.product_events(data,source)"
+            },
+            "description": {
+                "xpath": {
+                    "value": ["//section[@class='content']/p[1]/text()", "//div[@id='pageIntro']//div[contains(@class,'overviewbox')]/p[1]/text()"],
+                    "operator": "or"
+                },
+                "level": "1"
+            },
+            "audience": {
+                "xpath": {
+                    "value": ["//h2[contains(.,'Audience')]/following-sibling::p[1]/text()", "//section[@class='content']/p[3]/text()"],
+                    "operator": "or"
+                },
+                "level": "1"
+            },
+            "prerequisites": {
+                "xpath": {
+                    "value": [
+                        "//h2[contains(.,'Prerequisites')]/following-sibling::ul/li//text()"
+                    ],
+                    "operator": "or"
+                },
+                "type": "[str]",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "xpath": "//div[@class='listing-item']"
+    },
+    "pre_run": {
+        "all_events": {
+            "start_url": "https://f5.com/education/training/schedule",
+            "extractor_rules": {
+                "rules": [
+                    "Rule(lxml(allow=('.*'), restrict_xpaths=\"//span[@id='dnn_ContentPane']//ul//li/a\"), follow=True)",
+                    "Rule(lxml(allow=('schedule-plain',), tags=('iframe'), attrs=('src'), ), callback=balloon_spider.pre_run_service.parse)"
+                ]
+            }
+        }
+    }
+}

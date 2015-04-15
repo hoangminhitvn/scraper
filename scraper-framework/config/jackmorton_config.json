@@ -1,0 +1,81 @@
+{
+  "base_url": "http://learning.jackmorton.com/", 
+  "start_url": "http://learning.jackmorton.com/courses/Default.aspx?Company=IBM", 
+  "levels": {
+    "1": {
+      "xpath": "./@href", 
+      "python": "urljoin('http://learning.jackmorton.com/courses/',data) if data else None"
+    }, 
+    "1_1": {
+      "python": "response.url.replace('description','schedule')"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "133", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[contains(@class,'courses')]//span[contains(@id,'Description')])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[contains(@class,'courses')]/h3/span[contains(@id,'CourseTitle')]//text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(@class,'courses')]//span[contains(@id,'Topic')]", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "xpath": "//div[contains(@class,'courses')]//div[contains(@class,'MyExpandCol')]//tr[contains(@id,'gridClasses')]", 
+        "fields": {
+          "price_currency": "USD", 
+          "location_name": {
+            "xpath": "./td[2]//div/span/text()", 
+            "python": "' '.join(normalize_space(selector.extract()))"
+          }, 
+          "start_date_local": {
+            "xpath": "./td[3]/text()", 
+            "python": "convert_date(data.split()[0]) if '/' in data.split()[0]  else None "
+          }, 
+          "duration_filter": {
+            "xpath": "./td[3]/text()", 
+            "re": "[\\d+\\.]+[ ](?:DAY|HOUR))", 
+            "python": "duration_filter(data)"
+          }, 
+          "price_display_float": {
+            "xpath": "./td[5]//text()", 
+            "python": "data.replace('$','') if data else None"
+          }, 
+          "duration_display": {
+            "xpath": "./td[3]/text()", 
+            "re": "[\\d+\\.]+[ ](?:DAYS|HOUR)(?:S?)"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1_1"
+      }, 
+      "audience": {
+        "xpath": "//div[contains(@class,'courses')]//span[contains(@id,'Audience')]//text()", 
+        "python": "' '.join(normalize_space(selector.extract()))", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "//div[contains(@class,'courses')]//span[contains(@id,'PreReq')]//text()", 
+        "python": "' '.join(normalize_space(selector.extract()))", 
+        "level": "1"
+      }, 
+      "partner_prod_id": {
+        "xpath": "//div[contains(@class,'courses')]//span[contains(@id,'CourseCode')]//text()", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='ctl00_cphMain_gridClasses']//td[@class='customlink']/a"
+  }
+}

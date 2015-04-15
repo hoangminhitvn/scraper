@@ -1,0 +1,96 @@
+{
+  "base_url": "https://checkpointlearning.thomsonreuters.com/",
+  "levels": {},
+  "start_url": "https://checkpointlearning.thomsonreuters.com/CourseFinder/Search?pageNumber=1",
+  "settings": {
+    "DOWNLOADER_MIDDLEWARES": {
+      "scrapy_balloons.useragent.RandomUserAgentMiddleware": 400
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "47",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "provider_name": "Checkpoint Learning",
+      "product_type_name": "Courses",
+      "space_lock": "Y",
+      "time_lock": "Y",
+      "language": "eng",
+      "partner_prod_id": {
+        "xpath": "//span[contains(./text(), 'Course ID')]/following-sibling::text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "name": {
+        "xpath": "//div[contains(@class, 'conf_title_t1')]/text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "description": {
+        "xpath": "//div[contains(@class, 'fnt')]//text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "toc": {
+        "xpath": "//div[@id='outline_desc']"
+      },
+      "requirements": {
+        "xpath": "//span[contains(./text(), 'Requirements')]/following-sibling::text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "prerequisites": {
+        "xpath": "//span[contains(./text(), 'requisites')]/following-sibling::text()",
+        "python": "html_to_text(data) if data else None"
+      },
+      "published_date": {
+        "xpath": "//span[contains(./text(), 'Publication')]/following-sibling::text()",
+        "python": "convert_date(data) if data else None"
+      },
+      "duration_display": {
+        "xpath": "//div[contains(./span/text(), 'NASBA Field of Study')]//td[3]/text()",
+        "python": "checkpointlearning.get_duration_value(response)"
+      },
+      "duration_filter": {
+        "xpath": "//div[contains(./span/text(), 'NASBA Field of Study')]//td[3]/text()",
+        "python": "duration_filter(checkpointlearning.get_duration_value(response)) if data else none"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "//div[@class='courseMetadataWrap']/table//tr//*[contains(./text(), '$')]/text()",
+        "re": "\\d+\\.?\\d+",
+        "python": "get_price_float(str(min_price(data))) if data else None"
+      },
+      "product_events": {
+        "fields": {
+          "start_date_local": {
+            "xpath": "concat(substring-before(./td[2], '-'), substring(substring-after(./td[2], '-'), 6))",
+            "python": "convert_date(data) if data else None"
+          },
+          "end_date_local": {
+            "xpath": "substring-after(./td[2], '-')",
+            "python": "convert_date(data) if data else None"
+          },
+          "location_city": {
+            "xpath": "./td[contains(./a/@href, 'ScheduleInformationMap')]/a/text()",
+            "python": "data if data else None"
+          },
+          "location_state": {
+            "xpath": "./td[contains(./a/@href, 'ScheduleInformationMap')]/preceding-sibling::td[1]/text()",
+            "python": "data if data else None"
+          },
+          "price_display_float": {
+            "xpath": "substring-after(./td[not(contains(./s/text(), '$'))][contains(./text(), '$')]/text(), '$')"
+          }
+        },
+        "type": "[ProductEvent]",
+        "xpath": "//table[@class='course_finder_tbl']//tr[not(contains(./@class, 'header'))][not(contains(./td[2]/s/text(), '/'))]"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/CourseFinder/CourseDetails/.*'), restrict_xpaths=(\"//a[contains(@class, 'courseTitleLink')]\")), callback='parse_product')",
+        "Rule(lxml(allow=('/CourseFinder/.*'), restrict_xpaths=(\"//div[contains(./@align, 'center')]/a\"), attrs=('onclick'), process_value=checkpointlearning.extract_links_cat), follow=True)"
+      ]
+    }
+  }
+}

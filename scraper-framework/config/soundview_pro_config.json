@@ -1,0 +1,95 @@
+{
+  "base_url": "https://www.soundviewpro.com", 
+  "start_url": "https://www.soundviewpro.com/online-courses", 
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='brief-description']/following-sibling::div[1]/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "275", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "concat(//div[@class='brief-description']//text(),//div[@itemprop='description']//text())", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "string(//h2/following-sibling::div[1]/text())"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//span[@class='page-title'])"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='wl-course-outline']"
+      }, 
+      "product_image_url": {
+        "xpath": "//p[@class='primary']/a/img[1]/@src"
+      }, 
+      "price_currency": "USD", 
+      "duration_filter": {
+        "xpath": "//div[@id='ctl00_ctl00_ctl00_BodyContent_BodyContent_BodyContent_ctl00_pnlDuration']/span[@class='text']//text()", 
+        "python": "duration_filter(data)"
+      }, 
+      "price_display_float": {
+        "xpath": "//span[@id][contains(.,'Price')]/following-sibling::span[contains(.,'$')]//text()", 
+        "re": "\\d.*", 
+        "python": "data if data else '0'"
+      }, 
+      "duration_display": {
+        "xpath": "//div[@id='ctl00_ctl00_ctl00_BodyContent_BodyContent_BodyContent_ctl00_pnlDuration']/span[@class='text']//text()"
+      }, 
+      "ProductRating": {
+        "xpath": "//div[@id='upsells']//div[@class='info']", 
+        "fields": {
+          "username": {
+            "xpath": "./div[@class='author']//text()"
+          }, 
+          "rating_only": "0", 
+          "user_id": "0", 
+          "review": {
+            "xpath": "concat(.//p[@class='review-body']//text(),.//h3//text())", 
+            "re": "\\w.*", 
+            "python": "html_to_text(data)"
+          }, 
+          "pub_status": "L", 
+          "overall_rating": {
+            "xpath": ".//span[@itemprop='ratingValue'] div 20", 
+            "re": "\\d+"
+          }
+        }, 
+        "type": "[ProductRating]"
+      }, 
+      "instructors": {
+        "fields": {
+          "bio": {
+            "xpath": "//h3[contains(.,'Biography')]/following-sibling::div[1]/p[1]//text()", 
+            "python": "html_to_text(data)"
+          }, 
+          "image": {
+            "xpath": "//div[@class='medias']/img/@src"
+          }, 
+          "link": {
+            "xpath": "//h3[contains(.,'Biography')]/following-sibling::div[1]/p/a/@href"
+          }, 
+          "name": {
+            "xpath": "//div[@class='wl-instructor-detail']/h1//text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1_1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[ Rule(lxml(allow=('.*',), restrict_xpaths=('//h3[@class=\\'name\\']/a')), callback='parse_product'), Rule(lxml(allow=('.*', ),restrict_xpaths=('//ul[@class=\\'wl-pagination wl-cf\\']/li/a')), follow=True),]"
+    }
+  }
+}

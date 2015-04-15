@@ -1,0 +1,50 @@
+{
+  "baseUrl": "http://online.nd.edu/",
+  "levels": {
+    "1": {
+      "xpath": ".//h1/a/@href"
+    }
+  },
+  "start_url": "http://online.nd.edu/news/",
+  "output_config": {
+    "fields": {
+      "provider_name": "Notre Dame Open Courseware",
+      "provider_id": "293",
+      "language": "eng",
+      "space_lock": "N",
+      "time_lock": "N",
+      "product_type_name": "Courses",
+      "name": {
+        "xpath": ".//h1/a/@href/text()"
+      },
+      "prod_image": {
+        "xpath": ".//p[@class='image-left']/img/@src",
+        "python": "urljoin('http://online.nd.edu/', data) if data else None"
+      },
+      "preview_video": {
+        "xpath": "//div[contains(@class, 'entry-content')]//iframe/@src",
+        "python": "data.replace('//', '')",
+        "level": "1"
+      },
+      "description": {
+        "xpath": "//div[@class='entry-content']//text()",
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data",
+        "level": "1"
+      },
+      "published_date": {
+        "xpath": ".//time[@class='pubdate']/@datetime"
+      },
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": "./a/text()"
+          }
+        },
+        "type": "[Author]",
+        "xpath": ".//*[@class='author']"
+      }
+    },
+    "type": "Product",
+    "xpath": "//article[@class='hentry']"
+  }
+}

@@ -1,0 +1,280 @@
+{
+  "base_url": "http://www.amanet.org/", 
+  "start_url": "http://www.amanet.org/individualsolutions/parameters-solution1.aspx", 
+  "levels": {
+    "1_1": {
+      "xpath": "//*[@id='star-rating-review-link']/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "14", 
+      "product_type_id": {
+        "xpath": "string(//*[@id='bread_crumbs'])", 
+        "python": "product_type_id('Books' if 'Books' in data else 'Webinars' if 'Webinars' in data else 'Courses')"
+      }, 
+      "time_lock": "Y", 
+      "space_lock": "Y", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "string(//div[@id='overview'])", 
+          "python": "data.replace('Overview','').replace('Back to Top','') if data else None"
+        }, 
+        {
+          "xpath": "string(//*[@id='schedule_detail'])", 
+          "re": "re.compile('Overview(.*)What You Will Learn',re.S|re.I)", 
+          "python": "data if data else None"
+        }, 
+        {
+          "xpath": "string(//*[@id='general_container']//*[@class='product_info'])", 
+          "re": "re.compile('Overview(.*)What You Will Learn',re.S|re.I)", 
+          "python": "data if data else None"
+        }, 
+        {
+          "xpath": "string(//*[@class='product_info'][contains(.,'Overview')])", 
+          "re": "re.compile('Overview(.*)Schedule',re.S|re.I)", 
+          "python": "data if data else None"
+        }, 
+        {
+          "xpath": "//*[@id='member_copy']", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//*[@id='description_container']", 
+          "re": "re.compile('<h2 itemprop=\"description\">(.*)<ul>',re.S|re.I)", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//*[@class='product_info'][contains(.,'Synopsis')]/p", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//*[@id='ic_middle2']/div[@class='clear']/following-sibling::div[@class='product_info'][1]", 
+          "python": "html_to_text(data)"
+        }, 
+        {
+          "xpath": "//*[@class='product_info'][contains(.,'Overview')]//text()", 
+          "re": "re.compile('Overview(.*)What You Will Learn',re.S|re.I)", 
+          "python": "data if data else None"
+        }
+      ], 
+      "name": {
+        "xpath": [
+          "//div[@class='head_container']//h1/text()", 
+          "//*[@id='description_container']/h1/text()", 
+          "//*[@class='product_info']/h1/text()"
+        ]
+      }, 
+      "toc": {
+        "xpath": [
+          "//div[@id='toc']", 
+          "//h2[contains(.,'What You Will Learn')]/following-sibling::*[count(.|//h2[contains(.,'About the Presenters')]/preceding-sibling::*)=count(//h2[contains(.,'About the Presenters')]/preceding-sibling::*)]", 
+          "//h2[contains(.,'What You Will Learn')]/following-sibling::*"
+        ]
+      }, 
+      "product_events": {
+        "xpath": [
+          "//*[contains(@id,'ScheduleDisplay')]/table//tr", 
+          "//*[@id='main_body']"
+        ], 
+        "fields": {
+          "location_city": {
+            "xpath": ".//*[contains(@id,'Location')]/text()", 
+            "re": "re.compile('(.*),',re.S|re.I)"
+          }, 
+          "price_currency": [
+            {
+              "xpath": "./ancestor::*[@id='general_container']//*[@id='ProductFeesDisplay1_FeeDisplayPanel']/ul/li[contains(.,'Non Members')]/span[@class='price']/text()", 
+              "python": "get_price_currency(data)"
+            }, 
+            {
+              "xpath": ".//*[@id='book_detail_left']//*[contains(.,'Price')]/text()", 
+              "python": "get_price_currency(data)"
+            }, 
+            {
+              "xpath": "./ancestor::*[@id='general_container']//*[@class='product_info']/p[contains(.,'Price')]/*/text()", 
+              "python": "get_price_currency(data.replace('Price:',''))"
+            }, 
+            {
+              "xpath": ".//*[@id='schedule_detail']//p[contains(.,'Price')]/text()", 
+              "python": "None if 'FREE' in data else get_price_currency(data.replace('Price:',''))"
+            }
+          ], 
+          "location_state": {
+            "xpath": ".//*[contains(@id,'Location')]/text()", 
+            "re": "re.compile(',(.*)',re.S|re.I)"
+          }, 
+          "tz": {
+            "xpath": ".//*[@id='webcastSchedule_pnlUpcoming']/*[@id='webcastSchedule_lblTime']/text()", 
+            "re": "re.compile('.*(?:AM|PM) - .*(?:AM|PM) (.*)')"
+          }, 
+          "start_date_local": [
+            {
+              "xpath": ".//*[contains(@id,'Date')]/text()", 
+              "python": "get_start_date(data)"
+            }, 
+            {
+              "xpath": "./td[1]/text()", 
+              "python": "get_start_date(data) if '-' in data else convert_date(data)"
+            }, 
+            {
+              "xpath": ".//*[@id='webcastSchedule_pnlUpcoming']/*[@id='webcastSchedule_lblDateOfEvent']/text()", 
+              "python": "convert_date(data)"
+            }
+          ], 
+          "duration_filter": [
+            {
+              "xpath": "./ancestor::*[@id='general_container']//*[@id='ProductFeesDisplay1_ulSchedule']/li/text()", 
+              "re": "re.compile('days(.*)',re.S|re.I)", 
+              "python": "duration_filter(data.replace('Lessons',''))"
+            }, 
+            {
+              "xpath": "./td[3]/text()", 
+              "python": "duration_filter(str(data))"
+            }, 
+            {
+              "xpath": ".//*[@id='webcastSchedule_pnlUpcoming']/*[@id='webcastSchedule_lblTime']/text()", 
+              "python": "duration_filter(str(data))"
+            }
+          ], 
+          "price_display_float": [
+            {
+              "xpath": "./ancestor::*[@id='general_container']//*[@id='ProductFeesDisplay1_FeeDisplayPanel']/ul/li[contains(.,'Non Members')]/span[@class='price']/text()", 
+              "python": "get_price_float(data)"
+            }, 
+            {
+              "xpath": ".//*[@id='book_detail_left']//*[contains(.,'Price')]/text()", 
+              "python": "get_price_float(data)"
+            }, 
+            {
+              "xpath": "./ancestor::*[@id='general_container']//*[@class='product_info']/p[contains(.,'Price')]/*/text()", 
+              "python": "get_price_float(data.replace('Price:',''))"
+            }, 
+            {
+              "xpath": ".//*[@id='schedule_detail']//p[contains(.,'Price')]/text()", 
+              "python": "get_price_float(data.replace('Price:','')) if data else None"
+            }
+          ], 
+          "location_display": {
+            "xpath": [
+              ".//*[contains(@id,'Location')]/text()", 
+              "./td[2]/text()"
+            ]
+          }, 
+          "end_date_local": [
+            {
+              "xpath": ".//*[contains(@id,'Date')]/text()", 
+              "python": "get_end_date(data)"
+            }, 
+            {
+              "xpath": "./td[1]/text()", 
+              "python": "get_start_date(data) if '-' in data else None"
+            }
+          ], 
+          "duration_display": [
+            {
+              "xpath": ".//*[contains(@id,'Duration')]/text()", 
+              "python": "html_to_text(data)"
+            }, 
+            {
+              "xpath": "./td[3]/text()", 
+              "python": "html_to_text(data)"
+            }, 
+            {
+              "xpath": ".//*[@id='webcastSchedule_pnlUpcoming']/*[@id='webcastSchedule_lblTime']/text()", 
+              "python": "html_to_text(data)"
+            }
+          ]
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": [
+          "//*[@id='book_detail_left']/div[@class='book_cover_large']/img/@src", 
+          "//*[@class='product_image']/img/@src"
+        ], 
+        "python": "urljoin('http://www.amanet.org',data) if data else None"
+      }, 
+      "ProductRating": {
+        "xpath": "//*[@id='general_container']//div[@class='rating_mid_section_content']", 
+        "fields": {
+          "username": {
+            "xpath": ".//div[@class='rating_mid_section_content_columna']/p/text()[1]"
+          }, 
+          "rating_only": "0", 
+          "user_id": "0", 
+          "review": {
+            "xpath": ".//div[@class='rating_mid_section_content_columnb']", 
+            "python": "html_to_text(data)"
+          }, 
+          "pub_status": "L", 
+          "overall_rating": {
+            "xpath": ".//div[@class='ui-rating']/a[contains(@class,'ui-rating-full')]", 
+            "python": "len(data)"
+          }
+        }, 
+        "type": "[ProductRating]", 
+        "level": "1_1"
+      }, 
+      "published_date": {
+        "xpath": "//*[@id='schedule_detail']//p[contains(.,'Date')]/text()", 
+        "python": "convert_date(html_to_text(data))"
+      }, 
+      "instructors": {
+        "fields": {
+          "bio": {
+            "xpath": "//h2[contains(.,'About the Presenters')]/following-sibling::div[@class='author_bio']", 
+            "python": "html_to_text(data)"
+          }, 
+          "image": {
+            "xpath": "//h2[contains(.,'About the Presenters')]/following-sibling::div[@class='author_bio']/preceding-sibling::div[@class='book_cover_large']/img/@src", 
+            "python": "urljoin('http://www.amanet.org',data) if data else None"
+          }, 
+          "name": {
+            "xpath": "//h2[contains(.,'About the Presenters')]/following-sibling::div[@class='author_bio']/strong/text()"
+          }
+        }, 
+        "type": "[Instructor]"
+      }, 
+      "audience": {
+        "xpath": "//div[@class='product_info'][contains(.,'Who Should Attend')]/text()", 
+        "python": "html_to_text(data)"
+      }, 
+      "authors": {
+        "fields": {
+          "bio": [
+            {
+              "xpath": "//*[@id='general_container']//div[@class='product_info']", 
+              "re": "re.compile('About the Author(.*)Back to Top',re.S|re.I)", 
+              "python": "html_to_text(data) if data else None"
+            }, 
+            {
+              "xpath": "string(//h2[contains(.,'About the Author')]/following-sibling::*[@class='author_bio'])", 
+              "python": "data if data else None"
+            }
+          ], 
+          "name": [
+            {
+              "xpath": "//*[@id='book_detail_left']/p[contains(.,'Author')]/text()"
+            }, 
+            {
+              "xpath": "string(//*[@id='schedule_detail']/p)", 
+              "re": "re.compile('By:(.*)Last updated',re.I|re.S)", 
+              "python": "data if data else None"
+            }
+          ]
+        }, 
+        "type": "[Author]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/training/webcasts/|/training/seminars/|/training/books/|/training/podcasts/')), callback='parse_product')", 
+        "Rule(lxml(allow=('.*',), restrict_xpaths='//*[@id=\\'parametrics\\']//a'),follow=True)"
+      ]
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "base_url": "http://www.floatinguniversity.com/", 
+  "start_url": "http://www.floatinguniversity.com/get-started", 
+  "levels": {
+    "1": {
+      "xpath": "./a/@href"
+    }, 
+    "1_1": {
+      "xpath": "//ul[@id='container_nav']/li[contains(., 'Outline')]/a/@href", 
+      "level": "1"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "197", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//h2[contains(., 'Lesson Overview')]/following-sibling::*[count(.|//div[contains(@class, 'course_data')]/preceding-sibling::*)=count(//div[contains(@class, 'course_data')]/preceding-sibling::*)]", 
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./following-sibling::p[1]/strong/text()", 
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='main']/h1/following-sibling::*", 
+        "level": "1_1"
+      }, 
+      "authors": {
+        "xpath": "//div[@class='main']", 
+        "fields": {
+          "bio": {
+            "xpath": ".//p[@class='footnote']/text()", 
+            "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+          }, 
+          "name": {
+            "xpath": "substring-after(//p[@class='footnote']/preceding-sibling::h2[contains(., 'About')]/text(), 'About')", 
+            "python": "data if data else None"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='sidebar']//h2"
+  }
+}

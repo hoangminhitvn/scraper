@@ -1,0 +1,45 @@
+{
+  "base_url": "https://www.onlinetrainingmasters.com/", 
+  "start_url": "https://www.onlinetrainingmasters.com/courses.php", 
+  "levels": {
+    "1": {
+      "xpath": "./td/a[contains(.,'More')]/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "255", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//h3/ancestor::tr[1]/following-sibling::tr[1]", 
+        "python": "re.sub('[!|]','',html_to_text(data))", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h3/text()", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "./td[contains(@class,'content_content_name')][3]/span/text()", 
+            "python": "get_price_float(data)"
+          }, 
+          "price_currency": {
+            "xpath": "./td[contains(@class,'content_content_name')][3]/span/text()", 
+            "python": "get_price_currency(data)"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "pub_status": "L"
+    }, 
+    "type": "Product", 
+    "xpath": "//table//tr[@class][contains(.,'More')]"
+  }
+}

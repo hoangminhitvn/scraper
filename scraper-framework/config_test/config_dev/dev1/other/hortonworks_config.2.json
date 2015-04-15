@@ -1,0 +1,117 @@
+{
+    "baseUrl": "https://ilearning.seertechsolutions.com/",
+    "levels": {
+        "1": {
+            "selenium_function": "slm.wait_until_available_and_get_response(data,request)"
+        }
+    },
+    "selenium_config": {
+        "driver": "chrome",
+        "wait_until_available": {
+            "xpath": "//span[@id='COURSE_RESOURCES']//div[@class='details_box plain']",
+            "sleep": 2
+        }
+    },
+    "start_url": "https://ilearning.seertechsolutions.com/lmt/clmscatalogsummary.prmain?in_sessionid=&in_location=%25&in_orderBy=PA&in_portid=57&in_courseType=%25&in_ddCategory=%25&in_language_logged_out=en-us&in_region=hw&in_displayForm=Y",
+    "output_config": {
+        "fields": {
+            "provider_name": "Hortonworks",
+            "provider_id": "170",
+            "language": "eng",
+            "space_lock": "Y",
+            "time_lock": "Y",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//div[@class='mid']/h1/text()"
+            },
+            "description": [
+                {
+                    "xpath": "//div[@class='mid'][contains(., 'Description')]",
+                    "re": "re.compile('Description(.*)Prerequisite',re.S)",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+                },
+                {
+                    "xpath": "//div[@class='mid'][contains(., 'Description')]",
+                    "re": "re.compile('Description(.*)<strong>',re.S)",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))"
+                }
+            ],
+            "prerequisites": [
+                {
+                    "xpath": "//div[@class='mid'][contains(., 'Description')]",
+                    "re": "re.compile('Prerequisites</strong>(.*)<strong>Agenda',re.S)",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**_', '').replace('_', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**_', '').replace('_', '')"
+                },
+                {
+                    "xpath": "//div[@class='mid'][contains(., 'Description')]",
+                    "re": "re.compile('Prerequisites</strong>(.*)<strong>Lab Content',re.S)",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**_', '').replace('_', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**_', '').replace('_', '')"
+                },
+                {
+                    "xpath": "//div[@class='mid'][contains(., 'Description')]",
+                    "re": "re.compile('Prerequisites</strong>(.*)<strong>',re.S)",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**_', '').replace('_', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**_', '').replace('_', '')"
+                },
+                {
+                    "xpath": "//div[@class='mid'][contains(., 'Description')]",
+                    "re": "re.compile('Prerequisites</strong>(.*)',re.S)",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**_', '').replace('_', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**_', '').replace('_', '')"
+                }
+            ],
+            "toc": [
+                {
+                    "xpath": "//div[@class='mid'][contains(., 'Description')]",
+                    "re": "re.compile('Lab Content(.*)<strong>',re.S)"
+                },
+                {
+                    "xpath": "//div[@class='mid'][contains(., 'Description')]",
+                    "re": "re.compile('Lab Content(.*)',re.S)"
+                }
+            ],
+            "audience": {
+                "xpath": "//div[@class='mid'][contains(., 'Audience')]//p//text()",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            "product_events": {
+                "fields": {
+                    "location_display": {
+                        "xpath": "//span[@id='COURSE_RESOURCES']//div[@class='details_box plain']//strong[contains(., 'eseller')]/parent::p/text()",
+                        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                    },
+                    "location_name": {
+                        "xpath": "substring-before(//span[@id='COURSE_RESOURCES']//strong[contains(., 'eseller')]/parent::p/text(), '(')"
+                    },
+                    "location_city": {
+                        "xpath": "substring-before(//span[@id='COURSE_RESOURCES']//strong[contains(., 'ocation')]/parent::p/text(), ',')"
+                    },
+                    "location_country": {
+                        "xpath": "substring-after(//span[@id='COURSE_RESOURCES']//strong[contains(., 'ocation')]/parent::p/text(), ',')"
+                    },
+                    "duration_filter": {
+                        "xpath": "//span[contains(text(), 'Duration')]/parent::p/text()",
+                        "python": "duration_filter(data)"
+                    },
+                    "duration_display": {
+                        "xpath": "//span[contains(text(), 'Duration')]/parent::p/text()"
+                    },
+                    "start_date_local": {
+                        "xpath": "substring-before(//span[contains(text(), 'Start Date')]/parent::p/text(), '(')",
+                        "python": "convert_date(data.replace(re.search('\\d+-\\w+(-\\d+).*', data).group(1),'-20%s'%(re.search('\\d+-\\w+-(\\d+).*', data).group(1))))"
+                    },
+                    "end_date_local": {
+                        "xpath": "substring-before(//span[contains(text(), 'End Date')]/parent::p/text(), '(')",
+                        "python": "convert_date(data.replace(re.search('\\d+-\\w+(-\\d+).*', data).group(1),'-20%s'%(re.search('\\d+-\\w+-(\\d+).*', data).group(1))))"
+                    }
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "Product",
+        "extractorRules": {
+            "rules": [
+                "Rule(lxml(allow=('/lmt/clmsCatalogDetails\\.prMain\\?site\\=hw&in_offeringId\\=\\d+.*'), ), callback='parse_product')",
+                "Rule(lxml(allow=('.*'), restrict_xpaths=('//span[@class=\\'data_navigation\\']/a')), follow=True)"
+            ]
+        }
+    }
+}

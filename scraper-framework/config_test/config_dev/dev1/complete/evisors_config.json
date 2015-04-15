@@ -1,0 +1,93 @@
+{
+    "baseUrl": "https://www.evisors.com/",
+    "levels": {
+        "1": {
+            "xpath": "./a/@href",
+            "dont_filter": true
+        },
+        "1_1": {
+            "xpath": "//h3[@class='webinar-presenter-name']/a/@href",
+            "dont_filter": true,
+            "level": "1"
+        }
+    },
+    "start_url": ["https://www.evisors.com/webinars"],
+    "selenium_config": {
+        "driver": "chrome",
+        "click": {
+            "xpath": "//button[@rel='next']",
+            "sleep": 10,
+            "repeat": -1
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_name": "Evisors",
+            "provider_id": "182",
+            "product_type_name": "Courses",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "name": {
+                "xpath": "//h1[@class='webinar-title']/text()",
+                "level": "1"
+            },
+            "prod_image": {
+                "xpath": "//figure[@class='webinar-preview-image']/img/@src",
+                "level": "1"
+            },
+            "preview_video": {
+                "xpath": "//div[contains(@class, 'video-container')]//iframe/@src",
+                "level": "1"
+            },
+            "description": {
+                "xpath": "//div[contains(@class, 'webinar-description')]//text()",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))",
+                "level": "1"
+            },
+            "published_date": {
+                "xpath": "//section[contains(@class, 'webinar-information')]//time/@datetime",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "instructors": {
+                        "fields": {
+                            "name": {
+                                "xpath": "//section[@class='profile-details']/h2/text()",
+                                "level": "1_1"
+                            },
+                            "image": {
+                                "xpath": "//section[@class='profile-details']/img/@src",
+                                "re": "/asset/.*",
+                                "python": "urljoin('https://www.evisors.com/', data) if data else None",
+                                "levels": "1_1"
+                            },
+                            "bio": {
+                                "xpath": "//div[@class='pitch']",
+                                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data))",
+                                "levels": "1_1"
+                            },
+                            "link": {
+                                "xpath": "//h3[@class='webinar-presenter-name']/a/@href",
+                                "level": "1"
+                            }
+                        },
+                        "type": "[Instructor]",
+                        "xpath": "//*[contains(@class, 'webinar-presenter')]",
+                        "level": "1"
+                    }
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "Product",
+        "xpath": "//li[contains(@class, 'search-result')]",
+        "extractorRules": {
+            "rules": ["Rule(lxml(allow=('/webinars/.*')), callback=slm.click_and_follow)"]
+        },
+        "preFilters": {
+            "filtersNot": {}
+        }
+    }
+}

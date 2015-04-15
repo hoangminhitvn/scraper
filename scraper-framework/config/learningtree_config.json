@@ -1,0 +1,113 @@
+{
+    "base_url": "http://www.learningtree.com/",
+    "start_url": "http://www.learningtree.com/topic-keyword-index.htm#!tab2",
+    "levels": {},
+    "output_config": {
+        "fields": {
+            "provider_id": "137",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "Y",
+            "space_lock": "Y",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "substring-after(//p[contains(./b,'About This Course')],':')",
+                    "python": "normalize_space(html2text.html2text(data)).replace('*','') if data else None"
+                },
+                {
+                    "xpath": "//div[contains(@class, 'aboutThisCourse')]/p//text()",
+                    "python": "normalize_space(html2text.html2text(data)).replace('*','') if data else None"
+                },
+                {
+                    "xpath": "//div[contains(@class, 'aboutThisCourse')]/div/text()",
+                    "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+                }
+            ],
+            "name": {
+                "xpath": "//div[@id='inner']/h1/text()"
+            },
+            "toc": {
+                "xpath": "//li[@id='crstab1']//div[contains(@class, 'splitCols')]"
+            },
+            "product_events": {
+                "xpath": "//ul[contains(@class, 'courseDates')]/li",
+                "fields": {
+                    "location_city": {
+                        "xpath": "./div[@class='evLoc']//span/text()"
+                    },
+                    "price_currency": "USD",
+                    "end_date_local": [
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[2]/@content",
+                            "python": "get_end_date(data + ' '+extract_data(response.xpath(\"//li[@id='crstab1']//b[contains(.,'Standard Course')]/following-sibling::text()[1]\")).replace('.',''))"
+                        },
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[2]/@content",
+                            "python": "get_end_date(data + ' '+extract_data(response.xpath(\"//li[@id='crstab1']//p[1]//b[contains(.,'Course Hours')][1]/following-sibling::text()[1]\")).replace('.',''))"
+                        },
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[2]/@content",
+                            "python": "get_end_date(data + ' '+extract_data(response.xpath(\"//li[@id='crstab1']//p[contains(., 'a.m')][1]/text()[1]\")).replace('.',''))"
+                        }
+                    ],
+                    "start_date_local": [
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[1]/@content",
+                            "python": "get_start_date(data + ' '+extract_data(response.xpath(\"//li[@id='crstab1']//b[contains(.,'Standard Course')]/following-sibling::text()[1]\")).replace('.',''))"
+                        },
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[1]/@content",
+                            "python": "get_start_date(data + ' '+extract_data(response.xpath(\"//li[@id='crstab1']//p[contains(., 'a.m')][1]/text()[1]\")).replace('.',''))"
+                        },
+                        {
+                            "xpath": ".//a[@class='dateOptions']/meta[1]/@content",
+                            "python": "get_start_date(data + ' '+extract_data(response.xpath(\"//li[@id='crstab1']//p[1]//b[contains(.,'Course Hours')][1]/following-sibling::text()[1]\")).replace('.',''))"
+                        }
+                    ],
+                    "duration_filter": {
+                        "xpath": "//div[@id='courseInfo']//b/i/text()",
+                        "python": "duration_filter(data)"
+                    },
+                    "price_display_float": [
+                        {
+                            "xpath": "//td[contains(./@class,'tuition-new')]//text()",
+                            "re": "\\$.*",
+                            "python": "get_price_float(min_price(data))"
+                        }
+                    ],
+                    "location_display": {
+                        "xpath": "./div[@class='evLoc']//span/text()"
+                    },
+                    "duration_display": {
+                        "xpath": "//div[@id='courseInfo']//b/i/text()"
+                    }
+                },
+                "type": "[ProductEvent]"
+            },
+            "product_image_url": [
+                {
+                    "xpath": "//div[@class='topColumn'][1]//img/@src",
+                    "python": "urljoin('http://www.learningtree.com/', data)"
+                },
+                {
+                    "xpath": "//div[@class='topColumn'][2]//img/@src",
+                    "python": "urljoin('http://www.learningtree.com/', data)"
+                }
+            ]
+        },
+        "type": "Product",
+        "pre_filters": {
+            "filters_not": [
+                {
+                    "python": "'<ul class=\"sliderControls\">' in response.body",
+                    "level": "1"
+                }
+            ]
+        },
+        "extractor_rules": {
+            "rules": "[Rule(lxml(allow=('/courses/\\d+/.*'), restrict_xpaths=('//li[@id=\\'courseNumTab\\']//ul[contains(@class, \\'indexCrsList\\')]/li/a')), callback='parse_product'),]"
+        }
+    }
+}

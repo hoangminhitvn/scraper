@@ -1,0 +1,102 @@
+{
+  "base_url": "http://www.ftpress.com/", 
+  "start_url": "http://www.ftpress.com/store/browse.aspx", 
+  "levels": {
+    "1_1": {
+      "xpath": "//*[@id='metaInformation']//li[contains(.,'By')]/a/@href", 
+      "level": "1"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "205", 
+      "product_type_id": {
+        "python": "product_type_id('Book')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='bssContent']/div[contains(.,'Description')]", 
+        "re": "re.compile('</span>(.*)',re.S|re.I)", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//div[contains(@id,'bibCol')]//h1/text()"
+      }, 
+      "toc": {
+        "xpath": [
+          "//div[@id='bssContent']//h3[contains(.,'Table of Contents')]/following-sibling::*", 
+          "//div[@id='bssContent']//p[contains(.,'Table of Contents')]/following-sibling::*"
+        ]
+      }, 
+      "formats": {
+        "xpath": "//div[contains(@class,'buyOption')][1]/ul[@class='uppPricing']/li[contains(.,'Includes')]/text()", 
+        "re": "PDF|Kindle|iPad|Nook|EPUB|MOBI"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@id='largeCover']//img/@src"
+      }, 
+      "price_currency": {
+        "xpath": "//div[contains(@class,'buyOption')][1]/ul[@class='uppPricing'][1]//li[@class='yours']/strong/text()", 
+        "python": "get_price_currency(data.replace('Your Price: ',''))"
+      }, 
+      "price_display_float": {
+        "xpath": "//div[contains(@class,'buyOption')][1]/ul[@class='uppPricing'][1]//li[@class='yours']/strong/text()", 
+        "python": "get_price_float(data.replace('Your Price: ',''))"
+      }, 
+      "duration_display": {
+        "xpath": [
+          "//span[@id='bssMetaInformation']//li[contains(./text(),'Pages')]/text()", 
+          "//p/*[contains(.,'Duration:')]/following-sibling::text()[1]"
+        ], 
+        "python": "data.replace('Pages: ','')"
+      }, 
+      "published_date": {
+        "xpath": "//ul[@class='bibliography']/li[2]/text()[1]", 
+        "re": "re.compile('Published(.*)by',re.S|re.I)", 
+        "python": "convert_date(data)"
+      }, 
+      "authors": {
+        "xpath": "//div[@class='longBioDescription']", 
+        "fields": {
+          "bio": {
+            "xpath": "./h1/following-sibling::*", 
+            "python": "html_to_text(data)"
+          }, 
+          "name": {
+            "xpath": ".//h1/text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1_1"
+      }, 
+      "publisher": {
+        "fields": {
+          "link": {
+            "xpath": "//ul[@class='bibliography']/li[2]//a[1]/@href", 
+            "python": "urljoin('http://www.ftpress.com',data)"
+          }, 
+          "name": {
+            "xpath": "//ul[@class='bibliography']/li[2]/text()[1]", 
+            "re": "re.compile('by(.*)\\.',re.S|re.I)"
+          }
+        }, 
+        "type": "[Publisher]"
+      }, 
+      "partner_prod_id": {
+        "python": "response.url.split('-')[len(response.url.split('-')) - 1]", 
+        "level": "1"
+      }, 
+      "pub_status": "L", 
+      "tz": "PST"
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/store/[^/\\.]+$')), callback='parse_product')", 
+        "Rule(lxml(allow=('store/browse\\.aspx?[^/\\.]+$')), follow=True)"
+      ]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "base_url": "http://poptech.org", 
+  "start_url": "http://poptech.org/popcasts", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "354", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@id='description']/p)"
+      }, 
+      "name": {
+        "xpath": "//div[@id='title']//text()"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='gallery_frame']//iframe/@src", 
+        "python": "urljoin('http://',data)"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@id='description']/img/@src", 
+        "python": "urljoin('http://poptech.org',data)"
+      }, 
+      "prod_keywords": {
+        "xpath": "//p[@id=\"this_posts_tags\"]/a/text()"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/popcasts/\\w+(.*)',)), callback='parse_product'),Rule(lxml(allow=('/blog/categories/\\w+(.*)', )), follow=True),]"
+    }
+  }
+}

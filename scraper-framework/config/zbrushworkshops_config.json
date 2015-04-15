@@ -1,0 +1,63 @@
+{
+  "base_url": "https://www.uartsy.com", 
+  "start_url": "https://www.uartsy.com/classes", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "410", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "description": {
+        "xpath": ".//div[@class='course-brief']/p//text()"
+      }, 
+      "name": {
+        "xpath": ".//div[@class='course-title']//text()"
+      }, 
+      "toc": {
+        "xpath": "//*[@id='course-curriculum']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_currency": "USD", 
+          "tz": {
+            "xpath": ".//div[@class='course-start-time'][contains(.,'Time')]//text()", 
+            "re": "[A-Z]{3}+"
+          }, 
+          "language": "eng", 
+          "start_date_local": {
+            "xpath": "concat(.//div[@class='course-start-date'][contains(.,'Start Date')],.//div[@class='course-start-time'][contains(.,'Time')])", 
+            "re": "Nov.*AM", 
+            "python": "convertDate(data.replace('thTime','')) if data else None"
+          }, 
+          "duration_filter": {
+            "xpath": ".//div[@class='course-start-date'][contains(.,'Week')]//text()", 
+            "re": ".*Week", 
+            "python": "duration_filter(data)"
+          }, 
+          "price_display_float": {
+            "xpath": "//div[@class='buy-course']/a//text()", 
+            "re": "\\d+", 
+            "level": "1", 
+            "python": "get_price_float(data) if data else '0.00'"
+          }, 
+          "duration_display": {
+            "xpath": ".//div[@class='course-start-date'][contains(.,'Week')]//text()", 
+            "re": ".*Week"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "product_image_url": {
+        "xpath": ".//img/@src"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//ul[@class='portfolio-list sort-destination isotope']/div"
+  }
+}

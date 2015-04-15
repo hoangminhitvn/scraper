@@ -1,0 +1,73 @@
+{
+  "base_url": "https://curious.com", 
+  "start_url": "https://curious.com/courses", 
+  "levels": {
+    "1": ".//div[@class='courseCardContent']/preceding-sibling::a[1]/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "85", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='courseDescription truncated']/p)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "string(//h1)", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='courseLessons']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": [
+            {
+              "xpath": "//div[@class='salePrice']//text()", 
+              "re": "\\d.*", 
+              "python": "get_price_float(data)"
+            }, 
+            {
+              "xpath": "concat(substring('0.00', 1 div contains(//div[@class='startButton purchaseButton ']//text(),'FREE')),substring(//div[@class='startButton purchaseButton ']//text(), 1 div contains(//div[@class='startButton purchaseButton ']//text(),'$')))", 
+              "re": "\\d.*", 
+              "python": "get_price_float(data)"
+            }
+          ], 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "substring-before(//div[@class='infoBox benefits ']/ul/li[2]/span[@class='explanation']/span[@class='stat'],'of')", 
+            "python": "duration_filter(data)"
+          }, 
+          "duration_display": {
+            "xpath": "substring-before(//div[@class='infoBox benefits ']/ul/li[2]/span[@class='explanation']/span[@class='stat'],'of')"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "string(//div[@class='inlineVideoContainer']/@data-video_url_mp4)", 
+        "python": "urljoin('https://',data) if data else None", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "substring-before(substring-after(//div[@class='blur bgImage']/@style,'//'),'?')", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*',), restrict_xpaths='//div[contains(@class,\\'card courseCard\\')]/a'),callback='parse_product',)", 
+        "Rule(lrgl(allow=('href.*(/learn.*\\.js\\?page=\\d+)', '/courses.\\js\\?page=\\d+')),follow=True)", 
+        "Rule(lrgl(allow=('seriesUrl[^/]+(/.*)\"')), callback='parse_product')"
+      ]
+    }
+  }
+}

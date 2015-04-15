@@ -1,0 +1,51 @@
+{
+  "base_url": "http://www.irs.gov", 
+  "start_url": "http://www.irs.gov/uac/Videos", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "250", 
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "description": {
+        "xpath": "//div[@id='watch-description-text']/p//text()", 
+        "python": "html_to_text(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./a/text()"
+      }, 
+      "product_video_url": {
+        "xpath": "./a/@href"
+      }, 
+      "duration_filter": {
+        "xpath": "./ancestor-or-self::tr/td[3]//text()", 
+        "python": "duration_filter(data)"
+      }, 
+      "duration_display": {
+        "xpath": "./ancestor-or-self::tr/td[3]//text()", 
+        "python": "\\d.*"
+      }
+    }, 
+    "type": "Product", 
+    "pre_filters": {
+      "filters_not": [
+        {
+          "python": "'This video is private.' in response.body", 
+          "level": "1"
+        }
+      ]
+    }, 
+    "xpath": "//div[@class='wysiwyg']//tr/td[1][contains(./a,' ')]", 
+    "post_interceptors": [
+      {
+        "python": "item['product_url']= 'http://apps.irs.gov/app/scripts/exit.jsp?dest=%s' %(item['product_url'].replace('https','http'))"
+      }
+    ]
+  }
+}

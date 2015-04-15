@@ -1,0 +1,85 @@
+{
+  "base_url": "http://channel9.msdn.com/", 
+  "start_url": "http://channel9.msdn.com/Browse/AllContent",
+  "levels": {
+    "1_1": {
+      "xpath": "//ul[@class='entry-data item-data']/li[@class='author']/a/@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "175", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//*[@id='entry-body'])"
+      }, 
+      "name": {
+        "xpath": "//div[@class='entry-header item-header']/h1/text()"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@class='videoHolder']//a[@class='video']/@href"
+      }, 
+      "formats": {
+        "xpath": "//*[@id='video-download']/ul[@class='download']/li/div/a/text()|//*[@id='video-download']/ul[@class='download']/li/a/text()"
+      }, 
+      "duration_filter": {
+        "xpath": "//div[@class='videoHolder']//a[@class='video']/div[@class='entry-caption']/text()", 
+        "python": "str(duration_filter(data.replace(',','')))"
+      }, 
+      "duration_display": {
+        "xpath": "//div[@class='videoHolder']//a[@class='video']/div[@class='entry-caption']/text()"
+      }, 
+      "ProductRating": {
+        "fields": {
+          "pub_status": "L",
+          "rating_only": "1",
+          "review": null,
+          "user_id": "0",
+          "username": null,
+          "overall_rating": {
+            "xpath": "//p[@class='avg-rating']/span/text()",
+            "python": "str(round(float(data))).split('.')[0]"
+          }
+        },
+        "type": "[ProductRating]"
+      }, 
+      "published_date": {
+        "xpath": "substring-after(//li[contains(.,'Posted: ')],'Posted:')", 
+        "python": "str(convert_date(data))"
+      }, 
+      "authors": {
+        "xpath": "//div[@class='aside']/div[@class='author']", 
+        "fields": {
+          "bio": {
+            "xpath": "string(//div[contains(@class,'bio')])"
+          }, 
+          "image": {
+            "xpath": "./img/@src"
+          }, 
+          "name": {
+            "xpath": "./*[@class='name']/text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1_1"
+      }, 
+      "prod_keywords": {
+        "xpath": "//*[@id='entry-tags']/ul/li/a/text()", 
+        "type": "[str]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*',),deny=('/Tags|Shows/[^/]+$|Blogs/[^/]+$|Series/[^/]+$'), restrict_xpaths=('//a[@class=\\'title\\']'),), callback='parse_product')",
+        "Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[@class=\\'paging\\']/li/a'),),follow=True)"
+        ]
+    }
+  }
+}

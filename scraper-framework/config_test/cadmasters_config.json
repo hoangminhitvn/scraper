@@ -1,0 +1,76 @@
+{
+  "base_url": "http://www.cadmasters.com/training1.asp?typesoft=",
+  "levels": {},
+  "start_url": "http://www.cadmasters.com/training1.asp",
+  "output_config": {
+    "fields": {
+      "provider_id": "115",
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      },
+      "name": {
+        "xpath": ".//span[@class='bheader_sm']/a/text()"
+      },
+      "prerequisites": [
+        {
+          "xpath": ".//span[contains(.,'Prerequisite')]/following-sibling::span[1]//text()",
+          "python": "html_to_text(data)"
+        },
+        {
+          "xpath": ".//strong[contains(.,'Prerequisite')]/following-sibling::text()",
+          "python": "html_to_text(data)"
+        }
+      ],
+      "description": {
+        "xpath": {
+          "value": [
+            ".//strong[contains(.,'Topics include:')]/preceding-sibling::text()",
+            ".//span[contains(.,'Applicable')]/preceding-sibling::*//text()",
+            ".//span[contains(.,'Topics include')]/preceding-sibling::*//text()",
+            ".//span[contains(.,'Prerequisite')]/preceding-sibling::*//text()"
+          ],
+          "re": "",
+          "operator": "or"
+        },
+        "python": "html_to_text(data)"
+      },
+      "duration_display": {
+        "xpath": ".//preceding-sibling::p/span[@class='see_text']//text()",
+        "re": ".*Day|.*day"
+      },
+      "duration_filter": {
+        "xpath": ".//preceding-sibling::p/span[@class='see_text']//text()",
+        "re": ".*Day|.*day",
+        "python": "duration_filter(data)"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": ".//preceding-sibling::p/span[@class='see_text']//text()",
+        "re": "\\$\\d+",
+        "python": "get_price_float(data)"
+      }
+    },
+    "post_interceptors": [
+      {
+        "python": "cadmasters.set_product_url_product_event(item,spider)"
+      }
+    ],
+    "post_filters": {
+      "filters_not": [
+        {
+          "python": "'#' not in item['product_url']"
+        }
+      ]
+    },
+    "type": "Product",
+    "python": "cadmasters.break_data_level_0(response)",
+    "extractor_rules": {
+      "rules": ["Rule(lxml(allow=('typeacad$|typeid$|typegeospatial$|typebd$|typecustomonly$|typeonl$',)), follow=True,callback='parse')"]
+    }
+  },
+  "pre_run": {
+    "all_events": {
+      "start_url": "http://www.cadmasters.com/viewallclasses.asp"
+    }
+  }
+}

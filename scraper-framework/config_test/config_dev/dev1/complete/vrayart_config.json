@@ -1,0 +1,64 @@
+{
+    "baseUrl": "http://www.vrayart.com/",
+    "levels": {},
+    "start_url": ["http://www.vrayart.com/key-to-3d-success-ebook/"],
+    "output_config": {
+        "fields": {
+            "provider_name": "VRayArt",
+            "provider_id": "319",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//div[@class='summary']/h1/text()"
+            },
+            "prod_image": {
+                "xpath": "//div[@class='images']/a/@href"
+            },
+            "description": [
+                {
+                    "xpath": "//div[@class='summary']/p[@class='price']/following-sibling::p[count(.|//div[@class='summary']/p[contains(@class, 'stock')]/preceding-sibling::p)=count(//div[@class='summary']/p[contains(@class, 'stock')]/preceding-sibling::p)]",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+                },
+                {
+                    "xpath": "//div[@class='summary']/p[@class='price']/following-sibling::p",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+                }
+            ],
+            "prod_keywords": {
+                "xpath": "//div[@class='posted_in']/a/text()",
+                "type": "[str]",
+                "python": "normalize_space(data).split(',')"
+            },
+            "product_events": {
+                "fields": {
+                    "price_currency": "USD",
+                    "price_display_float": [
+                        {
+                            "xpath": "substring-after(//p[@class='price']/ins, '$')"
+                        },
+                        {
+                            "xpath": "substring-after(//p[@class='price']/text(), '$')"
+                        }
+                    ],
+                    "price_filter": [
+                        {
+                            "xpath": "substring-after(//p[@class='price']/ins, '$')",
+                            "python": "get_price_float(data)"
+                        },
+                        {
+                            "xpath": "substring-after(//p[@class='price']/text(), '$')",
+                            "python": "get_price_float(data)"
+                        }
+                    ]
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "Product",
+        "extractorRules": {
+            "rules": ["Rule(lxml(allow=('.*'), restrict_xpaths=('//ul[@class=\\'products\\']/li/a'), deny=('/online-trading-room/$')), callback='parse_product')"]
+        }
+    }
+}

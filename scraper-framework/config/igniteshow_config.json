@@ -1,0 +1,52 @@
+{
+  "base_url": "http://igniteshow.com/", 
+  "start_url": "http://igniteshow.com/browse", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "125", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='body-wrapper']/p//text()", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//h2[@class='title']/text()"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='video']//object/@data", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "fields": {
+          "bio": {
+            "xpath": "//div[@class='bio-text']//text()"
+          }, 
+          "name": {
+            "xpath": "//h4[@class='speaker']/a/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "prod_keywords": {
+        "xpath": "//div[@class='terms']/ul[@class='taxonomy']/li/a/text()", 
+        "type": "[str]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/videos/',)), callback='parse_product'),Rule(lxml(allow=('/browse$|/browse\\?page=\\d+$', )), follow=True),]"
+    }
+  }
+}

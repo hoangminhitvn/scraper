@@ -1,0 +1,68 @@
+{
+  "base_url": "http://fizzle.co/",
+  "start_url": "http://fizzle.co/course-library",
+  "levels": {
+    "1": {
+      "xpath": ".//h3/a/@href"
+    }
+  },
+  "login": {
+    "formname": "loginform",
+    "formdata": {
+      "log": "skilledup",
+      "pwd": "lightspeed123"
+    },
+    "start_url": "https://fizzle.co/wp-login.php",
+    "from_response": true
+  },
+  "settings": {
+    "DOWNLOAD_DELAY": 3
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "194",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "language": "eng",
+      "name": {
+        "xpath": ".//h3/a/text()"
+      },
+      "description": {
+        "xpath": "//div[@class='page_main']/div[@class='format_text']/*[not(contains(./a/@class, 'btn_main'))]//text()",
+        "python": "html_to_text(data) if data else None",
+        "level": "1"
+      },
+      "toc": {
+        "xpath": "//div[contains(@class, 'course_lessons')]/ul",
+        "level": "1"
+      },
+      "duration_display": {
+        "xpath": "//div[contains(@class, 'page_main_meta')]//div[contains(./b/text(), 'Total Time')]//text()",
+        "python": "html_to_text(data).replace('Total Time:', '') if data else None",
+        "level": "1"
+      },
+      "duration_filter": {
+        "xpath": "//div[contains(@class, 'page_main_meta')]//div[contains(./b/text(), 'Total Time')]//text()",
+        "python": "duration_filter(html_to_text(data).replace('Total Time:', '')) if data else None",
+        "level": "1"
+      },
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "//div[contains(@class, 'page_main_meta')]//div[contains(./b/text(), 'Instructor')]/b/following-sibling::text()",
+            "python": "html_to_text(data)",
+            "level": "1"
+          },
+          "image": {
+            "xpath": ".//img/@src"
+          }
+        },
+        "type": "[Instructor]",
+        "xpath": ".//div[@class='library_course_thumb']"
+      }
+    },
+    "type": "Product",
+    "xpath": "//div[contains(@class, 'library_course_inner')]"
+  }
+}

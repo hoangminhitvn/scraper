@@ -1,0 +1,75 @@
+{
+  "base_url": "https://thenewcircle.com", 
+  "start_url": "https://thenewcircle.com/training/courses.html", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "310", 
+      "product_type_id": {
+        "python": "product_type_id('Course')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[contains(@itemprop,'description')])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "string(//*[@id='content']/article/h1)", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//*[contains(@id,'outline')]/following-sibling::div[1]", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[contains(@itemprop,'description')]/img/@src", 
+        "python": "urljoin('https://thenewcircle.com',data)", 
+        "level": "1"
+      }, 
+      "duration_filter": {
+        "xpath": "//*[contains(.,'Duration')]/following-sibling::div[1]/p/text()", 
+        "python": "str(duration_filter(data.replace('.','')))", 
+        "level": "1"
+      }, 
+      "duration_display": {
+        "xpath": "//*[contains(.,'Duration')]/following-sibling::div[1]/p/text()", 
+        "level": "1"
+      }, 
+      "instructors": {
+        "xpath": "//*[contains(@id,'instructors')]/following-sibling::div[1]/div[@class='instructor-box']", 
+        "fields": {
+          "bio": {
+            "xpath": "string(//*[contains(@id,'instructors')]/following-sibling::div[1]/div[@class='instructor-box']//div[@class='instructor-info'])"
+          }, 
+          "image": {
+            "xpath": ".//img/@src", 
+            "python": "urljoin('https://thenewcircle.com',data)"
+          }, 
+          "link": {
+            "xpath": ".//div[@class='instructor-name']/a/@href", 
+            "python": "urljoin('https://thenewcircle.com',data)"
+          }, 
+          "name": {
+            "xpath": ".//div[@class='instructor-name']/a/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }, 
+      "audience": {
+        "xpath": "string(//*[contains(@id,'audience')]/following-sibling::div[1])", 
+        "level": "1"
+      }, 
+      "prerequisites": {
+        "xpath": "string(//*[contains(@id,'prerequisites')]/following-sibling::div[1])", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//*[@id='content']/article//ul/li"
+  }
+}

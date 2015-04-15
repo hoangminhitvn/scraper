@@ -1,0 +1,140 @@
+{
+  "base_url": "http://www.totalsuccess.co.uk", 
+  "start_url": "http://www.totalsuccess.co.uk/online-training-courses/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "401", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='courseDetailContent cmsOutput'][1])"
+      }, 
+      "name": {
+        "xpath": "string(//h1)"
+      }, 
+      "toc": [
+        {
+          "xpath": "//h2[contains(.,'Plan')]/following-sibling::ul[1]"
+        }, 
+        {
+          "xpath": "//p[contains(.,'Plan')]/following-sibling::ul[1]"
+        }, 
+        {
+          "xpath": "//h3[contains(.,'Plan')]/following-sibling::ul[1]"
+        }
+      ], 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "substring-before(//span[@class='listCoursePrice'],'+')", 
+            "re": "\\d.*"
+          }, 
+          "price_currency": "GBP", 
+          "duration_filter": [
+            {
+              "xpath": "substring-before(substring-after(//h2[contains(.,'Duration')]/following-sibling::p[1]//text(),'Approximately '),'.')", 
+              "re": "\\d+\\shour|\\d+\\shours|\\d+\\sminutes", 
+              "python": "duration_filter(data)"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//p[contains(.,'Duration')]/following-sibling::p[1]//text(),'take approximately '),' to')", 
+              "re": "\\d+\\shour|\\d+\\shours|\\d+\\sminutes", 
+              "python": "duration_filter(data)"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//h3[contains(.,'Duration')]/following-sibling::p[1]//text(),'Approximately '),'.')", 
+              "re": "\\d+\\shour|\\d+\\shours|\\d+\\sminutes", 
+              "python": "duration_filter(data)"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//h2[contains(.,'Duration')]/following-sibling::p[1]//text(),'take approximately '),' to')", 
+              "re": "\\d+\\shour|\\d+\\shours|\\d+\\sminutes", 
+              "python": "duration_filter(data)"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//p[contains(.,'Duration')]/following-sibling::p[1]//text(),'Approximately '),'.')", 
+              "re": "\\d+\\shour|\\d+\\shours|\\d+\\sminutes", 
+              "python": "duration_filter(data)"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//h3[contains(.,'Duration')]/following-sibling::p[1]//text(),'take approximately '),' to')", 
+              "re": "\\d+\\shour|\\d+\\shours|\\d+\\sminutes", 
+              "python": "duration_filter(data)"
+            }
+          ], 
+          "duration_display": [
+            {
+              "xpath": "substring-before(substring-after(//h2[contains(.,'Duration')]/following-sibling::p[1]//text(),'Approximately '),'.')", 
+              "re": ".*hour|.*hours|.*minutes"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//p[contains(.,'Duration')]/following-sibling::p[1]//text(),'take approximately '),' to')", 
+              "re": ".*hour|.*hours|.*minutes"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//h3[contains(.,'Duration')]/following-sibling::p[1]//text(),'Approximately '),'.')", 
+              "re": ".*hour|.*hours|.*minutes"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//h2[contains(.,'Duration')]/following-sibling::p[1]//text(),'take approximately '),' to')", 
+              "re": ".*hour|.*hours|.*minutes"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//p[contains(.,'Duration')]/following-sibling::p[1]//text(),'Approximately '),'.')", 
+              "re": ".*hour|.*hours|.*minutes"
+            }, 
+            {
+              "xpath": "substring-before(substring-after(//h3[contains(.,'Duration')]/following-sibling::p[1]//text(),'take approximately '),' to')", 
+              "re": ".*hour|.*hours|.*minutes"
+            }
+          ]
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@id='viewDemo']/a[@class='demoLink']/@href"
+      }, 
+      "formats": [
+        "video"
+      ], 
+      "product_image_url": {
+        "xpath": "//img[@id='mainImage']/@src", 
+        "python": "urljoin('http://elearning.totalsuccess.co.uk/',data)"
+      }, 
+      "requirements": [
+        {
+          "xpath": "string(//h2[contains(.,'Requirements')]/following-sibling::p[1]//text())"
+        }, 
+        {
+          "xpath": "string(//p[contains(.,'Requirements')]/following-sibling::p[1]//text())"
+        }, 
+        {
+          "xpath": "string(//h3[contains(.,'Requirements')]/following-sibling::p[1]//text())"
+        }, 
+        {
+          "xpath": "string(//p[contains(.,'requirements')]/following-sibling::p[1]//text())"
+        }
+      ], 
+      "audience": [
+        {
+          "xpath": "string(//h2[contains(.,'Audience')]/following-sibling::p[1]//text())"
+        }, 
+        {
+          "xpath": "string(//p[contains(.,'Audience')]/following-sibling::p[1]//text())"
+        }, 
+        {
+          "xpath": "string(//h3[contains(.,'Audience')]/following-sibling::p[1]//text())"
+        }
+      ]
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/Course/Details/.*',),), callback='parse_product'),]"
+    }
+  }
+}

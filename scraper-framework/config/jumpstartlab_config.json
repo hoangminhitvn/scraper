@@ -1,0 +1,72 @@
+{
+  "base_url": "http://jumpstartlab.com", 
+  "start_url": "http://jumpstartlab.com/courses", 
+  "levels": {
+    "1": "./h3/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "203", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "B", 
+      "space_lock": "B", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@class='preamble']//text()", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[@class='banner']/h1//text()", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//table[@class='schedule']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_currency": "USD", 
+          "end_date_local": {
+            "xpath": "//div[@class='upcoming']/ul/li[1]/p[1]/strong/text()", 
+            "python": "convert_date((data.encode('ascii','replace').replace(data[data.rfind(' '):-2],'')) +' 2014')", 
+            "level": "1"
+          }, 
+          "start_date_local": {
+            "xpath": "//div[@class='upcoming']/ul/li[1]/p[1]/strong/text()", 
+            "python": "convert_date((data.encode('ascii','replace')[:-2]) + ' 2014')", 
+            "level": "1"
+          }, 
+          "duration_filter": {
+            "xpath": "./ul[@class='details']/li[1]/text()", 
+            "python": "duration_filter(data)"
+          }, 
+          "price_display_float": {
+            "xpath": "//p[contains(.,'Pricing for this course is $')]/strong/text()", 
+            "python": "get_price_float(min_price(data))", 
+            "level": "1"
+          }, 
+          "duration_display": {
+            "xpath": "./ul[@class='details']/li[1]/text()"
+          }
+        }, 
+        "type": "[ProductEvent]"
+      }, 
+      "requirements": {
+        "xpath": "string(//*[@class='bulleted-list single'][2])", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }, 
+      "audience": {
+        "xpath": "string(//div[@class='section']/h2[contains(.,'Who\u2019s this for?')]/following-sibling::*[count(.|//div[@class='section']/h2[contains(.,'Who\u2019s this for?')]/following-sibling::h2[1]/preceding-sibling::*)=count(//div[@class='section']/h2[contains(.,'Who\u2019s this for?')]/following-sibling::h2[1]/preceding-sibling::*)])", 
+        "python": "' '.join(normalize_space(selector.extract())) if data else None", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='section']/ul/li"
+  }
+}

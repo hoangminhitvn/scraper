@@ -1,0 +1,42 @@
+{
+  "base_url": "http://audiovisualacademy.com/", 
+  "start_url": [
+    "http://audiovisualacademy.com/avin/en/modules/"
+  ], 
+  "levels": {
+    "1": {
+      "xpath": "./@href"
+    }
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "31", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//*[contains(@class, 'dash_lesson_content_body')]//text()", 
+        "python": "html_to_text(data) if data else None", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./p[contains(@class, 'title')]/text()"
+      }, 
+      "formats": "Videos", 
+      "product_image_url": {
+        "xpath": "./img/@src", 
+        "python": "data if 'http' in data else urljoin('http://audiovisualacademy.com/', data)"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='page_course_item']/a", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//div[@id='page_courses_item']//a[contains(., 'Read more')]\")), callback='parse', follow=True)"
+      ]
+    }
+  }
+}

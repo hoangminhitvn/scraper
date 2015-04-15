@@ -1,0 +1,51 @@
+{
+  "base_url": "http://www.thebamentor.com/", 
+  "start_url": [
+    "http://www.thebamentor.com/training-products.html"
+  ], 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "286", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//span[contains(@class, 'vmProductDesc')]/p[count(.|//span[contains(@class, 'vmProductDesc')]/*[contains(., 'Who should')]/preceding-sibling::*)=count(//span[contains(@class, 'vmProductDesc')]/*[contains(., 'Who should')]/preceding-sibling::*)]", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+        }, 
+        {
+          "xpath": "//span[contains(@class, 'vmProductDesc')]", 
+          "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+        }
+      ], 
+      "name": {
+        "xpath": "//p[contains(@class, 'vmProductName')]/text()"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[contains(@class, 'vmProductImage')]//a[1]/@href"
+      }, 
+      "price_currency": "USD", 
+      "price_display_float": {
+        "xpath": "//div[contains(@class, 'vmDetails')]//span[@class='productPrice']/text()", 
+        "re": "(\\d+\\.?\\d+)", 
+        "python": "'0.00' if data==0 else get_price_float(data)"
+      }, 
+      "audience": {
+        "xpath": "//span[contains(@class, 'vmProductDesc')]/*[contains(., 'Who should')]/following-sibling::*[1]", 
+        "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]).replace('**', '') if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*'), restrict_xpaths=(\"//div[contains(@class, 'vmBrowseProductTitle')]/a\")), callback='parse_product')", 
+        "Rule(lxml(allow=('.*'), allow_domains=('thebamentor.com'), restrict_xpaths=(\"//div[@class='vmNavListProduct2']/a\")), follow=True)"
+      ]
+    }
+  }
+}

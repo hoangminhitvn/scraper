@@ -1,0 +1,55 @@
+{
+  "base_url": "https://hbr.org/",
+  "start_url": "https://hbr.org/service/search/more-results/1/10",
+  "levels": {},
+  "output_config": {
+    "fields": {
+      "provider_id": "169",
+      "product_type_id": {
+        "python": "product_type_id('Book')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "language": "eng",
+      "name": {
+        "xpath": "//h1//text()"
+      },
+      "product_image_url": {
+        "xpath": "//figure[@class='carousel-image']/img/@src",
+        "python": "urljoin('https://hbr.org/', data) if data else None"
+      },
+      "description": {
+        "xpath": "//p[@class='product-text mbl']//text()",
+        "python": "html_to_text(data)"
+      },
+      "published_date": {
+        "xpath": "//span[contains(./text(),'Publication')]/following-sibling::strong[1]/text()",
+        "python": "convert_date(data) if data else None"
+      },
+      "partner_prod_id": {
+        "xpath": "//span[contains(./text(),'Product')]/following-sibling::strong[1]/text()"
+      },
+      "authors": {
+        "fields": {
+          "name": {
+            "xpath": ".//text()"
+          }
+        },
+        "type": "[Author]",
+        "xpath": "//h6[contains(.,'Authors')]/following-sibling::div[1]//li"
+      },
+      "price_currency": "USD",
+      "price_display_float": {
+        "xpath": "string(//h6[@class='product-hed']/following-sibling::ul[1]//li//strong)",
+        "re": "\\d.*"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lrgl(allow=('href\": \"(/product/[^\"]+)')),callback='parse_product')",
+        "Rule(lrgl(allow=('status.*'),process_value=hbr.extract_next_url_cat))"
+      ]
+    }
+  }
+}

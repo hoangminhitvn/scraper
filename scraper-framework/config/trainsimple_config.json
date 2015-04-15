@@ -1,0 +1,64 @@
+{
+  "base_url": "http://www.trainsimple.com/", 
+  "start_url": "http://www.trainsimple.com/SelfPaced.aspx", 
+  "levels": {
+    "1": ".//h3/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "402", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[@class='photo-cont']/p/text())", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "string(//span[@id='ltrCourseName']/text())", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='course-detail-latest-main']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "concat(//div[@class='date1']/span[2], '.', //div[@class='brd2']/span/text())"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "string(//div[@class='photo-cont']//ul/li[2]/a)", 
+            "python": "duration_filter(data)"
+          }, 
+          "duration_display": {
+            "xpath": "string(//div[@class='photo-cont']//ul/li[2]/a)"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//*[@id='video']/source[1]/@src", 
+        "python": "urljoin('http://www.trainsimple.com/',data)", 
+        "level": "1"
+      }, 
+      "formats": "Courses", 
+      "product_image_url": {
+        "xpath": ".//div[@class='adobe-left']/a/img/@src", 
+        "python": "urljoin('http://www.trainsimple.com/',data)"
+      }, 
+      "difficulty": {
+        "xpath": "//div[@class='photo-cont']//ul/li[1]/a/text()", 
+        "re": "Beginner|Intermediate|Expert", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[contains(@class, 'adobe-list')]"
+  }
+}

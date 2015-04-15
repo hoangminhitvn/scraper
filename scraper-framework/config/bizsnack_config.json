@@ -1,0 +1,75 @@
+{
+  "base_url": "http://www.bizsnack.com", 
+  "start_url": "http://www.bizsnack.com", 
+  "levels": {
+    "1": "./a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "53", 
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[contains(@id,'leftstrip') and h3[contains(.,'Overview')]]/div[@class='expandable']//text()", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": ".//span[@class='anchorTitle']/a/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='over_cont_lef']/div[@id='leftstrip']//ul", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "substring-after(//div[@id='righttop_link']/div[@class='box_mid']/h2[@class='price-box']/text(), 'Price: ')", 
+            "python": "get_price_float(data)", 
+            "level": "1"
+          }, 
+          "price_currency": {
+            "xpath": "substring-after(//div[@id='righttop_link']/div[@class='box_mid']/h2[@class='price-box']/text(), 'Price: ')", 
+            "python": "get_price_currency(data)", 
+            "level": "1"
+          }, 
+          "duration_filter": {
+            "xpath": "//div[@class='table-of-content']/div[@class='item-list']/ul/li//span[@class='chapter-duration']/text()", 
+            "python": "str(duration_filter(data))"
+          }, 
+          "duration_display": null
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//*[@id='vimeo_player_id']/@src", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "./a/img/@src"
+      }, 
+      "instructors": {
+        "xpath": "//div[contains(@class,'leftrow_top') and .//h3[contains(.,'About Instructor')]]", 
+        "fields": {
+          "bio": {
+            "xpath": "./div[@class='over_cont_rig']/div[@id='leftstrip']/*[not(@class='instructor-name')]//text()"
+          }, 
+          "image": {
+            "xpath": "./div[@class='over_cont_rig']/div[@id='leftstrip']/img/@src"
+          }, 
+          "name": {
+            "xpath": "./div[@class='over_cont_rig']/div[@id='leftstrip']/p[@class='instructor-name']/text()"
+          }
+        }, 
+        "type": "[Instructor]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@id='block-views-courses-block-1']//table[contains(@class,'views-view-grid')]/tbody/tr/td"
+  }
+}

@@ -1,0 +1,409 @@
+name,id
+$100 MBA,11
+02Geek,3
+02skills,10
+280group,4
+360training,7
+60 Day MBA,8
+99U,1
+Accelio Guides,9
+Ada Developers Academy,13
+Adobe Press,5
+Adobe Systems Incorporated,42
+Advanced Medical Certification,15
+Affilorama,17
+Affinity Trading,68
+ALISON,79
+Altera,95
+American Health Care Academy,71
+American Management Association,14
+American Purchasing Society,24
+Angelhack,20
+Anyone Can Learn to Code,30
+App Academy,2
+AppendTo,18
+Aquent Gymnasium,22
+Array Fire,23
+Association of Strategic Marketing,6
+Audio Visual Academy,31
+Automated Learning,27
+AWS,12
+Aziksa,16
+BA Mentor,286
+Babbel,19
+Become A Blogger,21
+Benchprep,28
+Berkman Center,34
+Betamore Academy,26
+Better Photo,32
+Big Think Mentor,29
+Big Think TV,33
+Bizsnack,53
+Bloc,38
+BMC Software,36
+Bright Talk,37
+Byte Academy,35
+CAD Masters,115
+Canvas Network,44
+Career Foundry,40
+CareerStep,57
+CartoDB,61
+Catalyst MLM,41
+"CBT Nuggets, LLC",39
+Certified Staffing,45
+CfPA,46
+Chandoo,129
+"Channel 9, MSDN",175
+Checkpoint Learning,47
+Cisco Learning Network,48
+Cisco Press,49
+Citrix,146
+Class on Demand,55
+Cloud Academy,63
+Cloud Security Alliance,150
+cloudera,43
+CMIVFX,56
+Code Chicago,65
+Code School,73
+Code Union,75
+Codecademy,50
+Coded,51
+codefellows,66
+Codelearn,60
+CodePath,52
+Coder Cadre,69
+Coder Camps,64
+Coder Foundry,54
+Coder Vox,152
+Coders Lab,58
+Codeup,70
+Coding Campus,72
+Coding Dojo,74
+Coding House,25
+CompTIA,78
+Compucert,76
+CompuWorks,77
+Copyblogger Authority,80
+Copywriting Course,59
+Course Horse,62
+Coursera,67
+CourseSites,164
+Creative Live,171
+Creative Writing Now,86
+Creator Up,82
+Curious,85
+Cyberwise,94
+Dale Carnegie Training,98
+DaVinci,88
+Deep Dive Coders,178
+Delft University of Technology,372
+Delta Program,96
+Design Lab,116
+Design3,102
+Designation,97
+Destech,83
+Dev Bootcamp,87
+DevMountain,123
+DevPoint Labs,89
+Digital Marketing Institute,127
+Digital Tutors,99
+Disruption Institute,91
+Distance Learning College,100
+Distilled,92
+DIY Video Guy,90
+DMA Education,93
+DocStoc,109
+Dojo Dev Camp,101
+Drupalize Me,106
+E-careers,107
+e-Procept,359
+eClasses,104
+Ed2go,108
+Ed4Online,117
+Edu Pristine,120
+edureka,105
+Eduson,195
+edX,142
+Elance,119
+eLearnExcel,145
+eLearnUK,154
+EMC,157
+Entreprenable,122
+Entrepreneurs Unpluggd,126
+Envato/Tuts+,385
+Epicodus,158
+ERI Distance Learning Center,165
+Esri,173
+European Graduate School,121
+EverMotion VFX,132
+Evisors Webinars,182
+Excel with Business,131
+Exit Certified,139
+F5,184
+Falconbury,191
+"Fast Lane Consulting and Education Services, Inc",148
+FilmMaker IQ,193
+Filtered,136
+FireBootCamp,143
+Fizzle,194
+Flatiron School,149
+Floating University,197
+Fluenz,153
+For Dummies,112
+Fora.TV,196
+Frontend Masters,202
+FT Press,205
+Fullstack Academy,155
+Future Learn,110
+fxphd,167
+Geekwise Academy,199
+General Assembly,201
+Git Immersion,210
+Global Compliance Panel,111
+Global Finance School,233
+Global Innovative Campus,206
+Global Knowledge,160
+Gnomon School of Visual Effects,207
+GogoTraining,242
+Google Developers University,190
+Gotham Writers' Workshop,321
+gotoAndLearn(),113
+Gr8code,162
+Grand Circus,243
+Gresham College,166
+Grey Campus,114
+Grovo,118
+gSchool,248
+Hackbright Academy,215
+HackDesign,176
+Hacker Coding Academy,256
+Hacker School,168
+HackReactor,261
+HappyFunCorp Academy,264
+Harvard Business Review Classes,169
+Hitachi Data Systems,217
+HootSuite University,180
+Hortonworks,170
+howdesignuniversity,183
+HubSpot,124
+Hyperink,172
+IBM Book Press,185
+IBM Developer Works Demos,174
+Idea City,220
+Ignite Talk,125
+Infinite Skills,268
+Information Management,188
+InformIT,230
+InfoSec Institute,192
+Ingram Micro,269
+Insight Data Science,187
+Instant eTraining,204
+Institute for the Certification of Computing Professionals,179
+International House London,225
+Intertech,128
+Ironhack,130
+IRS Videos,250
+iversity,252
+Jaaga,200
+Jack Morton,133
+JER Online,81
+Johns Hopkins School of Public Health,134
+Jump Course,253
+jumpstartlab,203
+Juniper Networks,228
+Kelby Training,211
+Killersites,232
+Knowledge City,212
+KnowledgeNet Express,260
+Koru,262
+Launch Academy,272
+Learn Dev Now,274
+Learn IT Anytime,138
+Learn Skills,140
+Learn to Program .TV,263
+Learn Visual Studio,267
+Learn Web Development,241
+Learnable,237
+Learning Tree,137
+LearningFuze,214
+LearningGG,135
+LearnQuest,278
+Ledet,141
+Lifetime to Learn,219
+LingQ,247
+Live Off Your Passion,222
+Living Language,223
+LoveTEFL,224
+lynda.com,229
+MacProVideo,284
+Magneto Academy,251
+Magoosh,231
+Main Street ROI,235
+Makegameswithus,238
+Maker Square,257
+Mammoth Interactive,258
+Market Motive,239
+Marketfy,265
+MarketingProfs University,285
+MarketingProfsU,297
+Massive Open Online English Courses (MOOEC),244
+MatadorU,144
+McAfee,240
+MeasureUp,295
+Mediabistro Courses,281
+Metis,147
+Michael Locke Web Design,298
+Microsoft Office Training,255
+Microsoft Virtual Academy,316
+Midwest Hacker School,332
+Mind Edge Online,151
+Mirantis,156
+MIT Open Courseware,159
+Mixergy,282
+Mobile Makers Academy,163
+MongoDB University,291
+Moz Academy,302
+Nashville Software School,177
+Nathan Barry,292
+National Program on Technology Enhanced Learning,186
+Netcom Learning,334
+New Circle,310
+New Horizons,245
+New York Video School,208
+Notre Dame Open Courseware,293
+NovoEd,181
+O'Reilly Media,348
+O'Reilly School of Technology,304
+O'Reilly Video,342
+Omaha Code School,335
+One Month Rails,307
+Online Marketing Institute,209
+Online Trading Academy,320
+Ontwik,294
+Open Security Training,336
+Openlearning,303
+OpenupEd,259
+Oracle University,338
+OSTraining,270
+P2PU,271
+Parallel Branch,308
+PDX Code Guild,213
+Peachpit,337
+Pearson IT Certification,216
+Phil Steele Training,355
+Philly Dev Camp,352
+Phlearn,311
+Pluralsight Training,339
+Pop Tech,354
+PopForms,341
+Portland Code School,349
+Poynter's News University,246
+PR News,357
+Pragmatic Studio,356
+Project Management Institute,313
+PRSA,361
+PSD Box,273
+Quick Sprout University,363
+Ragan Training,218
+Redhat Training,327
+RefactorU,366
+Research Rockstar,277
+Research Skills Online,280
+RocketU,221
+Rockit Bootcamp,328
+Rosetta Stone,367
+RSA,283
+Ruby on Rails,296
+Sabio.la,344
+Sales Training Institute,329
+Salesforce,226
+SANS Institute,345
+SAP Learning Hub,368
+Saylor Academy,227
+Schillington School,234
+School of Devs,378
+SchoolCounselor.com,376
+Scott H Young,299
+Screencasts Online,380
+Seedpaths,236
+Shay Howe,384
+Simon SezIT,300
+Simplilearn,249
+Skaled,301
+Skill Forge,330
+Skillcrush,254
+SkillFeed,386
+Skillshare,266
+Smart Factory,387
+Smart Insights,389
+Smart Pros,331
+Smashing Magazine,391
+Software Craftsmanship Guild,347
+Soundview Pro,275
+SSO Network,333
+Starter League,397
+Starter School,398
+Startup Institute,353
+Stonebridge Colleges,340
+stormwind,343
+Study Interactive,346
+Super Summit,399
+Tableau,276
+Teach English Abroad,350
+Tealeaf Academy,161
+Tech Academy,351
+Tech Bootcamps,360
+Tech Talent South,306
+Technology ED,369
+TED,358
+Terrapinn,400
+The Compelling Image,309
+The Data Warehousing Institute,279
+The Great Courses,287
+The Iron Yard Academy,198
+The New Boston,362
+The New York Code + Design Academy,189
+ThinkBIGLearnSmart,288
+Thinkful,371
+thoughtbot,289
+Tips for Public Speaking,364
+Total Success,401
+Total Training,365
+Train Simple,402
+Training Center,374
+Transcender,377
+Treehouse,305
+Tufts,373
+Turn totech,290
+Typing Tutor Online,375
+TypingWeb,403
+UC Irvine,379
+Udacity,392
+Udemy,393
+Universal Class,381
+University of Southern Queensland,312
+University of the People,404
+UNUChannel,315
+Utah State University,382
+Verbal Planet,318
+Video Copilot,394
+Video Traffic Academy,383
+Videomaker,405
+VMware,395
+Vodeclic,406
+VRayArt,319
+VTC,314
+Wall Street Prep,407
+Webucator,396
+WiBit.Net,409
+Wigolia,388
+WizIQ,323
+Women's Coding Collective,370
+World Economic Forum Academy,408
+Writer's Store,325
+Writers Digest University,317
+Wyncode,322
+Zbrush Workshops,410
+Zeitgeist Minds,326
+Zipfian Academy,324
+ZURB University,390

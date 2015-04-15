@@ -1,0 +1,35 @@
+{
+  "base_url": "https://p2pu.org/", 
+  "start_url": "https://p2pu.org/he/groups/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "271", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//*[@id='main']//div[@class='tab-content'])"
+      }, 
+      "name": {
+        "xpath": "//h1[@itemprop='name']/text()"
+      }, 
+      "product_image_url": [
+        {
+          "xpath": "//div[@class='richtext_section']//img/@src"
+        }, 
+        {
+          "xpath": "//*[@id='id-course-image']/@src", 
+          "python": "urljoin('https://p2pu.org',data)"
+        }
+      ]
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('/en/courses/',)), callback='parse_product'),Rule(lxml(allow=('/groups$|/groups/\\?pagination_page_number=\\d+',)),follow=True)]"
+    }
+  }
+}

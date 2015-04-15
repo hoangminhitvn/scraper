@@ -1,0 +1,126 @@
+{
+    "base_url": "http://www.netcomlearning.com",
+    "start_url": "http://www.netcomlearning.com/courses/",
+    "levels": {
+        "1": "./@href",
+        "1_1_1": "//table[@id='no-more-tables']//a[contains(.,'Schedule Details')]/@href",
+        "1_1": "//a[@class='button small border gradient shadow blue']/@href"
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "334",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "B",
+            "space_lock": "B",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//div[@class='framed'][contains(.,'Course Description')]/p//text()",
+                    "python": "html_to_text(data)",
+                    "level": "1"
+                },
+                {
+                    "xpath": "//div[@class='framed'][contains(.,'Course Description')]/table//div/text()",
+                    "python": "html_to_text(data)",
+                    "level": "1"
+                }
+            ],
+            "name": {
+                "xpath": "//h1//text()",
+                "level": "1"
+            },
+            "toc": {
+                "xpath": "//div[@class='framed'][contains(.,'Course Outline')]",
+                "level": "1"
+            },
+            "product_events": {
+                "fields": {
+                    "end_date_local": [
+                        {
+                            "xpath": "concat(//div[@class='eight columns alpha']/div[contains(.,'Dates')]/following-sibling::div[1],//div[@class='eight columns alpha']/div[contains(.,'Time')]/following-sibling::div[1])",
+                            "re": "(.*)[A-Z]{3}",
+                            "python": "get_end_date(data)"
+                        },
+                        {
+                            "xpath": "concat(//div[@class='eight columns alpha']/div[contains(.,'Dates')]/following-sibling::div[1],//div[@class='eight columns alpha']/div[contains(.,'Time')]/following-sibling::div[1])",
+                            "re": "(.*)[A-Z]{3},",
+                            "python": "get_end_date(data)"
+                        }
+                    ],
+                    "language": "eng",
+                    "start_date_local": [
+                        {
+                            "xpath": "concat(//div[@class='eight columns alpha']/div[contains(.,'Dates')]/following-sibling::div[1],//div[@class='eight columns alpha']/div[contains(.,'Time')]/following-sibling::div[1])",
+                            "re": "(.*)[A-Z]{3}",
+                            "python": "get_start_date(data)"
+                        },
+                        {
+                            "xpath": "concat(//div[@class='eight columns alpha']/div[contains(.,'Dates')]/following-sibling::div[1],//div[@class='eight columns alpha']/div[contains(.,'Time')]/following-sibling::div[1])",
+                            "re": "(.*)[A-Z]{3},",
+                            "python": "get_start_date(data)"
+                        }
+                    ],
+                    "tz": {
+                        "xpath": "concat(//div[@class='eight columns alpha']/div[contains(.,'Dates')]/following-sibling::div[1],//div[@class='eight columns alpha']/div[contains(.,'Time')]/following-sibling::div[1])",
+                        "python": "tz(html_to_text(data))"
+                    },
+                    "duration_filter": {
+                        "xpath": "//div[@class='framed'][contains(.,'Course Description')]//h4[contains(.,'Duration')]/text()",
+                        "re": "\\d+\\shours|\\d+\\shour",
+                        "python": "duration_filter(data)",
+                        "level": "1"
+                    },
+                    "location_display": {
+                        "xpath": "//div[@class='eight columns alpha']/div[contains(.,'Location:')]/following-sibling::div[position()<4]//text()",
+                        "python": "re.sub('.*:','',html_to_text(data)).strip()"
+                    },
+                    "duration_display": {
+                        "xpath": "//div[@class='framed'][contains(.,'Course Description')]//h4[contains(.,'Duration')]/text()",
+                        "level": "1",
+                        "python": "re.sub('Duration:','',html_to_text(data)).strip()"
+                    },
+                    "location_name": {
+                        "xpath": "//div[@class='eight columns alpha']/div[contains(.,'Location:')]/following-sibling::div[position()<4]//text()",
+                        "python": "re.sub('.*:|,.*','',html_to_text(data)).strip()"
+                    },
+                    "price_display_float": {
+                        "xpath": "//div[@class='hdr'][contains(.,'$')]//text()",
+                        "re": "\\d.*",
+                        "python": "get_price_float(data)"
+                    },
+                    "price_currency":"USD"
+                },
+                "type": "[ProductEvent]",
+                "level": "1_1_1"
+            },
+            "duration_filter": {
+                "xpath": "//div[@class='framed'][contains(.,'Course Description')]//h4[contains(.,'Duration')]/text()",
+                "re": "\\d+\\shours|\\d+\\shour",
+                "python": "duration_filter(data)",
+                "level": "1"
+            },
+            "duration_display": {
+                "xpath": "//div[@class='framed'][contains(.,'Course Description')]//h4[contains(.,'Duration')]/text()",
+                "level": "1",
+                "python": "html_to_text(data)"
+            },
+            "audience": {
+                "xpath": "//div[@class='framed'][contains(.,'Audience')]//ul/li//text()",
+                "type": "[str]",
+                "level": "1"
+            }
+        },
+        "type": "Product",
+        "pre_filters": {
+            "filters_not": [
+                {
+                    "python": "'There is an update to this Course' in response.body",
+                    "level": "1"
+                }
+            ]
+        },
+        "xpath": "//td[@class='list1']/a"
+    }
+}

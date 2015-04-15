@@ -1,0 +1,62 @@
+{
+    "baseUrl": "http://www.thebamentor.com/",
+    "levels": {},
+    "start_url": ["http://www.thebamentor.com/training-products.html"],
+    "output_config": {
+        "fields": {
+            "provider_name": "BA Mentor",
+            "provider_id": "286",
+            "language": "eng",
+            "space_lock": "N",
+            "time_lock": "N",
+            "product_type_name": "Courses",
+            "name": {
+                "xpath": "//p[contains(@class, 'vmProductName')]/text()"
+            },
+            "prod_image": {
+                "xpath": "//div[contains(@class, 'vmProductImage')]//a[1]/@href"
+            },
+            "short_desc": {
+                "xpath": "//p[contains(@class, 'v1sDesc')]//text()",
+                "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+            },
+            "description": [
+                {
+                    "xpath": "//span[contains(@class, 'vmProductDesc')]/p[count(.|//span[contains(@class, 'vmProductDesc')]/*[contains(., 'Who should')]/preceding-sibling::*)=count(//span[contains(@class, 'vmProductDesc')]/*[contains(., 'Who should')]/preceding-sibling::*)]",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+                },
+                {
+                    "xpath": "//span[contains(@class, 'vmProductDesc')]",
+                    "python": "' '.join([normalize_space(html2text.html2text(i)).replace('**', '') for i in data]) if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+                }
+            ],
+            "audience": {
+                "xpath": "//span[contains(@class, 'vmProductDesc')]/*[contains(., 'Who should')]/following-sibling::*[1]",
+                 "python": "' '.join([normalize_space(html2text.html2text(i)) for i in data]).replace('**', '') if isinstance(data,list) else normalize_space(html2text.html2text(data)).replace('**', '')"
+            },
+            "product_events": {
+                "fields": {
+                    "price_currency": "USD",
+                    "price_display_float": {
+                        "xpath": "//div[contains(@class, 'vmDetails')]//span[@class='productPrice']/text()",
+                        "re": "(\\d+\\.?\\d+)",
+                        "python": "'0.00' if data==0 else get_price_float(data)"
+                    },
+                    "price_filter": {
+                        "xpath": "//div[contains(@class, 'vmDetails')]//span[@class='productPrice']/text()",
+                        "re": "(\\d+\\.?\\d+)",
+                        "python": "'0.00' if data==0 else get_price_float(data)"
+                    }
+                },
+                "type": "[ProductEvent]"
+            }
+        },
+        "type": "Product",
+        "extractorRules": {
+            "rules": [
+                "Rule(lxml(allow=('.*'), restrict_xpaths=('//div[contains(@class, \\'vmBrowseProductTitle\\')]/a')), callback='parse_product')",
+                " Rule(lxml(allow=('.*'), restrict_xpaths=('//div[@class=\\'vmNavListProduct2\\']/a')), follow=True)"
+            ]
+        }
+    }
+}

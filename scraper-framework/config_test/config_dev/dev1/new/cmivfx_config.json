@@ -1,0 +1,20 @@
+{
+  "base_url": "https://cmivfx.com",
+  "levels": {
+    "0": {
+      "callback": "cmivfx.start"
+    }
+  },
+  "start_url": "https://cmivfx.com/store",
+  "output_config": {
+    "fields": {
+      "provider_id": "56",
+      "product_type_id": {
+        "python": "product_type_id('courses')"
+      },
+      "language": "eng",
+      "price_currency": "USD"
+    },
+    "type": "Product"
+  }
+}

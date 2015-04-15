@@ -1,0 +1,68 @@
+{
+  "base_url": "http://www.codecademy.com", 
+  "start_url": "http://www.codecademy.com/learn", 
+  "levels": {
+    "1": "./a[@class='link--target ']/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "50", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "string(//section[@class='cta__description'])", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "//header[@class='padding-bottom--1'][contains(.,'Introduction')]/following-sibling::*//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data", 
+          "level": "1"
+        }
+      ], 
+      "name": [
+        {
+          "xpath": "./div[2]//h3//text()"
+        }, 
+        {
+          "xpath": "string(//h1)", 
+          "level": "1"
+        }
+      ], 
+      "toc": {
+        "xpath": "//article[@class='syllabus leadin syllabus--curricula fit-full']/div[@class='fit-fixed grid-row']", 
+        "level": "1"
+      }, 
+      "product_image_url": [
+        {
+          "xpath": "./div[1]//img/@src"
+        }, 
+        {
+          "xpath": "//img[@class='cta__graphic__img no-rescale']/@src", 
+          "level": "1"
+        }
+      ], 
+      "duration_filter": {
+        "xpath": "//p[contains(.,'course time')]/preceding-sibling::*//text()", 
+        "python": "duration_filter(data)", 
+        "level": "1"
+      }, 
+      "price_display_float": "0.00", 
+      "difficulty": {
+        "xpath": "//p[contains(.,'technical level')]/preceding-sibling::*//text()", 
+        "python": "difficulty(data)", 
+        "level": "1"
+      }, 
+      "duration_display": {
+        "xpath": "//p[contains(.,'course time')]/preceding-sibling::*//text()", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='grid-col-12']/div[@class='grid-row']/article[@class]"
+  }
+}

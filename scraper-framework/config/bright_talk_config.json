@@ -1,0 +1,48 @@
+{
+  "base_url": "https://www.brighttalk.com/", 
+  "start_url": "https://www.brighttalk.com/webcasts/live_and_recorded", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "37", 
+      "product_type_id": {
+        "python": "product_type_id('Talks')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//*[@id='detailsWrapper']/div[@class='description'])"
+      }, 
+      "name": {
+        "xpath": "//h1[@itemprop='name']/text()"
+      }, 
+      "duration_filter": {
+        "xpath": "string(//*[@id='detailsWrapper']//div[@class='duration'])", 
+        "python": "str(duration_filter(data))"
+      }, 
+      "duration_display": {
+        "xpath": "string(//*[@id='detailsWrapper']//div[@class='duration'])"
+      }, 
+      "published_date": {
+        "xpath": "string(//*[@id='detailsWrapper']//span[contains(@class,'date')])", 
+        "python": "convert_date(data)"
+      }, 
+      "instructors": {
+        "fields": {
+          "name": {
+            "xpath": "string(//*[@id='detailsWrapper']/div[@class='presenterWrapper'])"
+          }
+        }, 
+        "type": "[Instructor]"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/webcasts/live_and_recorded/\\d+')),follow=True)", 
+        "Rule(lxml(allow=('.*'),restrict_xpaths='//a[@class=\\'detailsWrapper\\']'), callback='parse_product')"
+      ]
+    }
+  }
+}

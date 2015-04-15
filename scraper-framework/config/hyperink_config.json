@@ -1,0 +1,63 @@
+{
+  "base_url": "http://www.hyperink.com/", 
+  "start_url": "http://www.hyperink.com/books", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "172", 
+      "product_type_id": {
+        "python": "product_type_id('Books')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "string(//div[h2[contains(.,'Description')]])", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "//div[@class='content-main-product-title']/h1/text()", 
+        "level": "1"
+      }, 
+      "toc": {
+        "xpath": "//div[contains(@class,'sidebar-section-toc')]/ul", 
+        "level": "1"
+      }, 
+      "formats": {
+        "xpath": "//div[@class='sidebar-section-pricing-formats']/ul/li//text()", 
+        "re": "PDF|Kindle|iPad|Nook", 
+        "python": "data.strip().split(' ')"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[@class='book-hero']/@src", 
+        "level": "1"
+      }, 
+      "price_currency": {
+        "xpath": "//div[@class='sidebar-section-pricing-price']//span[@class='price']/text()", 
+        "python": "get_price_currency(data)", 
+        "level": "1"
+      }, 
+      "price_display_float": {
+        "xpath": "//div[@class='sidebar-section-pricing-price']//span[@class='price']/text()", 
+        "python": "get_price_float(data)", 
+        "level": "1"
+      }, 
+      "authors": {
+        "fields": {
+          "bio": {
+            "xpath": "//div[contains(@class,'expandable-author')]/p//text()"
+          }, 
+          "name": {
+            "xpath": "//*[@class='author-detail']/span/text()"
+          }
+        }, 
+        "type": "[Author]", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('hyperink\\.com/((\\d|\\w)+-)+',)), callback='parse_product'),Rule(lxml(allow=('books',)),follow=True)]"
+    }
+  }
+}

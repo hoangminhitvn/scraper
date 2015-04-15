@@ -1,0 +1,135 @@
+{
+    "base_url": "https://tutsplus.com/",
+    "start_url": "https://tutsplus.com/courses",
+    "levels": {
+        "1_1": {
+            "xpath": "//div[@class='instructor-bio__title']/a/@href"
+        }
+    },
+    "settings": {
+        "DOWNLOADER_MIDDLEWARES": {
+            "scrapy_balloons.useragent.RandomUserAgentMiddleware": 500
+        }
+    },
+    "output_config": {
+        "fields": {
+            "provider_id": "385",
+            "product_type_id": {
+                "xpath": "//a[contains(@class,'global-nav__header-link--active')]/text()",
+                "python": "product_type_id('Courses' if 'Courses' in data else  'Books')"
+            },
+            "time_lock": "N",
+            "space_lock": "N",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//div[@class='course__description noskimwords noskimlinks']/p//text()"
+                },
+                {
+                    "xpath": "string(//div[@class='ebook__body'])"
+                }
+            ],
+            "name": {
+                "xpath": "//h1[contains(@class, 'content-header__title')]/text()"
+            },
+            "toc": {
+                "xpath": "//div[@class='lesson-index']"
+            },
+            "price_display_float": [
+                {
+                    "xpath": "//a[@class='course-buy__purchase-link']/text()",
+                    "re": "\\d+",
+                    "python": "get_price_float(data)"
+                },
+                {
+                    "xpath": "//div[@class='ebook-meta__description']//div[@class='ebook-meta__label'][contains(text(), 'Original Price:')]/following-sibling::div[@class='ebook-meta__value']/text()",
+                    "re": "\\d+",
+                    "python": "get_price_float(data)"
+                }
+            ],
+            "price_currency": "USD",
+            "duration_filter": {
+                "xpath": "//div[@class='course-meta__value'][contains(., 'hours')]/text()",
+                "python": "None if data == 0 else duration_filter(data)"
+            },
+            "duration_display": [
+                {
+                    "xpath": "//div[@class='course-meta__value'][contains(., 'hours')]/text()"
+                },
+                {
+                    "xpath": "//div[@class='ebook-meta__description']//div[@class='ebook-meta__label'][contains(text(), 'Pages:')]/following-sibling::div[@class='ebook-meta__value']/text()"
+                }
+            ],
+            "formats": [
+                {
+                    "xpath": "//span[@class='ebook-actions__format-label']/text()"
+                },
+                {
+                    "python": "str('video')"
+                }
+            ],
+            "product_image_url": [
+                {
+                    "xpath": "//div[@class='course-meta']/img[@class='course-meta__image']/@src"
+                },
+                {
+                    "xpath": "//div[@class='ebook-meta']/img[@class='ebook-meta__image']/@src"
+                }
+            ],
+            "published_date": [
+                {
+                    "xpath": "//time[@class='content-header__publication-date']/text()",
+                    "python": "convert_date(data)"
+                },
+                {
+                    "xpath": "//div[@class='ebook-meta__description']//div[@class='ebook-meta__label'][contains(text(), 'Original Publication Date:')]/following-sibling::div[@class='ebook-meta__value']/text()",
+                    "python": "convert_date(data)"
+                }
+            ],
+            "authors": [
+                {
+                    "xpath": "//div[@class='layout__sidebar']/div[contains(./@class,'instructor')]",
+                    "fields": {
+                        "bio": {
+                            "xpath": "string(.//div[@class='instructor-bio__details'])"
+                        },
+                        "image": {
+                            "xpath": ".//img[@class='instructor-bio__image']/@src"
+                        },
+                        "link": {
+                            "xpath": ".//div[@class='instructor-bio__title']/a/@href"
+                        },
+                        "name": [
+                            {
+                                "xpath": "string(.//a[@class='instructor-bio__title-link'])"
+                            },
+                            {
+                                "xpath": "string(//span[@class='content-header__author-text']/text())"
+                            }
+                        ]
+                    },
+                    "type": "[Author]"
+                },
+                {
+                    "fields": {
+                        "name": {
+                            "xpath": "//span[@class='content-header__author-text']/text()"
+                        }
+                    },
+                    "type": "[Author]"
+                }
+            ],
+            "prod_keywords": {
+                "xpath": "//span[@class='course-meta__tag']/a/text()",
+                "type": "[str]"
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": [
+                "Rule(lxml(allow=('/courses/(\\w+-?)+$', '/ebooks/(\\w+-?)+$'), deny=('/upcoming')), callback='parse_product')",
+                "Rule(lxml(allow=('/courses\\?page','/ebooks$','/courses$','/ebooks\\?page' )), follow=True)"
+            ]
+        }
+    }
+}

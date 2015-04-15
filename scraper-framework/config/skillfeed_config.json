@@ -1,0 +1,94 @@
+{
+  "base_url": "https://www.skillfeed.com", 
+  "start_url": "https://www.skillfeed.com/topics", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "386", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//b[contains(.,'Overview')]/following-sibling::p//text()"
+      }, 
+      "name": {
+        "xpath": "//h1/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='tab-content']"
+      }, 
+      "product_video_url": {
+        "xpath": "//meta[@itemprop='contentURL']/@content"
+      }, 
+      "duration_filter": {
+        "xpath": "//li/b[contains(.,'Duration:')]/following-sibling::text()", 
+        "python": "duration_filter(data)"
+      }, 
+      "difficulty": {
+        "xpath": "string(//td[contains(.,'Level:')]/following-sibling::*)"
+      }, 
+      "duration_display": {
+        "xpath": "//li/b[contains(.,'Duration:')]/following-sibling::text()"
+      }, 
+      "ProductRating": {
+        "fields": {
+          "username": null, 
+          "rating_only": "1", 
+          "user_id": "0", 
+          "review": null, 
+          "pub_status": "L", 
+          "overall_rating": {
+            "xpath": "//*[@id='rating-demo']/@data-rateit-value", 
+            "python": "str(round(float(data))).split('.')[0] if data else None"
+          }
+        }, 
+        "type": "[ProductRating]"
+      }, 
+      "published_date": {
+        "xpath": "string(//td[contains(.,'Released:')]/following-sibling::*)", 
+        "python": "convert_date(str(data))"
+      }, 
+      "instructors": {
+        "fields": {
+          "bio": {
+            "xpath": "string(//div[@class='author'])"
+          }, 
+          "image": {
+            "xpath": "//div[@class='author']//img/@src", 
+            "python": "urljoin('https://www.skillfeed.com/',data)"
+          }, 
+          "link": {
+            "xpath": "//div[@class='author']//a/@href", 
+            "python": "urljoin('https://www.skillfeed.com/',data)"
+          }, 
+          "name": {
+            "xpath": "//div[@class='author']/div[@class='name']/a/text()"
+          }
+        }, 
+        "type": "[Instructor]"
+      }, 
+      "prod_keywords": {
+        "xpath": "string(//td[contains(.,'Keywords:')]/following-sibling::*)", 
+        "python": "normalize_space(data).split(',')", 
+        "type": "[str]"
+      }, 
+      "price_display_text": "/month"
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/\\w.*',),), callback='parse_product')", 
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//div[@class=\\'table-list\\']//tr/td/a','//li[@class=\\'browse-next \\']/a')), follow=True)"
+      ]
+    }
+  }, 
+  "pre_run": {
+    "price": {
+      "xpath": "substring-before(substring-after(//div[@class='caption']/text()[contains(.,'$')],'Only '),'.')", 
+      "start_url": "https://www.skillfeed.com/pricing"
+    }
+  }
+}

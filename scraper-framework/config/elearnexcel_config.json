@@ -1,0 +1,76 @@
+{
+  "base_url": "http://www.elearnexcel.com", 
+  "start_url": "http://www.elearnexcel.com/courses/", 
+  "levels": {
+    "1": "./@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "145", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "concat(//div[@class='entry clearfix']/div[2]/div[@class='col col_1_3 '][1]/div[@class='inner']/div/p/span/text(), //div[@class='entry clearfix']/div[2]/div[@class='col col_1_3 '][1]/div[@class='inner']/div/p/text(),//div[@class='entry clearfix']/div[@class='col col_1_3 '][1]/div[@class='inner']/p[2]/text(),//div[@class='entry clearfix']/div[2]/div[@class='col col_1_3 '][1]/div[@class='inner']/p[2]/span/text(),//div[@class='entry clearfix']/div[2]/div[@class='col col_1_3 '][1]/div[@class='inner']/p[2]/text())", 
+          "level": "1"
+        }, 
+        {
+          "xpath": "string(//div[@class='entry clearfix']/div[@class='col col_1_3 '][1]/div[@class='inner']/span)", 
+          "level": "1"
+        }
+      ], 
+      "name": {
+        "xpath": "./text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='entry clearfix']", 
+        "level": "1"
+      }, 
+      "product_events": {
+        "fields": {
+          "price_display_float": {
+            "xpath": "substring-after(//span[contains(.,'$')],'$')", 
+            "python": "get_price_float(data)"
+          }, 
+          "price_currency": "USD", 
+          "duration_filter": {
+            "xpath": "substring-before(//ul/li[contains(.,'of online video')]/text(),'of')", 
+            "re": "\\d.*", 
+            "python": "duration_filter(data)"
+          }, 
+          "duration_display": {
+            "xpath": "substring-before(//ul/li[contains(.,'of online video')]/text(),'of')"
+          }
+        }, 
+        "type": "[ProductEvent]", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "concat(substring-before(substring-after(string(//div[@class='entry clearfix']/div[@itemscope]/div[2]/div[@class='inner']/p/script[@type='text/javascript']),'file:'),',image:'),substring-before(substring-after(//div[@class='entry clearfix']/div[3]/div[@class='inner']/p/script/text(),'file:'),',image:'))", 
+        "level": "1"
+      }, 
+      "certificates": {
+        "fields": {
+          "link": {
+            "xpath": "concat(//div[@class='entry clearfix']/div[2]/p[4]/img/@src,//div[@class='entry clearfix']/p[4]/img/@src,//div[@class='entry clearfix']/div[2]/img/@src,//div[@class='entry clearfix']/p[2]/img/@src)"
+          }, 
+          "name": {
+            "xpath": "concat(//div[@class='entry clearfix']/div[2]/p[4]/img/@alt,//div[@class='entry clearfix']/p[4]/img/@alt,//div[@class='entry clearfix']/div[2]/img/@alt,//div[@class='entry clearfix']/div[2]/img/@src,//div[@class='entry clearfix']/p[2]/img/@alt)"
+          }
+        }, 
+        "type": "[Certificate]", 
+        "level": "1"
+      }, 
+      "audience": {
+        "xpath": "concat(//div[@class='entry clearfix']/div[@class='col col_1_3 '][3]/div[@class='inner']/p[2]/text(), //div[@class='entry clearfix']/div[2]/div[@class='col col_1_3 '][3]/div[@class='inner']/p[3]/text(), //div[@class='entry clearfix']/div[2]/div[@class='col col_1_3 '][3]/div[@class='inner']/p[3]/span/text(),//div[@class='entry clearfix']/div[2]/div[@class='col col_1_3 '][3]/div[@class='inner']/p[2]/text())", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": "//div[@class='inner']/h2/a"
+  }
+}

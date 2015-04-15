@@ -1,0 +1,77 @@
+{
+    "base_url": "http://www.elearning.magnetoacademy.com",
+    "start_url": "http://www.magnetoacademy.com/courses",
+    "levels": {},
+    "output_config": {
+        "fields": {
+            "provider_id": "251",
+            "product_type_id": {
+                "python": "product_type_id('Courses')"
+            },
+            "time_lock": "N",
+            "space_lock": "Y",
+            "language": "eng",
+            "description": [
+                {
+                    "xpath": "//div[@class='product-shop']/div[@class='short-description']/div[@class='std']/p//text()",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "//h1[@id='aboutus'][1]/following-sibling::p//text()",
+                    "python": "html_to_text(data)"
+                },
+                {
+                    "xpath": "//div[@class='tabcontents']/div[@id]/div[@id='tablecont']/p//text()",
+                    "python": "html_to_text(data)"
+                }
+            ],
+            "name": [
+                {
+                    "xpath": "//div[@class='product-name']/h1//text()"
+                },
+                {
+                    "xpath": "//h1[@id='aboutus'][1]//text()"
+                }
+            ],
+            "toc": [
+                {
+                    "xpath": "//*[@id='tabs_description']"
+                },
+                {
+                    "xpath": "//h1[@id='aboutus'][contains(.,'Course Details')]/following-sibling::*"
+                }
+            ],
+            "product_image_url": {
+                "xpath": "//div[@class='product-img-box']/p[@class='product-image']//img/@src"
+            },
+            "price_currency": "USD",
+            "duration_filter": {
+                "xpath": "//p[contains(.,'Course Duration')]//text()",
+                "re": "\\d.*",
+                "python": "duration_filter(data)"
+            },
+            "price_display_float": {
+                "xpath": "//div[@class='product-shop']//div[@class='price-box']//span[@class='price']//text()",
+                "re": "\\d.*",
+                "python": "get_price_float(data[1])"
+            },
+            "duration_display": {
+                "xpath": "//p[contains(.,'Course Duration')]//text()",
+                "re": "\\d.*"
+            },
+            "requirements": {
+                "xpath": "//p[contains(.,'equirement')]/following-sibling::p[1]//text()",
+                "python": "html_to_text(data)"
+            },
+            "audience": {
+                "xpath": "//p[contains(.,'Who should Attend')]/following-sibling::p[position()<3]//text()",
+                "python": "html_to_text(data)"  
+
+            }
+        },
+        "type": "Product",
+        "extractor_rules": {
+            "rules": "[Rule(lxml(allow=('.*'),restrict_xpaths=('//ul[@class=\\'menu-left\\']/li[position()<5]/ul/li/ul/li/a','//section[@class]/section[@class=\\'leftpanel\\']/ul[@class=\\'left_menu\\']/ul[1]/li/a')), callback='parse_product'), Rule(lxml(allow=('.*'),restrict_xpaths=('//section[@class=\\'header\\']//section[@class=\\'header_right\\']/map/area')), follow=True)]"
+        }
+    }
+}

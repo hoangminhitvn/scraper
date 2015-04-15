@@ -1,0 +1,141 @@
+provider_name,provider_id,file_name
+02skills,10,02skills_config.json
+Copyblogger Authority,80,copyblogger_config.json
+Luxr,374,luxr_config.json
+Tufts,373,tufts_ocw_config.json
+Stonebridge Colleges,340,stonebridge_config.json
+Delft University of Technology,372,tudelft_ocw_config.json
+SSO Network,333,ssonetwork_config.json
+Entrepreneurs Unpluggd,126,entrepreneursunpluggd_config.json
+MeasureUp,295,measureup_config.json
+Utah State University,382,usu_ocw_config.json
+Learn Skills,140,learnskills_config.json
+The RSA,261,thersa_config.json
+Idea City,220,ideacityonline_config.json
+EverMotion VFX,132,evermotion_config.json
+stormwind,343,stormwind_config.json
+Zbrush Workshops,410,zbrushworkshops_config.json
+Tableau,276,tableausoftware_config.json
+Altera,95,altera_config.json
+Project Management Institute,313,pmi_config.json
+Canvas Network,44,canvas_config.json
+Open Security Training,336,opensecuritytraining_config.json
+Hyperink,172,hyperink_config.json
+Codecademy,50,codecademy_config.json
+Infinite Skills,268,infiniteskills_config.json
+Big Think TV,33,bigthinktv_config.json
+eLearnUK,154,elearnuk_config.json
+Catalyst MLM,41,catalystmlm_config.json
+UNUChannel,315,unu_vimeo_config.json
+Cisco Press,49,ciscopress_config.json
+Johns Hopkins School of Public Health,,jhsph_ocw_config.json
+MIT Open Courseware,159,mit_ocw_config.json
+Bizsnack,53,bizsnack_config.json
+Smart Insights,389,smartinsights_config.json
+NetCom Learning,334,netcom_config.json
+The New Boston,362,thenewboston_config.json
+fxphd,167,fxphd_config.json
+New Circle,310,thenewcircle_config.json
+Esri,173,esri_config.json
+ERI Distance Learning Center,165,eridlc_config.json
+gotoAndLearn(),113,gotoandlearn_config.json
+Saylor Academy,227,saylor_config.json
+ZURB University,390,zurb_config.json
+CfPA,46,cfpa_config.json
+PopForms,341,popforms_config.json
+HackDesign,176,hackdesign_config.json
+Mind Edge Online,151,mindedgeonline_config.json
+Technology ED,369,technologyed_config.json
+P2PU,271,p2pu_config.json
+O'Reilly School of Technology,304,oreillyschool_config.json
+Marketfy,265,marketfy_config.json
+Creator Up,82,creatorup_config.json
+iversity,252,iversity_config.json
+Skill Forge,330,skillforge_config.json
+MacProVideo,284,macprovideo_config.json
+Digital Marketing Institute,127,digitalmarketinginstitute_config.json
+Screencasts Online,380,screencasts_config.json
+eClasses,104,eclasses_config.json
+Association of Strategic Marketing,6,associationofmarketing_config.json
+eLearnExcel,145,elearnexcel_config.json
+MarketingProfs University,285,marketingprofsu_config.json
+Research Rockstar,277,researchrockstar_config.json
+Treehouse,305,treehouse_config.json
+howdesignuniversity,183,howdesignuniversity_config.json
+Distilled,92,distilled_config.json
+Ed4Online,117,ed4online_config.json
+Kelby Training,211,kelbytraining_config.json
+thewc,370,thewc_config.json
+Learn IT Anytime,138,learnitanytime_config.json
+SANS Institute,345,sans_config.json
+Living Language,223,livinglanguage_config.json
+Global Knowledge,160,globalknowledge_config.json
+Frontend Masters,202,frontend_masters_config.json
+Global Finance School,233,globalfinanceschool_config.json
+Excel with Business,131,excelbusiness_config.json
+Edu Pristine,120,edupristine_config.json
+Mammoth Interactive,258,mammothinteractive_config.json
+IBM Training,27,ibm_config.json
+Compucert,76,compucert_config.json
+Online Marketing Institute,209,onlinemarketinginstitute_config.json
+OSTraining,270,ostraining_config.json
+Learning Tree,137,learningtree_config.json
+VTC,314,vtc_config.json
+GogoTraining,242,gogotraining_config.json
+E-careers,107,e_careers_config.json
+Curious,85,curious_config.json
+Envato/Tuts+,385,tutsplus_config.json
+Mediabistro,281,mediabistro_config.json
+Training Center,374,trainingcenter_config.json
+General Assembly,201,generalassembly_config.json
+Videomaker,405,videomaker_config.json
+Grovo,118,grovo_config.json
+American Purchasing Society,24,aps_config.json
+Gresham College,166,gresham_config.json
+Pop Tech,354,poptech_config.json
+Jack Morton,133,jackmorton_config.json
+The Data Warehousing Institute,279,tdwi_config.json
+Destech,83,destech_config.json
+|Channel 9, MSDN|,175,msdn_config.json
+Ignite Talk,125,igniteshow_config.json
+WizIQ,323,fastlaneus_config.json
+Magneto Academy,251,magnetoacademy_config.json
+MeasureUp,295,measureup_config_backup.json
+Class on Demand,55,classondemand_config.json
+SkillFeed,386,skillfeed_config.json
+MOOEC,244,mooec_config.json
+Video Copilot,394,videocopilot_config.json
+O'Reilly Media,348,oreillymedia_config.json
+Future Learn,110,futurelearn_config.json
+Better Photo,32,betterphoto_config.json
+Instant eTraining,204,instantetraining_config.json
+Writer's Store,325,writersstore_config.json
+Poynter's News University,246,newsu_config.json
+Transcender,377,transcender_config.json
+Intertech,128,intertech_config.json
+Fora.TV,196,fora_config.json
+Wall Street Prep,407,wallstreetprep_config.json
+Ragan Training,218,ragantraining_config.json
+Market Motive,239,marketmotive_config.json
+Total Training,365,totaltraining_config.json
+AppendTo,18,appendto_config.json
+Pearson IT Certification,216,pearsonitcertification_config.json
+OpenupEd,259,openuped_config.json
+McAfee,240,mcafee_config.json
+Distance Learning College,100,dlcandtraining_config.json
+Exit Certified,139,exitcertified_config.json
+Benchprep,28,benchprep_config.json
+Adobe Press,5,adobepress_config.json
+IBM Book Press,185,ibmpressbooks_config.json
+SAP Learning Hub,368,sap_config.json
+Jump Course,253,jumpcourse_config.json
+Train Simple,402,trainsimple_config.json
+Writers Digest University,317,writersonlineworkshops_config.json
+LearnQuest,278,learnquest_config.json
+IBM Developer Works Demos,174,ibmdw_config.json
+PSD Box,273,psdbox_config.json
+Learn Dev Now,274,learnnowonline_config.json
+jumpstartlab,203,jumpstartlab_config.json
+Total Success,401,totalsuccess_config.json
+e-Procept,359,procept_config.json
+LearningGG,135,learninggg_config.json

@@ -1,0 +1,45 @@
+{
+  "base_url": "http://www.livinglanguage.com", 
+  "start_url": "http://www.livinglanguage.com/languagelab", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "223", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "concat(//div[@class='column main-content']/div[1]//p,//div[@id='online']//div[@class='clear-right'])", 
+        "python": "html_to_text(data)"
+      }, 
+      "name": {
+        "xpath": "//div[@class='section-1 inner-content-3 greeting margin-bottom']/div/h1//text()", 
+        "re": "[A-Z].*"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='section-1 inner-content-1 clearfloat']", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "//div[@class='section-1 inner-content-3 greeting margin-bottom']/@style", 
+        "re": "/content.*jpg", 
+        "python": "urljoin('http://www.livinglanguage.com/',data)"
+      }, 
+      "price_currency": "USD", 
+      "price_display_float": {
+        "xpath": "//div[@class='course-options group']/ul/li[@class='option even'][contains(.,'1-Month')]/div[@class='order']//text()", 
+        "re": "\\d.*"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('/products/.*/online-course')), callback='parse_product')", 
+        "Rule(lxml(allow=('/products/'),restrict_xpaths=('//div[@class=\\'footer-col\\'][2]/ul/li/a'),), follow=True)"
+      ]
+    }
+  }
+}

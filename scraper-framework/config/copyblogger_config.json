@@ -1,0 +1,36 @@
+{
+  "base_url": "http://my.copyblogger.com", 
+  "start_url": "http://my.copyblogger.com/type/webinars/", 
+  "levels": {}, 
+  "output_config": {
+    "fields": {
+      "provider_id": "80", 
+      "product_type_id": {
+        "xpath": "//div[@class='post-info']/a/@title"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": [
+        {
+          "xpath": "//div[@class='entry-content']/h3[1]/following-sibling::*[not(div)]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }, 
+        {
+          "xpath": "//div[@class='entry-content']/*[not(div)]//text()", 
+          "python": "''.join([normalize_space(html2text.html2text(i)) for i in data]) if isinstance(data,list) else data"
+        }
+      ], 
+      "name": {
+        "xpath": "string(//h1[@class='entry-title'])"
+      }, 
+      "product_image_url": {
+        "xpath": "//img[@class='ebook-cover alignleft']/@src"
+      }
+    }, 
+    "type": "Product", 
+    "extractor_rules": {
+      "rules": "[Rule(lxml(allow=('.*',),restrict_xpaths=('//h2[@class=\\'entry-title\\']/a'),deny=('/authority/basic-site-analytics/')), callback='parse_product'), Rule(lxml(allow=('/type/ebooks/.*','/type/webinars/.*'),), follow=True)]"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "base_url": "http://jumpcourse.com", 
+  "start_url": "http://jumpcourse.com/courses", 
+  "levels": {
+    "1": "./div[@class='title']/a/@href"
+  }, 
+  "output_config": {
+    "fields": {
+      "provider_id": "253", 
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      }, 
+      "time_lock": "N", 
+      "space_lock": "N", 
+      "language": "eng", 
+      "description": {
+        "xpath": "//div[@id='services-1']/h3/following-sibling::p//text()", 
+        "python": "' '.join(data)", 
+        "level": "1"
+      }, 
+      "name": {
+        "xpath": "./div[@class='title']/a/text()"
+      }, 
+      "toc": {
+        "xpath": "//div[@class='tab-content']/div[@id='services-2']/div[@class='steps progress-steps']", 
+        "level": "1"
+      }, 
+      "product_video_url": {
+        "xpath": "//div[@class='container']//*[@data-appear-animation=\"bounceIn\"]//iframe/@src", 
+        "level": "1"
+      }, 
+      "product_image_url": {
+        "xpath": "./div[@class='no-bottom-padding']/a/img/@src", 
+        "python": "urljoin('http:',data) if data else None"
+      }, 
+      "price_currency": "USD", 
+      "price_display_float": {
+        "xpath": "substring-after(string(//div[@class='row price-box'][1]/div[@class='col-xs-6'][2]/span[@class='price']),'$')", 
+        "python": "get_price_float(data)", 
+        "level": "1"
+      }
+    }, 
+    "type": "Product", 
+    "xpath": {
+      "operator": "and", 
+      "value": [
+        "//div[@class='pricing pricing-success']", 
+        "//div[@class='pricing pricing-info']"
+      ]
+    }
+  }
+}

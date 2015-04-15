@@ -1,0 +1,82 @@
+{
+  "baseUrl": "https://www.futurelearn.com/",
+  "levels": {
+    "1_1": {
+      "xpath": "//div[@class='educator']//a[contains(@class, 'avatar-link')]/@href",
+      "dont_filter": true
+    }
+  },
+  "start_url": "https://www.futurelearn.com/courses/categories",
+  "output_config": {
+    "fields": {
+      "provider_name": "Future Learn",
+      "provider_id": "110",
+      "product_type_name": "Courses",
+      "language": "eng",
+      "space_lock": "Y",
+      "time_lock": "N",
+      "name": {
+        "xpath": "//h1[contains(@class, 'content-header__title')]/text()"
+      },
+      "formats": "video",
+      "short_desc": {
+        "xpath": "string(//p[@class='text-introduction']/text())"
+      },
+      "description": {
+        "xpath": "string(//section[@class='small'])"
+      },
+      "prod_image": {
+        "xpath": "//div[@class='hero']/img/@src",
+        "python": "urljoin('https://www.futurelearn.com',data)"
+      },
+      "requirements": {
+        "xpath": "//section[contains(@class, 'run-requirements')]/p/text()"
+      },
+      "product_events": {
+        "fields": {
+          "instructors": {
+            "fields": {
+              "name": {
+                "xpath": "string(//div[@class='educator']//div[@class='names']/a/text())"
+              },
+              "bio": {
+                "xpath": "string(//div[@class='short_description'])",
+                "level": "1_1"
+              },
+              "image": {
+                "xpath": "//div[@class='educator']//img/@src",
+                "re": "www.*"
+              },
+              "link": {
+                "xpath": "//div[@class='educator']//a[contains(@class, 'avatar-link')]/@href"
+              }
+            },
+            "type": "[Instructor]",
+            "xpath": "//div[contains(@class,'run-educators')]"
+          },
+          "duration_filter": {
+            "xpath": "substring(string(//p[@class='run-data'][contains(., 'Duration:')]/text()), 11)",
+            "python": "duration_filter(data)"
+          },
+          "duration_display": {
+            "xpath": "substring(string(//p[@class='run-data'][contains(., 'Duration:')]/text()), 11)"
+          },
+          "price_currency": "USD",
+          "start_date_local": {
+            "xpath": "./div[@class='run-data']/time/text()",
+            "python": "convert_date(data)"
+          }
+        },
+        "type": "[ProductEvent]",
+        "xpath": "//div[@class='run-dates']/ul/li"
+      }
+    },
+    "type": "Product",
+    "extractorRules": {
+      "rules": [
+        "Rule(lxml(allow=('/courses/.*',), restrict_xpaths=('//ul[contains(@class, \\'run-list\\')]/li/article/a')), callback='parse_product')",
+        "Rule(lxml(allow=('/courses/categories/.*'), restrict_xpaths=('//ul[@class=\\'list category-list\\']/li/a')), follow=True,  callback='passCat')"
+      ]
+    }
+  }
+}

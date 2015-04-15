@@ -1,0 +1,105 @@
+{
+  "base_url": "http://www.compuworks.com",
+  "start_url": "http://www.compuworks.com/search",
+  "levels": {
+    "1_1": {
+      "xpath": "//iframe[@id='videoCont']/@src"
+    }
+  },
+  "output_config": {
+    "fields": {
+      "provider_id": "77",
+      "product_type_id": {
+        "python": "product_type_id('Courses')"
+      },
+      "time_lock": "N",
+      "space_lock": "N",
+      "name": {
+        "xpath": "//div[@class='header']/h3//text()"
+      },
+      "description": [
+        {
+          "python": "compuworks.get_description(response)",
+          "level": "1_1"
+        },
+        {
+          "xpath": "//div[@class='lesson-description']",
+          "python": "re.search('Course Objective:(.*)Target',html_to_text(data)).group(1).replace('*','').strip()"
+        }
+      ],
+      "audience": {
+        "xpath": "//b[contains(.,'Target Student: ')]/following-sibling::text()"
+      },
+      "prerequisites": [
+        {
+          "python": "compuworks.get_prerequisites(response)",
+          "level": "1_1"
+        },
+        {
+          "xpath": "//div[@class='lesson-description']",
+          "python": "compuworks.get_prerequisites(data)"
+        }
+      ],
+      "toc": [
+        {
+          "python": "compuworks.get_toc(response)",
+          "level": "1_1"
+        },
+        {
+          "xpath": "//div[@class='lesson-description']",
+          "python": "re.search('Course Content(.*)',html_to_text(data).replace('*',''),re.I).group(1)"
+        }
+      ],
+      "product_events": {
+        "xpath": "//div[@class='list']//div[@class='lesson']",
+        "fields": {
+          "price_currency": "USD",
+          "language": "eng",
+          "start_date_local": {
+            "xpath": "substring-before(.//label[@class='title'],'-')",
+            "python": "convert_date(data)"
+          },
+          "duration_filter": {
+            "xpath": "normalize-space(concat(substring-before(substring-after(//div[@class='days-and-price'],':'),'Price'),' ',substring-before(//div[@class='days-and-price'],':')))",
+            "python": "duration_filter(data)"
+          },
+          "price_display_float": {
+            "xpath": "//div[@class='days-and-price']/span[contains(.,'$')]//text()",
+            "re": "\\d.*",
+            "python": "get_price_float(data)"
+          },
+          "duration_display": {
+            "xpath": "substring-before(//div[@class='days-and-price'],'Price')"
+          }
+        },
+        "type": "[ProductEvent]"
+      },
+      "price_display_float": {
+        "xpath": "//div[@class='days-and-price']/span[contains(.,'$')]//text()",
+        "re": "\\d.*",
+        "python": "get_price_float(data)"
+      },
+      "price_currency": "USD",
+      "duration_filter": {
+        "xpath": "normalize-space(concat(substring-before(substring-after(//div[@class='days-and-price'],':'),'Price'),' ',substring-before(//div[@class='days-and-price'],':')))",
+        "python": "duration_filter(data)"
+      },
+      "language": "eng",
+      "duration_display": {
+        "xpath": "substring-before(//div[@class='days-and-price'],'Price')"
+      },
+      "product_video_url": {
+        "xpath": "//div[@class='play-promo']/a/@onclick",
+        "re": "/video/\\w+/\\w+",
+        "python": "urljoin('http://www.compuworks.com/',data) if data else None"
+      }
+    },
+    "type": "Product",
+    "extractor_rules": {
+      "rules": [
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//div[@class=\\'row white\\']/a[@class=\\'col\\'][contains(.,\\'Select\\')]')),callback='parse_product')",
+        "Rule(lxml(allow=('.*',),restrict_xpaths=('//div[@class=\\'header\\']/a[contains(.,\\' Select\\')]','//div[@class=\\'list separator\\']//a'),),follow=True)"
+      ]
+    }
+  }
+}
