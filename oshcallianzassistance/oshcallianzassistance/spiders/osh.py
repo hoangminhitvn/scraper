@@ -10,8 +10,12 @@ class TestRuleSpider(Spider):
     alpha = No of adults [1,2]
     beta = Dependant children [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     eta = Cover period [3, 4, ... 71, 72]
+
+    Step 1: Create request from fromdata
+    Step 2: Get info
     '''
 
+    # Step 1
     def parse(self, response):
         alpha = range(1,3)
         beta = range(11)
@@ -40,6 +44,7 @@ class TestRuleSpider(Spider):
                     request.meta['keys'] = item
                     yield request
 
+    # Step 2
     def get_price(self, response):
         item = response.meta['keys']
         item['price'] = response.xpath("//span[@id='lblPremium']//text()").extract()[0]
